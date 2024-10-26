@@ -1,0 +1,127 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+
+    @if (ViewData.ContainsKey("title"))
+    {
+        <title>MyBlog - @ViewData["title"]</title>
+    }
+    else
+    {
+        <title>MyBlog</title>
+    }
+
+    <link href="https://cdn.bootcdn.net/ajax/libs/twitter-bootstrap/5.1.3/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdn.bootcdn.net/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="~/css/metro.css">
+    <link rel="stylesheet" href="~/css/footer.css">
+    <link rel="stylesheet" href="~/css/index.css">
+    <link rel="stylesheet" href="~/css/animation.css">
+
+    @await RenderSectionAsync("head", false)
+</head>
+
+<body class="metro-bg-white">
+    <div class="container">
+        <nav class="navbar navbar-expand-lg navbar-light">
+            <a class="navbar-brand" asp-controller="Home" asp-action="Index">MyBlog</a>
+            <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent"
+                aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarSupportedContent">
+                <ul class="navbar-nav mr-auto">
+                    <li class="nav-item">
+                        <a class="nav-link" asp-controller="Blog" asp-action="List">Technical</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="#">Photography</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="#">Text</a>
+                    </li>
+                    <li class="nav-item dropdown">
+                        <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button"
+                            data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                            Menu
+                        </a>
+                        <div class="dropdown-menu" aria-labelledby="navbarDropdown">
+                            <a class="dropdown-item" href="#">Action</a>
+                            <a class="dropdown-item" href="#">Another action</a>
+                            <div class="dropdown-divider"></div>
+                            <a class="dropdown-item" href="#">Something else here</a>
+                        </div>
+                    </li>
+                </ul>
+            </div>
+        </nav>
+        <div id="vue-app">
+            @RenderBody()
+        </div>
+    </div>
+
+    <footer class="metro-bg-black">
+        <div id="footer">
+            <div class="container">
+                <div class="row">
+                    <div id="footer-content" class="col-md-10 col-md-offset-3 footer-list text-center">
+                        <p class="social-icons">
+                            <a target="_blank" rel="nofollow" href="https://www.linkedin.com/in/john-yang-70a5722a6/">
+                                <i class="fab fa-linkedin"></i>
+                            </a>
+                            <a target="_blank" rel="nofollow" href="https://github.com/shimakaze09">
+                                <i class="fab fa-github"></i>
+                            </a>
+                        </p>
+                        <p>Copyright 2024 <b>John</b>. All Rights Reserved.</p>
+                        <p>
+                            All content is released under <a
+                                href="http://creativecommons.org/licenses/by-nc-sa/3.0/deed.en" rel="external nofollow"
+                                target="_blank">Creative Commons BY-NC-SA 3.0</a>.
+                            If articles including programming codes (e.g. Java, Python, C#, Go) are exceptions, which
+                            are
+                            released under
+                            <a href="http://www.gnu.org/licenses/gpl.html" rel="external nofollow" target="_blank">
+                                GPL
+                                v3
+                            </a>.
+                        </p>
+                        <p>
+                            <script>
+                                //百度统计
+                                var _hmt = _hmt || [];
+                                (function () {
+                                    var hm = document.createElement("script");
+                                    hm.src = "https://hm.baidu.com/hm.js?b8ff7edd033f38747b154905db5bb936";
+                                    var s = document.getElementsByTagName("script")[0];
+                                    s.parentNode.insertBefore(hm, s);
+                                })();
+                                //百度自动提交
+                                (function () {
+                                    var bp = document.createElement('script');
+                                    var curProtocol = window.location.protocol.split(':')[0];
+                                    if (curProtocol === 'https') {
+                                        bp.src = 'https://zz.bdstatic.com/linksubmit/push.js';
+                                    } else {
+                                        bp.src = 'http://push.zhanzhang.baidu.com/push.js';
+                                    }
+                                    var s = document.getElementsByTagName("script")[0];
+                                    s.parentNode.insertBefore(bp, s);
+                                })();
+                            </script>
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </footer>
+
+    <script src="https://cdn.bootcdn.net/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+    <script src="https://cdn.bootcdn.net/ajax/libs/popper.js/2.11.2/umd/popper.min.js"></script>
+    <script src="https://cdn.bootcdn.net/ajax/libs/twitter-bootstrap/5.1.3/js/bootstrap.min.js"></script>
+    @await RenderSectionAsync("bottom", false)
+</body>
+
+</html>
