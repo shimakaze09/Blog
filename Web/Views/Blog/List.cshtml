@@ -1,3 +1,4 @@
+@using Contrib.Extensions
 @model BlogList
 @{
     ViewData["Title"] = "Blog list";
@@ -7,12 +8,16 @@
 {
     <div class="card mb-3">
         <div class="card-header">
-            Featured
+            @post.Category.Name
         </div>
         <div class="card-body">
             <h5 class="card-title">@post.Title</h5>
-            <p class="card-text">With supporting text below as a natural lead-in to additional content.</p>
-            <a href="#" class="btn btn-outline-secondary float-right">Go somewhere</a>
+            <p class="card-text">
+                @post.Content.Limit(200)
+            </p>
+            <a class="btn btn-outline-secondary" asp-controller="Blog" asp-action="Details" asp-route-id="@post.Id">
+                Show more
+            </a>
         </div>
     </div>
 }
