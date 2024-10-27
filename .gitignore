@@ -1,5 +1,5 @@
-# Created by https://www.toptal.com/developers/gitignore/api/visualstudiocode,visualstudio,csharp,dotnetcore,aspnetcore
-# Edit at https://www.toptal.com/developers/gitignore?templates=visualstudiocode,visualstudio,csharp,dotnetcore,aspnetcore
+# Created by https://www.toptal.com/developers/gitignore/api/database,visualstudiocode,visualstudio,csharp,dotnetcore,aspnetcore
+# Edit at https://www.toptal.com/developers/gitignore?templates=database,visualstudiocode,visualstudio,csharp,dotnetcore,aspnetcore
 
 ### ASPNETCore ###
 ## Ignore Visual Studio temporary files, build results, and
@@ -523,6 +523,15 @@ FodyWeavers.xsd
 
 # JetBrains Rider
 
+### Database ###
+*.accdb
+*.db
+*.dbf
+*.mdb
+*.sqlite3
+*.db-shm
+*.db-wal
+
 ### DotnetCore ###
 # .NET Core build folders
 bin/
@@ -726,4 +735,4 @@ obj/
 ### VisualStudio Patch ###
 # Additional files built by Visual Studio
 
-# End of https://www.toptal.com/developers/gitignore/api/visualstudiocode,visualstudio,csharp,dotnetcore,aspnetcore
+# End of https://www.toptal.com/developers/gitignore/api/database,visualstudiocode,visualstudio,csharp,dotnetcore,aspnetcore
