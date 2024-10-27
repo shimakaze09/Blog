@@ -2,7 +2,6 @@ using Data.Models;
 using Web.ViewModels;
 using FreeSql;
 using Markdig;
-using Markdig.Prism;
 using Markdown.ColorCode;
 
 namespace Web.Services;
@@ -30,7 +29,6 @@ public class PostService
             .UseAutoLinks()
             .UseTaskLists()
             .UseBootstrap()
-            .UseColorCode()
             .Build();
 
         var vm = new PostViewModel

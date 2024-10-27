@@ -8,10 +8,6 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <Folder Include="wwwroot\lib" />
-  </ItemGroup>
-
-  <ItemGroup>
     <ProjectReference Include="..\Contrib\Contrib.csproj" />
     <ProjectReference Include="..\Data\Data.csproj" />
   </ItemGroup>
@@ -19,7 +15,13 @@
   <ItemGroup>
     <PackageReference Include="Markdig" Version="0.38.0" />
     <PackageReference Include="Markdown.ColorCode" Version="2.3.0" />
-    <PackageReference Include="WebStoating.Markdig.Prism" Version="1.0.0" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Compile Remove="Views\razor\backup\**" />
+    <EmbeddedResource Remove="Views\razor\backup\**" />
+    <None Remove="Views\razor\backup\**" />
+    <Content Remove="Views\razor\backup\**" />
   </ItemGroup>
 
 </Project>

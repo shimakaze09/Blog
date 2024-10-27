@@ -37,6 +37,14 @@ const libs = [
     { name: "prismjs", dist: "./node_modules/prismjs/**/*.*" },
 ];
 
+// Move front-end libraries
+const customLibs = [
+    { name: "editormd", dist: "./node_modules/editor.md/*.js" },
+    { name: "editormd/css", dist: "./node_modules/editor.md/css/*.css" },
+    { name: "editormd/lib", dist: "./node_modules/editor.md/lib/*.js" }, { name: "editormd/examples/js", dist: "./node_modules/editor.md/examples/js/*.js" },
+    { name: 'font-awesome', dist: './node_modules/@fortawesome/fontawesome-free/**/*.*' },
+];
+
 // Clean Concatenated CSS and JS files
 gulp.task("clean:css", done => rimraf(paths.minCssDist, done));
 gulp.task("clean:js", done => rimraf(paths.minJsDist, done));
@@ -44,13 +52,21 @@ gulp.task("clean:js", done => rimraf(paths.minJsDist, done));
 gulp.task("clean", gulp.series(["clean:js", "clean:css"]));
 
 // Move front-end libraries to wwwroot folder
-gulp.task("move", done => {
-    libs.forEach(function (item) {
+gulp.task("move:dist", done => {
+    libs.forEach(item => {
         gulp.src(item.dist)
             .pipe(gulp.dest(paths.lib + item.name + "/dist"));
     });
     done()
-});
+})
+
+gulp.task("move:custom", done => {
+    customLibs.forEach(item => {
+        gulp.src(item.dist)
+            .pipe(gulp.dest(paths.lib + item.name))
+    })
+    done()
+})
 
 // Concatenate and minify CSS files
 gulp.task("min:css", () => {
@@ -62,7 +78,7 @@ gulp.task("min:css", () => {
 });
 
 // Combine all CSS files into app.min.css
-gulp.task("concatmin:css", () => {
+gulp.task("concat:css", () => {
     return gulp.src([paths.cssDist, "!" + paths.minCssDist], { base: "." })
         .pipe(concat(paths.concatCssDist))
         .pipe(changed('.'))
@@ -80,7 +96,7 @@ gulp.task("min:js", () => {
 });
 
 // Combine all JS files into app.min.js
-gulp.task("concatmin:js", () => {
+gulp.task("concat:js", () => {
     return gulp.src([paths.jsDist, "!" + paths.minJsDist], { base: "." })
         .pipe(concat(paths.concatJsDist))
         .pipe(changed('.'))
@@ -88,12 +104,12 @@ gulp.task("concatmin:js", () => {
         .pipe(gulp.dest("."));
 });
 
-
-gulp.task("min", gulp.series(["min:css", "min:js"]));
-gulp.task("concatmin", gulp.series(["concatmin:css", "concatmin:js"]));
+gulp.task('move', gulp.series(['move:dist', 'move:custom']))
+gulp.task("min", gulp.series(["min:js", "min:css"]))
+gulp.task("concat", gulp.series(["concat:js", "concat:css"]))
 
 // Watch for changes in CSS and JS files
 gulp.task("auto", () => {
-    gulp.watch(paths.css, gulp.series(["min:css", "concatmin:css"]));
-    gulp.watch(paths.js, gulp.series(["min:js", "concatmin:js"]));
+    gulp.watch(paths.css, gulp.series(["min:css", "concat:css"]));
+    gulp.watch(paths.js, gulp.series(["min:js", "concat:js"]));
 });
