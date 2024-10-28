@@ -24,6 +24,7 @@
         "bootswatch": "^5.1.3",
         "editor.md": "^1.5.0",
         "jquery": "^3.6.0",
-        "my-blog": "file:"
+        "my-blog": "file:",
+        "vue": "^2.7.16"
     }
 }

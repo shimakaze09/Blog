@@ -1,12 +1,24 @@
+using FreeSql;
 using Microsoft.AspNetCore.Mvc;
+using Data.Models;
+using Web.ViewModels;
 
 namespace Web.Controllers;
 
 public class PhotographyController : Controller
 {
-    // GET
+    private readonly IBaseRepository<Photo> _photoRepo;
+
+    public PhotographyController(IBaseRepository<Photo> photoRepo)
+    {
+        _photoRepo = photoRepo;
+    }
+
     public IActionResult Index()
     {
-        return View();
+        return View(new PhotographyViewModel
+        {
+            Photos = _photoRepo.Select.ToList()
+        });
     }
 }

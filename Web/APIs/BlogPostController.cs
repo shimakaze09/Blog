@@ -3,13 +3,17 @@ using Microsoft.AspNetCore.Mvc;
 using Data.Models;
 namespace Web.Apis;
 
+/// <summary>
+/// Article
+/// </summary>
 [ApiController]
 [Route("Api/[controller]")]
 public class BlogPostController : ControllerBase
 {
     private readonly IBaseRepository<Post> _postRepo;
 
-    public BlogPostController(IBaseRepository<Post> postRepo)
+    public BlogPostController(IBaseRepository<Post> postRepo, IBaseRepository<TopPost> topPostRepo,
+        IBaseRepository<FeaturedPost> featuredPostRepo)
     {
         _postRepo = postRepo;
     }

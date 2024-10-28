@@ -7,10 +7,10 @@ using Migrate;
 
 var log = new System.Collections.Specialized.StringCollection();
 
-// const string path = @"E:\Documents\0_Write\0_blog\";
-const string path = @"D:\blog\";
+const string importDir = @"E:\Documents\0_Write\0_blog\";
+const string assetsDir = @"D:\dev\Blog\Web\wwwroot\assets\blog";
 
-var exclusionDirs = new List<string> { ".git" };
+var exclusionDirs = new List<string> { ".git", "logseq", "pages" };
 
 // Delete old files
 var removeFileList = new List<string> { "app.db", "app.db-shm", "app.db-wal" };
@@ -26,7 +26,7 @@ var postRepo = freeSql.GetRepository<Post>();
 var categoryRepo = freeSql.GetRepository<Category>();
 
 // Import data
-WalkDirectoryTree(new DirectoryInfo(path));
+WalkDirectoryTree(new DirectoryInfo(importDir));
 
 // Overwrite database
 var destFile = Path.GetFullPath("../Web/app.db");
@@ -69,7 +69,7 @@ void WalkDirectoryTree(DirectoryInfo root)
             // a try-catch block is required here to handle the case
             // where the file has been deleted since the call to TraverseTree().
             Console.WriteLine(fi.FullName);
-            var postPath = fi.DirectoryName!.Replace(path, "");
+            var postPath = fi.DirectoryName!.Replace(importDir, "");
 
             var categoryNames = postPath.Split("\\");
             var categories = new List<Category>();
@@ -97,10 +97,11 @@ void WalkDirectoryTree(DirectoryInfo root)
             var content = reader.ReadToEnd();
             reader.Close();
 
+            // Save the original file
             var post = new Post
             {
                 Id = GuidUtils.GuidTo16String(),
-                Title = fi.Name,
+                Title = fi.Name.Replace(".md", ""),
                 Summary = content.Limit(200),
                 Content = content,
                 Path = postPath,
@@ -116,7 +117,7 @@ void WalkDirectoryTree(DirectoryInfo root)
     // Now find all the subdirectories under this directory.
     subDirs = root.GetDirectories();
 
-    foreach (DirectoryInfo dirInfo in subDirs)
+    foreach (var dirInfo in subDirs)
     {
         if (exclusionDirs.Contains(dirInfo.Name))
         {

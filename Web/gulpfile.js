@@ -1,57 +1,60 @@
 /// <binding BeforeBuild='min' Clean='clean' ProjectOpened='auto' />
+
 "use strict";
 
-// Load used gulp plugin
-const gulp = require('gulp'),
-    rimraf = require('rimraf'),
-    concat = require('gulp-concat'),
-    cssmin = require('gulp-cssmin'),
-    rename = require('gulp-rename'),
-    uglify = require('gulp-uglify'),
-    changed = require('gulp-changed');
+// Load required gulp plugins
+const gulp = require("gulp"),
+    rimraf = require("rimraf"),
+    concat = require("gulp-concat"),
+    cssmin = require("gulp-clean-css"),
+    rename = require("gulp-rename"),
+    uglify = require("gulp-uglify"),
+    changed = require("gulp-changed");
 
-// Define paths
+// Define paths for files in wwwroot directory
 const paths = {
     root: './wwwroot/',
     css: './wwwroot/css/',
     js: './wwwroot/js/',
-    lib: './wwwroot/lib/',
+    lib: './wwwroot/lib/'
 };
 
-// CSS
-paths.cssDist = path.css + '**/*.css'; // All CSS files
-paths.minCssDist = paths.css + "**/*.min.css"; // All minified CSS files
-paths.concatCssDist = paths.css + "app.min.css"; // Concatenated CSS file
+// CSS paths
+paths.cssDist = paths.css + "**/*.css"; // Match all CSS file locations
+paths.minCssDist = paths.css + "**/*.min.css"; // Match all compressed CSS file locations
+paths.concatCssDist = paths.css + "app.min.css"; // Path after concatenating all CSS files
 
-// JS
-path.jsDist = path.js + '**/*.js'; // All JS files
-path.minJsDist = path.js + '**/*.min.js'; // All minified JS files
-path.concatJsDist = path.js + 'app.min.js'; // Concatenated JS file
+// JS paths
+paths.jsDist = paths.js + "**/*.js"; // Match all JS file locations
+paths.minJsDist = paths.js + "**/*.min.js"; // Match all compressed JS file locations
+paths.concatJsDist = paths.js + "app.min.js"; // Path after concatenating all JS files
 
-// Front-end libraries downloaded from npm
+// Paths for npm downloaded frontend component packages
 const libs = [
-    { name: "jquery", path: "./node_modules/jquery/dist/**/*.*" },
+    { name: "jquery", dist: "./node_modules/jquery/dist/**/*.*" },
     { name: "popper", dist: "./node_modules/popper.js/dist/**/*.*" },
     { name: "bootstrap", dist: "./node_modules/bootstrap/dist/**/*.*" },
     { name: "bootswatch", dist: "./node_modules/bootswatch/dist/**/*.*" },
     { name: "prismjs", dist: "./node_modules/prismjs/**/*.*" },
+    { name: 'vue', dist: './node_modules/vue/dist/**/*.*' },
 ];
 
-// Move front-end libraries
+// Paths for npm downloaded frontend components, custom storage location
 const customLibs = [
     { name: "editormd", dist: "./node_modules/editor.md/*.js" },
     { name: "editormd/css", dist: "./node_modules/editor.md/css/*.css" },
-    { name: "editormd/lib", dist: "./node_modules/editor.md/lib/*.js" }, { name: "editormd/examples/js", dist: "./node_modules/editor.md/examples/js/*.js" },
+    { name: "editormd/lib", dist: "./node_modules/editor.md/lib/*.js" },
+    { name: "editormd/examples/js", dist: "./node_modules/editor.md/examples/js/*.js" },
     { name: 'font-awesome', dist: './node_modules/@fortawesome/fontawesome-free/**/*.*' },
-];
+]
 
-// Clean Concatenated CSS and JS files
+// Tasks for cleaning compressed files
 gulp.task("clean:css", done => rimraf(paths.minCssDist, done));
 gulp.task("clean:js", done => rimraf(paths.minJsDist, done));
 
 gulp.task("clean", gulp.series(["clean:js", "clean:css"]));
 
-// Move front-end libraries to wwwroot folder
+// Tasks for moving npm downloaded frontend component packages to wwwroot directory
 gulp.task("move:dist", done => {
     libs.forEach(item => {
         gulp.src(item.dist)
@@ -59,7 +62,6 @@ gulp.task("move:dist", done => {
     });
     done()
 })
-
 gulp.task("move:custom", done => {
     customLibs.forEach(item => {
         gulp.src(item.dist)
@@ -68,7 +70,7 @@ gulp.task("move:custom", done => {
     done()
 })
 
-// Concatenate and minify CSS files
+// Tasks for minifying CSS files
 gulp.task("min:css", () => {
     return gulp.src([paths.cssDist, "!" + paths.minCssDist], { base: "." })
         .pipe(rename({ suffix: '.min' }))
@@ -77,7 +79,7 @@ gulp.task("min:css", () => {
         .pipe(gulp.dest('.'));
 });
 
-// Combine all CSS files into app.min.css
+// Task for concatenating all CSS files
 gulp.task("concat:css", () => {
     return gulp.src([paths.cssDist, "!" + paths.minCssDist], { base: "." })
         .pipe(concat(paths.concatCssDist))
@@ -86,7 +88,7 @@ gulp.task("concat:css", () => {
         .pipe(gulp.dest("."));
 });
 
-// Concatenate and minify JS files
+// Tasks for minifying JS files
 gulp.task("min:js", () => {
     return gulp.src([paths.jsDist, "!" + paths.minJsDist], { base: "." })
         .pipe(rename({ suffix: '.min' }))
@@ -95,7 +97,7 @@ gulp.task("min:js", () => {
         .pipe(gulp.dest('.'));
 });
 
-// Combine all JS files into app.min.js
+// Task for concatenating all JS files
 gulp.task("concat:js", () => {
     return gulp.src([paths.jsDist, "!" + paths.minJsDist], { base: "." })
         .pipe(concat(paths.concatJsDist))
@@ -108,7 +110,7 @@ gulp.task('move', gulp.series(['move:dist', 'move:custom']))
 gulp.task("min", gulp.series(["min:js", "min:css"]))
 gulp.task("concat", gulp.series(["concat:js", "concat:css"]))
 
-// Watch for changes in CSS and JS files
+// Watch tasks for automatic execution on file changes
 gulp.task("auto", () => {
     gulp.watch(paths.css, gulp.series(["min:css", "concat:css"]));
     gulp.watch(paths.js, gulp.series(["min:js", "concat:js"]));
