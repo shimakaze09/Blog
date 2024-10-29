@@ -1,9 +1,10 @@
 using FreeSql;
 using Microsoft.AspNetCore.Mvc;
+using Contrib.Utils;
 using Data.Models;
+using Web.Extensions;
 using Web.Services;
 using Web.ViewModels.Response;
-using Web.Extensions;
 
 namespace Web.Apis;
 
@@ -41,19 +42,23 @@ public class PhotoController : ControllerBase
     }
 
     [HttpPost]
-    public ApiResponse<Photo> Add(Photo photo)
+    public ApiResponse<Photo> Add([FromForm] string title, IFormFile file)
     {
-        return new ApiResponse<Photo> { Data = photo };
+        var photo = _photoService.Add(title, file);
+
+        return !ModelState.IsValid
+            ? ApiResponse.BadRequest(Response, ModelState)
+            : new ApiResponse<Photo>(photo);
     }
 
     [HttpDelete("{id}")]
-    public IApiResponse Delete(string id)
+    public ApiResponse Delete(string id)
     {
         var photo = _photoService.GetById(id);
         if (photo == null) return ApiResponse.NotFound(Response);
         var rows = _photoService.DeleteById(id);
         return rows > 0
             ? ApiResponse.Ok(Response, $"deleted {rows} rows.")
-            : ApiResponse.BadRequest(Response, "deleting failed.");
+            : ApiResponse.Error(Response, "deleting failed.");
     }
 }

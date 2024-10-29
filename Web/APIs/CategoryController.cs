@@ -20,6 +20,12 @@ public class CategoryController : ControllerBase
         _categoryRepo = categoryRepo;
     }
 
+    [HttpGet("All")]
+    public List<Category> GetAll()
+    {
+        return _categoryRepo.Select.ToList();
+    }
+
     [HttpGet]
     public ActionResult<ApiResponsePaged<Category>> GetList(int page = 1, int pageSize = 10)
     {

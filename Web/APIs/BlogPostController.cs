@@ -41,10 +41,7 @@ public class BlogPostController : ControllerBase
     public ApiResponse<Post> Get(string id)
     {
         var post = _postRepo.Where(a => a.Id == id).First();
-        if (post == null)
-        {
-            return new ApiResponse<Post> { Successful = false, Message = "not found" };
-        }
+        if (post == null) return ApiResponse.NotFound(Response);
 
         return new ApiResponse<Post> { Data = post };
     }

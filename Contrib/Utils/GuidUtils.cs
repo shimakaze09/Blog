@@ -1,4 +1,4 @@
-namespace Migrate;
+namespace Contrib.Utils;
 
 public static class GuidUtils
 {
