@@ -12,9 +12,20 @@ builder.Services.AddSwaggerGen(options =>
     options.IncludeXmlComments(filePath, true);
 });
 builder.Services.AddFreeSql(builder.Configuration);
+builder.Services.AddCors(options =>
+{
+    options.AddDefaultPolicy(policyBuilder =>
+    {
+        policyBuilder.AllowCredentials();
+        policyBuilder.AllowAnyHeader();
+        policyBuilder.AllowAnyMethod();
+        policyBuilder.WithOrigins("http://localhost:8080");
+    });
+});
 
 // Custom services
 builder.Services.AddScoped<BlogService>();
+builder.Services.AddScoped<PhotoService>();
 builder.Services.AddScoped<PostService>();
 builder.Services.AddSingleton<ThemeService>();
 builder.Services.AddSingleton<Messages>();
@@ -31,6 +42,8 @@ if (!app.Environment.IsDevelopment())
 
 // app.UseHttpsRedirection();
 app.UseStaticFiles();
+
+app.UseCors();
 app.UseRouting();
 app.UseAuthorization();
 

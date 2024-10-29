@@ -22,7 +22,7 @@ public class HomeController : Controller
         return View(new HomeViewModel
         {
             TopPost = _blogService.GetTopOnePost(),
-            FeaturedPosts = _blogService.GetFeaturedPosts()
+            FeaturedPosts = _blogService.GetFeaturedPostRows()
         });
     }
 }

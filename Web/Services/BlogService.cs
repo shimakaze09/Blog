@@ -23,7 +23,7 @@ public class BlogService
     /// Gets recommended blog posts, with a maximum of two posts per row
     /// </summary>
     /// <returns></returns>
-    public List<List<Post>> GetFeaturedPosts()
+    public List<List<Post>> GetFeaturedPostRows()
     {
         var data = new List<List<Post>>();
 

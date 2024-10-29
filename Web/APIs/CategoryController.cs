@@ -1,6 +1,11 @@
 using FreeSql;
 using Microsoft.AspNetCore.Mvc;
 using Data.Models;
+using Web.Extensions;
+using Web.ViewModels;
+using Web.ViewModels.Response;
+using X.PagedList;
+using X.PagedList.Extensions;
 
 namespace Web.Apis;
 
@@ -16,21 +21,26 @@ public class CategoryController : ControllerBase
     }
 
     [HttpGet]
-    public ActionResult<List<Category>> GetAll()
+    public ActionResult<ApiResponsePaged<Category>> GetList(int page = 1, int pageSize = 10)
     {
-        return _categoryRepo.Select.ToList();
+        var paged = _categoryRepo.Select.ToList().ToPagedList(page, pageSize);
+        return Ok(new ApiResponsePaged<Category>
+        {
+            Pagination = paged.ToPaginationMetadata(),
+            Data = paged.ToList()
+        });
     }
 
-    [HttpGet("{id}")]
-    public ActionResult<Category> Get(int id)
+    [HttpGet("{id:int}")]
+    public IApiResponse Get(int id)
     {
         var item = _categoryRepo.Where(a => a.Id == id).First();
-        if (item == null) return NotFound();
-        return item;
+        if (item == null) return ApiResponse.NotFound(Response);
+        return new ApiResponse<Category> { Data = item };
     }
 
     [HttpGet("[action]")]
-    public ActionResult<List<object>> WordCloud()
+    public ActionResult<ApiResponse<List<object>>> WordCloud()
     {
         var list = _categoryRepo.Select.IncludeMany(a => a.Posts).ToList();
         var data = new List<object>();
@@ -39,6 +49,6 @@ public class CategoryController : ControllerBase
             data.Add(new { name = item.Name, value = item.Posts.Count });
         }
 
-        return data;
+        return new ApiResponse<List<object>> { Data = data };
     }
 }

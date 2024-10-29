@@ -183,7 +183,7 @@
     }
     else
     {
-        <div class="card p-4 p-md-5 mb-4">
+        <div class="card mb-4">
             <div class="card-header">Featured Blog Post</div>
             <div class="card-body">
                 <h3>Coming Soon!</h3>
@@ -191,7 +191,7 @@
         </div>
     }
 
-    @if (Model.FeaturedPosts != null)
+    @if (Model.FeaturedPosts.Count > 0)
     {
         @foreach (var row in Model.FeaturedPosts)
         {

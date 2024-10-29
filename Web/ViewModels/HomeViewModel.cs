@@ -12,5 +12,5 @@ public class HomeViewModel
     /// <summary>
     /// Recommended blogs, with a maximum of two blogs per row
     /// </summary>
-    public List<List<Post>>? FeaturedPosts { get; set; }
+    public List<List<Post>> FeaturedPosts { get; set; }=new();
 }
