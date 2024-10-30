@@ -1,6 +1,5 @@
-using FreeSql;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using Contrib.Utils;
 using Data.Models;
 using Web.Extensions;
 using Web.Services;
@@ -11,6 +10,7 @@ namespace Web.Apis;
 /// <summary>
 /// Photography
 /// </summary>
+[Authorize]
 [ApiController]
 [Route("Api/[controller]")]
 public class PhotoController : ControllerBase
