@@ -7,8 +7,7 @@
 <div class="container col-xxl-8 py-3">
     <div class="row flex-lg-row-reverse align-items-center g-5 py-5">
         <div class="col-10 col-sm-8 col-lg-6">
-            <img src="~/images/bootstrap/bootstrap-themes.png" class="d-block mx-lg-auto img-fluid"
-                 alt="Bootstrap Themes" width="700" height="500" loading="lazy">
+            <canvas class="my-4 w-100" id="myChart" height="400"></canvas>
         </div>
         <div class="col-lg-6">
             <h1 class="display-5 fw-bold lh-1 mb-3">My Blog</h1>
@@ -18,7 +17,9 @@
                     Read
                     Posts
                 </a>
-                <a class="btn btn-outline-secondary btn-lg px-4">View Images</a>
+                <a class="btn btn-outline-secondary btn-lg px-4" asp-controller="Photography"
+                    asp-action="RandomPhoto">View Images</a>
+                <button class="btn btn-outline-secondary btn-lg px-4" @@click="switchChartType">Switch Chart</button>
             </div>
         </div>
     </div>
@@ -33,7 +34,7 @@
             @foreach (var photo in Model.FeaturedPhotos)
             {
                 <div class="col">
-                    <partial name="Widgets/PhotoSmall" model="photo"/>
+                    <partial name="Widgets/PhotoCardSmall" model="photo" />
                 </div>
             }
         </div>
@@ -42,6 +43,7 @@
     {
         @await Html.PartialAsync("Widgets/PlaceholderCard", "Featured photo")
     }
+
 </div>
 
 <div class="container px-4 py-3" id="featured-3">
@@ -66,7 +68,7 @@
 
     @if (Model.TopPost != null)
     {
-        <partial name="Widgets/TopPostCard" model="Model.TopPost"/>
+        <partial name="Widgets/TopPostCard" model="Model.TopPost" />
     }
     else
     {
@@ -78,7 +80,7 @@
         <div class="row mb-2">
             @foreach (var post in Model.FeaturedPosts)
             {
-                <partial name="Widgets/FeaturedPostCard" model="post"/>
+                <partial name="Widgets/FeaturedPostCard" model="post" />
             }
         </div>
     }
@@ -89,5 +91,6 @@
 </div>
 
 @section bottom {
-    <script src="~/js/home.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@3.7.1/dist/chart.min.js"></script>
+    <script type="module" src="~/js/home.js"></script>
 }

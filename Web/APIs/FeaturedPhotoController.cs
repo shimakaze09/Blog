@@ -16,8 +16,8 @@ namespace Web.Apis;
 [ApiExplorerSettings(GroupName = "blog")]
 public class FeaturedPhotoController : ControllerBase
 {
-    private readonly PhotoService _photoService;
     private readonly IBaseRepository<FeaturedPhoto> _fpRepo;
+    private readonly PhotoService _photoService;
 
     public FeaturedPhotoController(PhotoService photoService, IBaseRepository<FeaturedPhoto> fpRepo)
     {
@@ -60,5 +60,4 @@ public class FeaturedPhotoController : ControllerBase
         var rows = _fpRepo.Delete(item);
         return ApiResponse.Ok($"Deleted {rows} rows.");
     }
-
 }

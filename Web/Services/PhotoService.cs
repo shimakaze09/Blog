@@ -67,6 +67,21 @@ public class PhotoService
         return _photoRepo.Insert(photo);
     }
 
+    /// <summary>
+    ///     Gets a random photo
+    /// </summary>
+    /// <returns>A Photo object</returns>
+    public Photo? GetRandomPhoto()
+    {
+        var items = GetAll();
+        return items.Count == 0 ? null : items[new Random().Next(items.Count)];
+    }
+
+    /// <summary>
+    ///     Adds a featured photo
+    /// </summary>
+    /// <param name="photo">The photo to add as featured</param>
+    /// <returns>The added FeaturedPhoto object</returns>
     public FeaturedPhoto AddFeaturedPhoto(Photo photo)
     {
         var item = _featuredPhotoRepo.Where(a => a.PhotoId == photo.Id).First();
@@ -76,6 +91,11 @@ public class PhotoService
         return item;
     }
 
+    /// <summary>
+    ///     Deletes a featured photo
+    /// </summary>
+    /// <param name="photo">The photo to delete from features</param>
+    /// <returns>Number of affected rows (0 if not found)</returns>
     public int DeleteFeaturedPhoto(Photo photo)
     {
         var item = _featuredPhotoRepo.Where(a => a.PhotoId == photo.Id).First();
@@ -129,6 +149,11 @@ public class PhotoService
         return result;
     }
 
+    /// <summary>
+    ///     Gets the physical storage path for a photo
+    /// </summary>
+    /// <param name="photo">The photo whose path to retrieve</param>
+    /// <returns>The full file path of the photo</returns>
     private string GetPhotoFilePath(Photo photo)
     {
         return Path.Combine(_environment.WebRootPath, "media", photo.FilePath);

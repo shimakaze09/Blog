@@ -21,6 +21,7 @@ public class HomeController : Controller
     {
         return View(new HomeViewModel
         {
+            RandomPhoto = _photoService.GetRandomPhoto(),
             TopPost = _blogService.GetTopOnePost(),
             FeaturedPosts = _blogService.GetFeaturedPostRows(),
             FeaturedPhotos = _photoService.GetFeaturedPhotos(),

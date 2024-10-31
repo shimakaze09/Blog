@@ -50,6 +50,6 @@ public class BlogController : Controller
         var posts = _postRepo.Select.ToList();
         var rndPost = posts[new Random().Next(posts.Count)];
         _messages.Info($"Randomly recommended article <b>{rndPost.Title}</b> for you!");
-        return RedirectToAction(nameof(Data.Models.Post), new { id = rndPost.Id });
+        return RedirectToAction(nameof(Post), new { id = rndPost.Id });
     }
 }

@@ -5,6 +5,11 @@ namespace Web.ViewModels;
 public class HomeViewModel
 {
     /// <summary>
+    ///     Random photo
+    /// </summary>
+    public Photo? RandomPhoto { get; set; }
+
+    /// <summary>
     ///     Featured blog posts
     /// </summary>
     public Post? TopPost { get; set; }
