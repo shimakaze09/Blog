@@ -1,5 +1,6 @@
 @using Contrib.Extensions
 @model HomeViewModel
+
 @{
     ViewData["Title"] = "Home Page";
 }
@@ -11,12 +12,15 @@
                 alt="Bootstrap Themes" width="700" height="500" loading="lazy">
         </div>
         <div class="col-lg-6">
-            <h1 class="display-5 fw-bold lh-1 mb-3">My Blog</h1>
-            <br>
+            <h1 class="display-5 fw-bold lh-1 mb-3">DealiAxy's Blog</h1>
+            <div class="lead">
+                <p>One poem: {{poemSimple}}</p>
+                <p>A quote: {{hitokoto.hitokoto}}</p>
+            </div>
             <div class="d-grid gap-2 d-md-flex justify-content-md-start">
                 <a class="btn btn-primary btn-lg px-4 me-md-2" asp-controller="Blog" asp-action="RandomPost">Read
-                    Article</a>
-                <a class="btn btn-outline-secondary btn-lg px-4">View Image</a>
+                    Posts</a>
+                <a class="btn btn-outline-secondary btn-lg px-4">View Images</a>
             </div>
         </div>
     </div>
@@ -25,142 +29,26 @@
 <div class="container px-4 py-3" id="custom-cards">
     <h2 class="pb-2 border-bottom">Photography</h2>
 
-    <div class="row row-cols-1 row-cols-lg-3 align-items-stretch g-4 py-5">
-        <div class="col">
-            <div class="card card-cover h-100 overflow-hidden text-white bg-dark rounded-5 shadow-lg"
-                style="background-image: url('images/bootstrap/unsplash-photo-1.jpg');">
-                <div class="d-flex flex-column h-100 p-5 pb-3 text-white text-shadow-1">
-                    <h2 class="pt-5 mt-5 mb-4 display-6 lh-1 fw-bold">Short title, long jacket</h2>
-                    <ul class="d-flex list-unstyled mt-auto">
-                        <li class="me-auto">
-                            <img src="~/images/star.png" alt="Bootstrap" width="32" height="32"
-                                class="rounded-circle border border-white">
-                        </li>
-                        <li class="d-flex align-items-center me-3">
-                            <span class="bi me-2">
-                                <i class="fa-solid fa-location-pin"></i>
-                            </span>
-                            <small>Earth</small>
-                        </li>
-                        <li class="d-flex align-items-center">
-                            <span class="bi me-2">
-                                <i class="fa-solid fa-calendar-days"></i>
-                            </span>
-                            <small>3d</small>
-                        </li>
-                    </ul>
+    @if (Model.FeaturedPhotos.Count > 0)
+    {
+        <div class="row row-cols-1 row-cols-lg-3 align-items-stretch g-4 py-5">
+            @foreach (var photo in Model.FeaturedPhotos)
+            {
+                <div class="col">
+                    <partial name="Widgets/PhotoSmall" model="photo" />
                 </div>
-            </div>
+            }
         </div>
-
-        <div class="col">
-            <div class="card card-cover h-100 overflow-hidden text-white bg-dark rounded-5 shadow-lg"
-                style="background-image: url('images/bootstrap/unsplash-photo-2.jpg');">
-                <div class="d-flex flex-column h-100 p-5 pb-3 text-white text-shadow-1">
-                    <h2 class="pt-5 mt-5 mb-4 display-6 lh-1 fw-bold">Much longer title that wraps to multiple lines
-                    </h2>
-                    <ul class="d-flex list-unstyled mt-auto">
-                        <li class="me-auto">
-                            <img src="~/images/star.png" alt="Bootstrap" width="32" height="32"
-                                class="rounded-circle border border-white">
-                        </li>
-                        <li class="d-flex align-items-center me-3">
-                            <span class="bi me-2">
-                                <i class="fa-solid fa-location-pin"></i>
-                            </span>
-                            <small>Pakistan</small>
-                        </li>
-                        <li class="d-flex align-items-center">
-                            <span class="bi me-2">
-                                <i class="fa-solid fa-calendar-days"></i>
-                            </span>
-                            <small>4d</small>
-                        </li>
-                    </ul>
-                </div>
-            </div>
-        </div>
-
-        <div class="col">
-            <div class="card card-cover h-100 overflow-hidden text-white bg-dark rounded-5 shadow-lg"
-                style="background-image: url('images/bootstrap/unsplash-photo-3.jpg');">
-                <div class="d-flex flex-column h-100 p-5 pb-3 text-shadow-1">
-                    <h2 class="pt-5 mt-5 mb-4 display-6 lh-1 fw-bold">Another longer title belongs here</h2>
-                    <ul class="d-flex list-unstyled mt-auto">
-                        <li class="me-auto">
-                            <img src="~/images/star.png" alt="Bootstrap" class="rounded-circle border border-white"
-                                style="height: 32px;width: 32px;">
-                        </li>
-                        <li class="d-flex align-items-center me-3">
-                            <span class="bi me-2">
-                                <i class="fa-solid fa-location-pin"></i>
-                            </span>
-                            <small>California</small>
-                        </li>
-                        <li class="d-flex align-items-center">
-                            <span class="bi me-2">
-                                <i class="fa-solid fa-calendar-days"></i>
-                            </span>
-                            <small>5d</small>
-                        </li>
-                    </ul>
-                </div>
-            </div>
-        </div>
-    </div>
+    }
 </div>
 
 <div class="container px-4 py-3" id="featured-3">
     <h2 class="pb-2 border-bottom">Blog Categories</h2>
     <div class="row g-4 py-5 row-cols-1 row-cols-lg-3">
-        <div class="feature col">
-            <div class="feature-icon bg-secondary bg-gradient">
-                <div class="bi">
-                    <i class="fa-solid fa-globe"></i>
-                </div>
-            </div>
-            <h2>C# / Asp.Net Core</h2>
-            <p>Paragraph of text beneath the heading to explain the heading. We'll add onto it with another sentence and
-                probably just keep going until we run out of words.</p>
-            <a class="icon-link" asp-controller="Blog" asp-action="List" asp-route-categoryId="3">
-                More posts
-                <span class="bi">
-                    <i class="fa-solid fa-chevron-right"></i>
-                </span>
-            </a>
-        </div>
-        <div class="feature col">
-            <div class="feature-icon bg-primary bg-gradient">
-                <div class="bi">
-                    <i class="fa-brands fa-c"></i>
-                </div>
-            </div>
-            <h2>C++</h2>
-            <p>Paragraph of text beneath the heading to explain the heading. We'll add onto it with another sentence and
-                probably just keep going until we run out of words.</p>
-            <a class="icon-link" asp-controller="Blog" asp-action="List" asp-route-categoryId="8">
-                More posts
-                <span class="bi">
-                    <i class="fa-solid fa-chevron-right"></i>
-                </span>
-            </a>
-        </div>
-        <div class="feature col">
-            <div class="feature-icon bg-success bg-gradient">
-                <div class="bi">
-                    <i class="fa-brands fa-android"></i>
-                </div>
-            </div>
-            <h2>Flutter / Android</h2>
-            <p>Paragraph of text beneath the heading to explain the heading. We'll add onto it with another sentence and
-                probably just keep going until we run out of words.</p>
-            <a class="icon-link" asp-controller="Blog" asp-action="List" asp-route-categoryId="2">
-                More posts
-                <span class="bi">
-                    <i class="fa-solid fa-chevron-right"></i>
-                </span>
-            </a>
-        </div>
+        @foreach (var fc in Model.FeaturedCategories)
+        {
+            @await Html.PartialAsync("Widgets/FeaturedCategoryCard", fc)
+        }
     </div>
 </div>
 
@@ -169,61 +57,33 @@
 
     @if (Model.TopPost != null)
     {
-        <div class="p-4 p-md-5 mb-4 text-white rounded bg-dark">
-            <div class="col-md-6 px-0">
-                <div class="display-6 fst-italic">@Model.TopPost.Title</div>
-                <p class="lead my-3">@Model.TopPost.Summary</p>
-                <p class="lead mb-0">
-                    <a class="text-white fw-bold" asp-controller="Blog" asp-action="Post" asp-route-id="@Model.TopPost.Id">
-                        Continue reading...
-                    </a>
-                </p>
-            </div>
-        </div>
+        <partial name="Widgets/TopPostCard" model="Model.TopPost" />
     }
     else
     {
         <div class="card mb-4">
-            <div class="card-header">Featured Blog Post</div>
+            <div class="card-header">Featured Post</div>
             <div class="card-body">
-                <h3>Coming Soon!</h3>
+                <h3>Waiting for content...</h3>
             </div>
         </div>
     }
 
     @if (Model.FeaturedPosts.Count > 0)
     {
-        @foreach (var row in Model.FeaturedPosts)
-        {
-            <div class="row mb-2">
-                @foreach (var post in row)
-                {
-                    <div class="col-md-6">
-                        <div class="row g-0 border rounded overflow-hidden flex-md-row mb-4 shadow-sm h-md-250 position-relative">
-                            <div class="col p-4 d-flex flex-column position-static">
-                                <strong class="d-inline-block mb-2 text-primary">@post.Category.Name</strong>
-                                <h5 class="mb-0">@post.Title</h5>
-                                <div class="mb-1 text-muted">@post.LastModifiedTime.ToString()</div>
-                                <p class="card-text mb-auto">@post.Summary.Limit(50)</p>
-                                <a class="stretched-link" asp-controller="Blog" asp-action="Post" asp-route-id="@post.Id">
-                                    Continue reading
-                                </a>
-                            </div>
-                            <div class="col-auto d-none d-lg-block">
-                                <img class="bd-placeholder-img" src="https://picsum.photos/seed/@post.Id/200/250" alt="">
-                            </div>
-                        </div>
-                    </div>
-                }
-            </div>
-        }
+        <div class="row mb-2">
+            @foreach (var post in @Model.FeaturedPosts)
+            {
+                <partial name="Widgets/FeaturedPostCard" model="post" />
+            }
+        </div>
     }
     else
     {
         <div class="card mb-2">
-            <div class="card-header">Recommended Blog Posts</div>
+            <div class="card-header">Recommended Posts</div>
             <div class="card-body">
-                <h3>Coming Soon!</h3>
+                <h3>Waiting for content...</h3>
             </div>
         </div>
     }

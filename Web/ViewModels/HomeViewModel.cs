@@ -12,5 +12,16 @@ public class HomeViewModel
     /// <summary>
     /// Recommended blogs, with a maximum of two blogs per row
     /// </summary>
-    public List<List<Post>> FeaturedPosts { get; set; }=new();
+    public List<List<Post>> FeaturedPosts { get; set; } = new();
+
+    /// <summary>
+    /// Recommended photos. Generally, there should be only three.
+    /// </summary>
+    public List<Photo> FeaturedPhotos { get; set; } = new();
+
+    /// <summary>
+    /// Recommended categories. Generally, there should be three.
+    /// </summary>
+    public List<FeaturedCategory> FeaturedCategories { get; set; } = new();
+
 }

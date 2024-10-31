@@ -17,17 +17,19 @@ public class ApiResponse<T> : IApiResponse<T>
     public int StatusCode { get; set; } = 200;
     public bool Successful { get; set; } = true;
     public string? Message { get; set; }
+
     public T? Data { get; set; }
 
     /// <summary>
-    /// Implements implicit conversion from <see cref="ApiResponse"/> to <see cref="ApiResponse{T}"/>
+    /// Implements implicit conversion of <see cref="ApiResponse"/> to <see cref="ApiResponse{T}"/>
     /// </summary>
-    /// <param name="apiResponse">The <see cref="ApiResponse"/> instance</param>
-    /// <returns>A new <see cref="ApiResponse{T}"/> instance</returns>
+    /// <param name="apiResponse"><see cref="ApiResponse"/></param>
+    /// <returns></returns>
     public static implicit operator ApiResponse<T>(ApiResponse apiResponse)
     {
         return new ApiResponse<T>
         {
+            StatusCode = apiResponse.StatusCode,
             Successful = apiResponse.Successful,
             Message = apiResponse.Message
         };
@@ -37,72 +39,86 @@ public class ApiResponse<T> : IApiResponse<T>
 public class ApiResponse : IApiResponse, IApiErrorResponse
 {
     public int StatusCode { get; set; } = 200;
-    public bool Successful { get; set; }
+    public bool Successful { get; set; } = true;
     public string? Message { get; set; }
-    public SerializableError ErrorData { get; set; }
+    public object? Data { get; set; }
+    public SerializableError? ErrorData { get; set; }
 
-    public static ApiResponse NoContent(HttpResponse httpResponse, string message = "NoContent")
+    public ApiResponse()
     {
-        httpResponse.StatusCode = StatusCodes.Status204NoContent;
+    }
+
+    public ApiResponse(object data)
+    {
+        Data = data;
+    }
+
+    public static ApiResponse NoContent(string message = "NoContent")
+    {
         return new ApiResponse
         {
-            StatusCode = httpResponse.StatusCode,
+            StatusCode = StatusCodes.Status204NoContent,
             Successful = true,
             Message = message
         };
     }
 
-    public static ApiResponse Ok(HttpResponse httpResponse, string message = "Ok")
+    public static ApiResponse Ok(string message = "Ok")
     {
-        httpResponse.StatusCode = StatusCodes.Status200OK;
         return new ApiResponse
         {
-            StatusCode = httpResponse.StatusCode,
+            StatusCode = StatusCodes.Status200OK,
             Successful = true,
             Message = message
         };
     }
 
-    public static ApiResponse Unauthorized(HttpResponse httpResponse, string message = "Unauthorized")
+    public static ApiResponse Ok(object data, string message = "Ok")
     {
-        httpResponse.StatusCode = StatusCodes.Status401Unauthorized;
         return new ApiResponse
         {
-            StatusCode = httpResponse.StatusCode,
+            StatusCode = StatusCodes.Status200OK,
+            Successful = true,
+            Message = message,
+            Data = data
+        };
+    }
+
+    public static ApiResponse Unauthorized(string message = "Unauthorized")
+    {
+        return new ApiResponse
+        {
+            StatusCode = StatusCodes.Status401Unauthorized,
             Successful = false,
             Message = message
         };
     }
 
-    public static ApiResponse NotFound(HttpResponse httpResponse, string message = "NotFound")
+    public static ApiResponse NotFound(string message = "NotFound")
     {
-        httpResponse.StatusCode = StatusCodes.Status404NotFound;
         return new ApiResponse
         {
-            StatusCode = httpResponse.StatusCode,
+            StatusCode = StatusCodes.Status404NotFound,
             Successful = false,
             Message = message
         };
     }
 
-    public static ApiResponse BadRequest(HttpResponse httpResponse, string message = "BadRequest")
+    public static ApiResponse BadRequest(string message = "BadRequest")
     {
-        httpResponse.StatusCode = StatusCodes.Status400BadRequest;
         return new ApiResponse
         {
-            StatusCode = httpResponse.StatusCode,
+            StatusCode = StatusCodes.Status400BadRequest,
             Successful = false,
             Message = message
         };
     }
 
-    public static ApiResponse BadRequest(HttpResponse httpResponse,
-        ModelStateDictionary modelState, string message = "ModelState is not valid.")
+    public static ApiResponse BadRequest(ModelStateDictionary modelState, string message = "ModelState is not valid.")
     {
-        httpResponse.StatusCode = StatusCodes.Status400BadRequest;
         return new ApiResponse
         {
-            StatusCode = httpResponse.StatusCode,
+            StatusCode = StatusCodes.Status400BadRequest,
             Successful = false,
             Message = message,
             ErrorData = new SerializableError(modelState)

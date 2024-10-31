@@ -9,6 +9,9 @@ using X.PagedList.Extensions;
 
 namespace Web.Apis;
 
+/// <summary>
+/// Article Categories
+/// </summary>
 [ApiController]
 [Route("api/[controller]")]
 public class CategoryController : ControllerBase
@@ -27,26 +30,30 @@ public class CategoryController : ControllerBase
     }
 
     [HttpGet]
-    public ActionResult<ApiResponsePaged<Category>> GetList(int page = 1, int pageSize = 10)
+    public ApiResponsePaged<Category> GetList(int page = 1, int pageSize = 10)
     {
         var paged = _categoryRepo.Select.ToList().ToPagedList(page, pageSize);
-        return Ok(new ApiResponsePaged<Category>
+        return new ApiResponsePaged<Category>
         {
             Pagination = paged.ToPaginationMetadata(),
             Data = paged.ToList()
-        });
+        };
     }
 
     [HttpGet("{id:int}")]
     public IApiResponse Get(int id)
     {
         var item = _categoryRepo.Where(a => a.Id == id).First();
-        if (item == null) return ApiResponse.NotFound(Response);
+        if (item == null) return ApiResponse.NotFound();
         return new ApiResponse<Category> { Data = item };
     }
 
+    /// <summary>
+    /// Category Word Cloud
+    /// </summary>
+    /// <returns></returns>
     [HttpGet("[action]")]
-    public ActionResult<ApiResponse<List<object>>> WordCloud()
+    public ApiResponse<List<object>> WordCloud()
     {
         var list = _categoryRepo.Select.IncludeMany(a => a.Posts).ToList();
         var data = new List<object>();

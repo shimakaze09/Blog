@@ -39,6 +39,7 @@ const libs = [
     { name: 'vue', dist: './node_modules/vue/dist/**/*.*' },
     { name: 'echarts', dist: './node_modules/echarts/dist/**/*.*' },
     { name: 'echarts-wordcloud', dist: './node_modules/echarts-wordcloud/dist/**/*.*' },
+    {name: 'masonry-layout', dist: './node_modules/masonry-layout/dist/*.*'},
 ];
 
 // Paths for npm downloaded frontend components, custom storage location

@@ -11,7 +11,7 @@ namespace Web.Apis;
 /// Blog
 /// </summary>
 [ApiController]
-[Route("Api/[controller]")]
+[Route("api/[controller]")]
 public class BlogController : ControllerBase
 {
     private readonly BlogService _blogService;

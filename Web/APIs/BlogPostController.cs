@@ -1,9 +1,9 @@
 using FreeSql;
 using Microsoft.AspNetCore.Mvc;
 using Data.Models;
+using Web.Extensions;
 using Web.Services;
 using Web.ViewModels;
-using Web.Extensions;
 using Web.ViewModels.Response;
 using X.PagedList;
 
@@ -13,7 +13,7 @@ namespace Web.Apis;
 /// Article
 /// </summary>
 [ApiController]
-[Route("Api/[controller]")]
+[Route("api/[controller]")]
 public class BlogPostController : ControllerBase
 {
     private readonly IBaseRepository<Post> _postRepo;
@@ -41,8 +41,7 @@ public class BlogPostController : ControllerBase
     public ApiResponse<Post> Get(string id)
     {
         var post = _postRepo.Where(a => a.Id == id).First();
-        if (post == null) return ApiResponse.NotFound(Response);
-
+        if (post == null) return ApiResponse.NotFound();
         return new ApiResponse<Post> { Data = post };
     }
 }

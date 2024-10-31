@@ -11,11 +11,10 @@ public static class ConfigureSwagger
         {
             var security = new OpenApiSecurityScheme
             {
-                Description = "JWT authentication mode, please enter Bearer {Token} for authentication",
+                Description = "JWT authentication mode, please enter \"Bearer {Token}\" for authentication",
                 Name = "Authorization",
                 In = ParameterLocation.Header,
-                Type = SecuritySchemeType.ApiKey,
-                BearerFormat = ""
+                Type = SecuritySchemeType.ApiKey
             };
             options.AddSecurityDefinition("oauth2", security);
             options.AddSecurityRequirement(new OpenApiSecurityRequirement { { security, new List<string>() } });

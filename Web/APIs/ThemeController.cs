@@ -4,7 +4,7 @@ using Web.Services;
 namespace Web.Apis;
 
 /// <summary>
-/// Page theme
+/// Page themes
 /// </summary>
 [ApiController]
 [Route("api/[controller]")]
