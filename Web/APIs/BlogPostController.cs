@@ -75,6 +75,20 @@ public class BlogPostController : ControllerBase
         return new ApiResponse<Post>(_postService.InsertOrUpdate(post));
     }
 
+    /// <summary>
+    /// Upload image
+    /// </summary>
+    /// <param name="id">The ID of the blog post</param>
+    /// <param name="file">The uploaded image file</param>
+    /// <returns>The URL of the uploaded image</returns>
+    [HttpPost("{id}/[action]")]
+    public ApiResponse UploadImage(string id, IFormFile file)
+    {
+        var post = _postService.GetById(id);
+        if (post == null) return ApiResponse.NotFound($"Blog {id} does not exist");
+        var imgUrl = _postService.UploadImage(post, file);
+        return ApiResponse.Ok(new { imgUrl });
+    }
 
     /// <summary>
     ///     Set as featured blog

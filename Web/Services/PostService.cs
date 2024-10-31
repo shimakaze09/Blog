@@ -11,11 +11,13 @@ public class PostService
 {
     private readonly IBaseRepository<Category> _categoryRepo;
     private readonly IBaseRepository<Post> _postRepo;
+    private readonly IWebHostEnvironment _environment;
 
-    public PostService(IBaseRepository<Post> postRepo, IBaseRepository<Category> categoryRepo)
+    public PostService(IBaseRepository<Post> postRepo, IBaseRepository<Category> categoryRepo, IWebHostEnvironment environment)
     {
         _postRepo = postRepo;
         _categoryRepo = categoryRepo;
+        _environment = environment;
     }
 
     public Post? GetById(string id)
@@ -32,6 +34,24 @@ public class PostService
     {
         return _postRepo.InsertOrUpdate(post);
     }
+
+    public string UploadImage(Post post, IFormFile file)
+    {
+        var blogMediaDir = Path.Combine(_environment.WebRootPath, "media", "blog");
+        var postMediaDir = Path.Combine(_environment.WebRootPath, "media", "blog", post.Id);
+        if (!Directory.Exists(blogMediaDir)) Directory.CreateDirectory(blogMediaDir);
+        if (!Directory.Exists(postMediaDir)) Directory.CreateDirectory(postMediaDir);
+
+        var fileRelativePath = Path.Combine("media", "blog", post.Id, file.FileName);
+        var savePath = Path.Combine(_environment.WebRootPath, fileRelativePath);
+        using (var fs = new FileStream(savePath, FileMode.Create))
+        {
+            file.CopyTo(fs);
+        }
+
+        return Path.Combine("http://127.0.0.1:5205", fileRelativePath);
+    }
+
 
     public IPagedList<Post> GetPagedList(int categoryId = 0, int page = 1, int pageSize = 10)
     {
