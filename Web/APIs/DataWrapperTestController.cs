@@ -5,6 +5,7 @@ namespace Web.Apis;
 
 [ApiController]
 [Route("api/[controller]/[action]")]
+[ApiExplorerSettings(GroupName = "test")]
 public class DataWrapperTestController : ControllerBase
 {
     private readonly IFileProvider _fileProvider;
@@ -17,15 +18,21 @@ public class DataWrapperTestController : ControllerBase
 
     [HttpGet]
     public IActionResult NoFoundResult()
-        => NotFound();
+    {
+        return NotFound();
+    }
 
     [HttpGet]
     public IActionResult UnAuthorizedResult()
-        => Unauthorized();
+    {
+        return Unauthorized();
+    }
 
     [HttpGet]
     public IActionResult ProblemDetailResult()
-        => Problem("There has a problemDetail.If MiCake WrapProblemDetails is true,will be wrapped");
+    {
+        return Problem("There has a problemDetail.If MiCake WrapProblemDetails is true,will be wrapped");
+    }
 
     [HttpGet]
     public IActionResult FileResult()
@@ -66,7 +73,7 @@ public class DataWrapperTestController : ControllerBase
     [HttpGet]
     public List<int> ListResult()
     {
-        return new List<int>() { 1, 2, 3, 4, 5 };
+        return new List<int> { 1, 2, 3, 4, 5 };
     }
 
     [HttpGet]
@@ -78,6 +85,7 @@ public class DataWrapperTestController : ControllerBase
     [HttpGet]
     public IActionResult NormalExceptionResult()
     {
-        throw new Exception("The exception will be wrapped as a custom exception type. When IsDebug is set to true, stack trace information will be displayed.");
+        throw new Exception(
+            "The exception will be wrapped as a custom exception type. When IsDebug is set to true, stack trace information will be displayed.");
     }
 }

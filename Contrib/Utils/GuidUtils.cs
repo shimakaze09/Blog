@@ -3,7 +3,7 @@ namespace Contrib.Utils;
 public static class GuidUtils
 {
     /// <summary>
-    /// 32-digit number separated by hyphens
+    ///     32-digit number separated by hyphens
     /// </summary>
     /// <returns></returns>
     private static string GetGuid()
@@ -14,22 +14,20 @@ public static class GuidUtils
     }
 
     /// <summary>
-    /// Get a 16-bit unique string based on the GUID
+    ///     Get a 16-bit unique string based on the GUID
     /// </summary>
     /// <returns></returns>
     public static string GuidTo16String()
     {
         long i = 1;
-        foreach (var b in Guid.NewGuid().ToByteArray())
-        {
-            i *= b + 1;
-        }
+        foreach (var b in Guid.NewGuid().ToByteArray()) i *= b + 1;
         return $"{i - DateTime.Now.Ticks:x}";
     }
 
     /// <summary>
-    /// Get a unique 19-digit sequence based on the GUID
-    /// /// </summary>
+    ///     Get a unique 19-digit sequence based on the GUID
+    ///     ///
+    /// </summary>
     /// <returns></returns>
     public static long GuidToLongID()
     {

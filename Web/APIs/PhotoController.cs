@@ -1,6 +1,6 @@
+using Data.Models;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using Data.Models;
 using Web.Extensions;
 using Web.Services;
 using Web.ViewModels.Photography;
@@ -9,7 +9,7 @@ using Web.ViewModels.Response;
 namespace Web.Apis;
 
 /// <summary>
-/// Photography
+///     Photography
 /// </summary>
 [ApiController]
 [Route("api/[controller]")]
@@ -38,7 +38,9 @@ public class PhotoController : ControllerBase
     {
         var photo = _photoService.GetById(id);
         if (photo == null) return ApiResponse.NotFound();
-        return new ApiResponse<Photo> { Data = photo };
+        return photo == null
+            ? ApiResponse.NotFound($"Photo {id} does not exist")
+            : new ApiResponse<Photo> { Data = photo };
     }
 
     [Authorize]
@@ -57,7 +59,7 @@ public class PhotoController : ControllerBase
     public ApiResponse Delete(string id)
     {
         var photo = _photoService.GetById(id);
-        if (photo == null) return ApiResponse.NotFound();
+        if (photo == null) return ApiResponse.NotFound($"Photo {id} does not exist");
         var rows = _photoService.DeleteById(id);
         return rows > 0
             ? ApiResponse.Ok($"deleted {rows} rows.")
@@ -65,7 +67,35 @@ public class PhotoController : ControllerBase
     }
 
     /// <summary>
-    /// Rebuild image library data (rescan each image's size etc.)
+    ///     Set as featured image
+    /// </summary>
+    /// <param name="id">The ID of the photo</param>
+    /// <returns>A response containing the featured photo</returns>
+    [HttpPost("{id}/[action]")]
+    public ApiResponse<FeaturedPhoto> SetFeatured(string id)
+    {
+        var photo = _photoService.GetById(id);
+        return photo == null
+            ? ApiResponse.NotFound($"Image {id} does not exist")
+            : new ApiResponse<FeaturedPhoto>(_photoService.AddFeaturedPhoto(photo));
+    }
+
+    /// <summary>
+    ///     Remove from featured
+    /// </summary>
+    /// <param name="id">The ID of the photo</param>
+    /// <returns>A response indicating success or failure</returns>
+    [HttpPost("{id}/[action]")]
+    public ApiResponse CancelFeatured(string id)
+    {
+        var photo = _photoService.GetById(id);
+        if (photo == null) return ApiResponse.NotFound($"Image {id} does not exist");
+        var rows = _photoService.DeleteFeaturedPhoto(photo);
+        return ApiResponse.Ok($"Deleted {rows} rows.");
+    }
+
+    /// <summary>
+    ///     Rebuild image library data (rescan each image's size etc.)
     /// </summary>
     /// <returns></returns>
     [Authorize]
@@ -79,11 +109,12 @@ public class PhotoController : ControllerBase
     }
 
     /// <summary>
-    /// Batch import images
+    ///     Batch import images
     /// </summary>
     /// <returns></returns>
     [Authorize]
     [HttpPost("[action]")]
+    [ApiExplorerSettings(GroupName = "blog")]
     public ApiResponse<List<Photo>> BatchImport()
     {
         var result = _photoService.BatchImport();

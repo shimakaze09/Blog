@@ -9,9 +9,9 @@ public static class ConfigureFreeSql
     public static void AddFreeSql(this IServiceCollection services, IConfiguration configuration)
     {
         var freeSql = new FreeSqlBuilder()
-        .UseConnectionString(DataType.Sqlite, configuration.GetConnectionString("SQLite"))
-        .UseAutoSyncStructure(true)
-        .Build();
+            .UseConnectionString(DataType.Sqlite, configuration.GetConnectionString("SQLite"))
+            .UseAutoSyncStructure(true)
+            .Build();
 
         services.AddSingleton(freeSql);
 

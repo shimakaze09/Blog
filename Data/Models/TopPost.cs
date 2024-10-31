@@ -3,7 +3,7 @@
 namespace Data.Models;
 
 /// <summary>
-/// Top post
+///     Top post
 /// </summary>
 [Table(Name = "top_post", OldName = "TopPost")]
 public class TopPost

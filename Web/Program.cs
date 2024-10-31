@@ -1,5 +1,7 @@
+using System.Net.Mime;
 using Contrib.SiteMessage;
 using Data.Extensions;
+using Microsoft.AspNetCore.Diagnostics;
 using Web.Extensions;
 using Web.Filters;
 using Web.Services;
@@ -7,10 +9,7 @@ using Web.Services;
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
-builder.Services.AddControllersWithViews(options =>
-{
-    options.Filters.Add<ResponseWrapperFilter>();
-});
+builder.Services.AddControllersWithViews(options => { options.Filters.Add<ResponseWrapperFilter>(); });
 builder.Services.AddFreeSql(builder.Configuration);
 builder.Services.AddCors(options =>
 {
@@ -44,6 +43,25 @@ if (!app.Environment.IsDevelopment())
     app.UseHsts();
 }
 
+app.UseExceptionHandler(exceptionHandlerApp =>
+{
+    exceptionHandlerApp.Run(async context =>
+    {
+        context.Response.StatusCode = StatusCodes.Status500InternalServerError;
+        context.Response.ContentType = MediaTypeNames.Text.Plain;
+
+        await context.Response.WriteAsync("An exception was thrown.");
+
+        var exceptionHandlerPathFeature =
+            context.Features.Get<IExceptionHandlerPathFeature>();
+
+        if (exceptionHandlerPathFeature?.Error is FileNotFoundException)
+            await context.Response.WriteAsync(" The file was not found.");
+
+        if (exceptionHandlerPathFeature?.Path == "/") await context.Response.WriteAsync(" Page: Home.");
+    });
+});
+
 // app.UseHttpsRedirection();
 app.UseStaticFiles();
 
@@ -53,9 +71,22 @@ app.UseAuthentication();
 app.UseAuthorization();
 
 app.UseSwagger();
-app.UseSwaggerUI();
+app.UseSwaggerUI(options =>
+{
+    options.RoutePrefix = "api-docs/swagger";
+    options.SwaggerEndpoint("/swagger/blog/swagger.json", "Blog");
+    options.SwaggerEndpoint("/swagger/auth/swagger.json", "Auth");
+    options.SwaggerEndpoint("/swagger/common/swagger.json", "Common");
+    options.SwaggerEndpoint("/swagger/test/swagger.json", "Test");
+});
+
+app.UseReDoc(options =>
+{
+    options.RoutePrefix = "api-docs/redoc";
+    options.SpecUrl = "/swagger/blog/swagger.json";
+});
 
 app.MapControllerRoute(
-    name: "default",
-    pattern: "{controller=Home}/{action=Index}/{id?}");
+    "default",
+    "{controller=Home}/{action=Index}/{id?}");
 app.Run();

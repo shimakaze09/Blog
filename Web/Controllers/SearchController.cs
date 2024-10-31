@@ -7,8 +7,8 @@ namespace Web.Controllers;
 
 public class SearchController : Controller
 {
-    private readonly IBaseRepository<Post> _postRepo;
     private readonly IBaseRepository<Category> _categoryRepo;
+    private readonly IBaseRepository<Post> _postRepo;
 
     public SearchController(IBaseRepository<Post> postRepo, IBaseRepository<Category> categoryRepo)
     {

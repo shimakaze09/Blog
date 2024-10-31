@@ -1,30 +1,31 @@
-using FreeSql;
-using Microsoft.AspNetCore.Mvc;
 using Data.Models;
+using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
 using Web.Extensions;
 using Web.Services;
-using Web.ViewModels;
 using Web.ViewModels.Response;
-using X.PagedList;
 
 namespace Web.Apis;
 
 /// <summary>
-/// Article
+///     Article
 /// </summary>
+[Authorize]
 [ApiController]
 [Route("api/[controller]")]
+[ApiExplorerSettings(GroupName = "blog")]
 public class BlogPostController : ControllerBase
 {
-    private readonly IBaseRepository<Post> _postRepo;
+    private readonly BlogService _blogService;
     private readonly PostService _postService;
 
-    public BlogPostController(IBaseRepository<Post> postRepo, PostService postService)
+    public BlogPostController(PostService postService, BlogService blogService)
     {
-        _postRepo = postRepo;
         _postService = postService;
+        _blogService = blogService;
     }
 
+    [AllowAnonymous]
     [HttpGet]
     public ApiResponsePaged<Post> GetList(int categoryId = 0, int page = 1, int pageSize = 10)
     {
@@ -37,11 +38,63 @@ public class BlogPostController : ControllerBase
         };
     }
 
+    [AllowAnonymous]
     [HttpGet("{id}")]
     public ApiResponse<Post> Get(string id)
     {
-        var post = _postRepo.Where(a => a.Id == id).First();
-        if (post == null) return ApiResponse.NotFound();
-        return new ApiResponse<Post> { Data = post };
+        var post = _postService.GetById(id);
+        return post == null ? ApiResponse.NotFound() : new ApiResponse<Post>(post);
+    }
+
+    [HttpDelete("{id}")]
+    public ApiResponse Delete(string id)
+    {
+        var post = _postService.GetById(id);
+        if (post == null) return ApiResponse.NotFound($"Blog {id} does not exist");
+        var rows = _postService.Delete(id);
+        return ApiResponse.Ok($"Deleted {rows} blog posts");
+    }
+
+
+    /// <summary>
+    ///     Set as featured blog
+    /// </summary>
+    /// <param name="id">The ID of the blog post</param>
+    /// <returns>An ApiResponse object containing FeaturedPost data</returns>
+    [HttpPost("{id}/[action]")]
+    public ApiResponse<FeaturedPost> SetFeatured(string id)
+    {
+        var post = _postService.GetById(id);
+        return post == null
+            ? ApiResponse.NotFound()
+            : new ApiResponse<FeaturedPost>(_blogService.AddFeaturedPost(post));
+    }
+
+    /// <summary>
+    ///     Cancel featured blog
+    /// </summary>
+    /// <param name="id">The ID of the blog post</param>
+    /// <returns>An ApiResponse object</returns>
+    [HttpPost("{id}/[action]")]
+    public ApiResponse CancelFeatured(string id)
+    {
+        var post = _postService.GetById(id);
+        if (post == null) return ApiResponse.NotFound($"Blog {id} does not exist");
+        var rows = _blogService.DeleteFeaturedPost(post);
+        return ApiResponse.Ok($"deleted {rows} rows.");
+    }
+
+    /// <summary>
+    ///     Set as top post (can only have one top post)
+    /// </summary>
+    /// <param name="id">The ID of the blog post</param>
+    /// <returns>An ApiResponse object containing TopPost data</returns>
+    [HttpPost("{id}/[action]")]
+    public ApiResponse<TopPost> SetTop(string id)
+    {
+        var post = _postService.GetById(id);
+        if (post == null) return ApiResponse.NotFound($"Blog {id} does not exist");
+        var (data, rows) = _blogService.SetTopPost(post);
+        return new ApiResponse<TopPost> { Data = data, Message = $"ok. deleted {rows} old topPosts." };
     }
 }

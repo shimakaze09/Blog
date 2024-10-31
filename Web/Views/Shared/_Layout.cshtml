@@ -1,5 +1,5 @@
-@using Web.Utils
-@inject Contrib.SiteMessage.Messages Messages
+@using Contrib.SiteMessage
+@inject Messages Messages
 
 <!DOCTYPE html>
 <html lang="en">
@@ -24,133 +24,134 @@
 </head>
 
 <body>
-    <header id="vue-header">
-        <div class="px-3 py-2 bg-dark text-white">
-            <div class="container">
-                <div class="d-flex flex-wrap align-items-center justify-content-center justify-content-lg-start">
-                    <a class="d-flex align-items-center my-2 my-lg-0 me-lg-auto text-white text-decoration-none"
-                        asp-controller="Home" asp-action="Index">
-                        <img src="~/images/codelab.png" class="rounded-circle" alt="" style="height: 64px;width: 64px;">
-                    </a>
+<header id="vue-header">
+    <div class="px-3 py-2 bg-dark text-white">
+        <div class="container">
+            <div class="d-flex flex-wrap align-items-center justify-content-center justify-content-lg-start">
+                <a class="d-flex align-items-center my-2 my-lg-0 me-lg-auto text-white text-decoration-none"
+                   asp-controller="Home" asp-action="Index">
+                    <img src="~/images/codelab.png" class="rounded-circle" alt="" style="height: 64px;width: 64px;">
+                </a>
 
-                    <ul class="nav col-12 col-lg-auto pt-1 my-2 justify-content-center my-md-0 text-small">
-                        <li>
-                            <a class="nav-link text-white" asp-controller="Home" asp-action="Index">
-                                <div class="bi d-block mx-auto mb-1 text-center">
-                                    <i class="fa-solid fa-house fa-2xl"></i>
-                                </div>
-                                Home
-                            </a>
-                        </li>
-                        <li>
-                            <a class="nav-link text-white" asp-controller="Blog" asp-action="List">
-                                <div class="bi d-block mx-auto mb-1 text-center">
-                                    <i class="fa-solid fa-table-list fa-2xl"></i>
-                                </div>
-                                Blog
-                            </a>
-                        </li>
-                        <li>
-                            <a class="nav-link text-white" asp-controller="Photography" asp-action="Index">
-                                <div class="bi d-block mx-auto mb-1 text-center">
-                                    <i class="fa-solid fa-images fa-2xl"></i>
-                                </div>
-                                Photos
-                            </a>
-                        </li>
-                        <li>
-                            <a class="nav-link text-white" asp-controller="Product" asp-action="Index">
-                                <div class="bi d-block mx-auto mb-1 text-center">
-                                    <i class="fa-solid fa-cubes fa-2xl"></i>
-                                </div>
-                                Products
-                            </a>
-                        </li>
-                        <li>
-                            <a href="#" class="nav-link text-white">
-                                <div class="bi d-block mx-auto mb-1 text-center">
-                                    <i class="fa-solid fa-terminal fa-2xl"></i>
-                                </div>
-                                Console
-                            </a>
+                <ul class="nav col-12 col-lg-auto pt-1 my-2 justify-content-center my-md-0 text-small">
+                    <li>
+                        <a class="nav-link text-white" asp-controller="Home" asp-action="Index">
+                            <div class="bi d-block mx-auto mb-1 text-center">
+                                <i class="fa-solid fa-house fa-2xl"></i>
+                            </div>
+                            Home
+                        </a>
+                    </li>
+                    <li>
+                        <a class="nav-link text-white" asp-controller="Blog" asp-action="List">
+                            <div class="bi d-block mx-auto mb-1 text-center">
+                                <i class="fa-solid fa-table-list fa-2xl"></i>
+                            </div>
+                            Blog
+                        </a>
+                    </li>
+                    <li>
+                        <a class="nav-link text-white" asp-controller="Photography" asp-action="Index">
+                            <div class="bi d-block mx-auto mb-1 text-center">
+                                <i class="fa-solid fa-images fa-2xl"></i>
+                            </div>
+                            Photos
+                        </a>
+                    </li>
+                    <li>
+                        <a class="nav-link text-white" asp-controller="Product" asp-action="Index">
+                            <div class="bi d-block mx-auto mb-1 text-center">
+                                <i class="fa-solid fa-cubes fa-2xl"></i>
+                            </div>
+                            Products
+                        </a>
+                    </li>
+                    <li>
+                        <a href="#" class="nav-link text-white">
+                            <div class="bi d-block mx-auto mb-1 text-center">
+                                <i class="fa-solid fa-terminal fa-2xl"></i>
+                            </div>
+                            Console
+                        </a>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </div>
+    <div class="px-3 py-2 border-bottom mb-3">
+        <div class="container d-flex flex-wrap justify-content-center">
+            <form class="col-12 col-lg-auto mb-2 mb-lg-0 me-lg-auto" asp-controller="Search" asp-action="Blog">
+                <input type="search" class="form-control" placeholder="Search..." aria-label="Search"
+                       name="keyword">
+            </form>
+
+            <div class="text-end">
+                <span class="dropdown me-2">
+                    <a class="btn btn-secondary dropdown-toggle" href="#" role="button" id="dropdownMenuLink"
+                       data-bs-toggle="dropdown" aria-expanded="false">
+                        Themes
+                    </a>
+                    <ul class="dropdown-menu" aria-labelledby="dropdownMenuLink">
+                        <li v-for="theme in themes">
+                            <a v-if="theme.name===currentTheme" class="dropdown-item active">{{theme.name}}</a>
+                            <a v-else class="dropdown-item" v-on:click="setTheme(theme.name)">{{theme.name}}</a>
                         </li>
                     </ul>
-                </div>
+                </span>
+                <button type="button" class="btn btn-light text-dark me-2">Login</button>
+                <button type="button" class="btn btn-primary">Sign-up</button>
             </div>
         </div>
-        <div class="px-3 py-2 border-bottom mb-3">
-            <div class="container d-flex flex-wrap justify-content-center">
-                <form class="col-12 col-lg-auto mb-2 mb-lg-0 me-lg-auto" asp-controller="Search" asp-action="Blog">
-                    <input type="search" class="form-control" placeholder="Search..." aria-label="Search"
-                        name="keyword">
-                </form>
+    </div>
+</header>
 
-                <div class="text-end">
-                    <span class="dropdown me-2">
-                        <a class="btn btn-secondary dropdown-toggle" href="#" role="button" id="dropdownMenuLink"
-                            data-bs-toggle="dropdown" aria-expanded="false">
-                            Themes
-                        </a>
-                        <ul class="dropdown-menu" aria-labelledby="dropdownMenuLink">
-                            <li v-for="theme in themes">
-                                <a v-if="theme.name===currentTheme" class="dropdown-item active">{{theme.name}}</a>
-                                <a v-else class="dropdown-item" v-on:click="setTheme(theme.name)">{{theme.name}}</a>
-                            </li>
-                        </ul>
-                    </span>
-                    <button type="button" class="btn btn-light text-dark me-2">Login</button>
-                    <button type="button" class="btn btn-primary">Sign-up</button>
-                </div>
-            </div>
-        </div>
-    </header>
-
-    <main id="vue-app">
-        <div class="container mt-3">
-            @if (!Messages.IsEmpty)
+<main id="vue-app">
+    <div class="container mt-3">
+        @if (!Messages.IsEmpty)
+        {
+            while (!Messages.IsEmpty)
             {
-                while (!Messages.IsEmpty)
-                {
-                    var message = Messages.Dequeue();
-                    <div class="alert alert-@message.Tag" role="alert">
-                        @Html.Raw(message.Content)
-                    </div>
-                }
+                var message = Messages.Dequeue();
+                <div class="alert alert-@message.Tag" role="alert">
+                    @Html.Raw(message.Content)
+                </div>
             }
-        </div>
-        @RenderBody()
-    </main>
+        }
+    </div>
+    @RenderBody()
+</main>
 
-    <footer class="bg-dark">
-        <div id="footer">
-            <div class="container">
-                <div class="row">
-                    <div id="footer-content" class="col-md-10 col-md-offset-3 footer-list text-center">
-                        <p class="social-icons">
-                            <a target="_blank" rel="nofollow" href="https://www.linkedin.com/in/john-yang-70a5722a6/">
-                                <i class="fab fa-linkedin"></i>
-                            </a>
-                            <a target="_blank" rel="nofollow" href="https://github.com/shimakaze09">
-                                <i class="fab fa-github"></i>
-                            </a>
-                        </p>
+<footer class="bg-dark">
+    <div id="footer">
+        <div class="container">
+            <div class="row">
+                <div id="footer-content" class="col-md-10 col-md-offset-3 footer-list text-center">
+                    <p class="social-icons">
+                        <a target="_blank" rel="nofollow" href="https://www.linkedin.com/in/john-yang-70a5722a6/">
+                            <i class="fab fa-linkedin"></i>
+                        </a>
+                        <a target="_blank" rel="nofollow" href="https://github.com/shimakaze09">
+                            <i class="fab fa-github"></i>
+                        </a>
+                    </p>
 
-                        <p>Copyright 2024 <b>John</b>. All Rights Reserved.</p>
-                        <p>
-                            All content is released under
-                            <a href="https://opensource.org/license/mit" rel="external nofollow" target="_blank">
-                                MIT License</a>.
-                        </p>
-                    </div>
+                    <p>Copyright 2024 <b>John</b>. All Rights Reserved.</p>
+                    <p>
+                        All content is released under
+                        <a href="https://opensource.org/license/mit" rel="external nofollow" target="_blank">
+                            MIT License
+                        </a>.
+                    </p>
                 </div>
             </div>
         </div>
-    </footer>
+    </div>
+</footer>
 
-    <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
-    <script src="~/lib/vue/dist/vue.js"></script>
-    <script src="~/js/site.js"></script>
-    @await RenderSectionAsync("bottom", false)
+<script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
+<script src="~/lib/vue/dist/vue.js"></script>
+<script src="~/js/site.js"></script>
+@await RenderSectionAsync("bottom", false)
 </body>
 
 </html>

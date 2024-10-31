@@ -1,17 +1,16 @@
-using FreeSql;
-using Microsoft.AspNetCore.Mvc;
 using Data.Models;
+using Microsoft.AspNetCore.Mvc;
 using Web.Services;
-using Web.ViewModels;
 using Web.ViewModels.Response;
 
 namespace Web.Apis;
 
 /// <summary>
-/// Blog
+///     Blog
 /// </summary>
 [ApiController]
 [Route("api/[controller]")]
+[ApiExplorerSettings(GroupName = "blog")]
 public class BlogController : ControllerBase
 {
     private readonly BlogService _blogService;
@@ -22,7 +21,7 @@ public class BlogController : ControllerBase
     }
 
     /// <summary>
-    /// Get top blog post
+    ///     Get top blog post
     /// </summary>
     /// <returns></returns>
     [HttpGet("top")]
@@ -32,12 +31,12 @@ public class BlogController : ControllerBase
     }
 
     /// <summary>
-    /// Get recommended blog posts, with a maximum of two posts per row
+    ///     Get recommended blog posts, with a maximum of two posts per row
     /// </summary>
     /// <returns></returns>
     [HttpGet("featured")]
-    public ApiResponse<List<List<Post>>> GetFeaturedPostRows()
+    public ApiResponse<List<Post>> GetFeaturedPostRows()
     {
-        return new ApiResponse<List<List<Post>>> { Data = _blogService.GetFeaturedPostRows() };
+        return new ApiResponse<List<Post>>(_blogService.GetFeaturedPosts());
     }
 }

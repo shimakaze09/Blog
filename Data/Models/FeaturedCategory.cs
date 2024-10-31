@@ -3,7 +3,7 @@
 namespace Data.Models;
 
 /// <summary>
-/// Featured category
+///     Featured category
 /// </summary>
 public class FeaturedCategory
 {
@@ -14,23 +14,23 @@ public class FeaturedCategory
     public Category Category { get; set; }
 
     /// <summary>
-    /// The redefined name of the recommendation.
+    ///     The redefined name of the recommendation.
     /// </summary>
     public string Name { get; set; }
 
     /// <summary>
-    /// Explanation of the recommendation category.
+    ///     Explanation of the recommendation category.
     /// </summary>
     public string Description { get; set; }
 
     /// <summary>
-    /// Icon for the recommendation.
-    /// <list type="number">
-    ///     <listheader>Examples</listheader>
-    ///     <item>fa-solid fa-c</item>
-    ///     <item>fa-brands fa-python</item>
-    ///     <item>fa-brands fa-android</item>
-    /// </list>
+    ///     Icon for the recommendation.
+    ///     <list type="number">
+    ///         <listheader>Examples</listheader>
+    ///         <item>fa-solid fa-c</item>
+    ///         <item>fa-brands fa-python</item>
+    ///         <item>fa-brands fa-android</item>
+    ///     </list>
     /// </summary>
     public string IconCssClass { get; set; }
 }

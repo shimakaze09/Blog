@@ -1,27 +1,29 @@
+using Data.Models;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using Data.Models;
 using Web.Services;
-using Web.ViewModels;
+using Web.ViewModels.Auth;
 using Web.ViewModels.Response;
 
 namespace Web.Apis;
 
 /// <summary>
-/// Authentication
+///     Authentication
 /// </summary>
 [ApiController]
 [Route("api/[controller]")]
+[ApiExplorerSettings(GroupName = "auth")]
 public class AuthController : ControllerBase
 {
     private readonly AuthService _authService;
+
     public AuthController(AuthService authService)
     {
         _authService = authService;
     }
 
     /// <summary>
-    /// Login
+    ///     Login
     /// </summary>
     /// <param name="loginUser">The login user object</param>
     /// <returns>The login response</returns>
@@ -36,7 +38,7 @@ public class AuthController : ControllerBase
 
 
     /// <summary>
-    /// Get current user information
+    ///     Get current user information
     /// </summary>
     /// <returns></returns>
     [Authorize]

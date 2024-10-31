@@ -1,6 +1,5 @@
-@using X.PagedList
-@using X.PagedList.Mvc.Core
 @using Web.Utils
+@using X.PagedList.Mvc.Core
 @model BlogListViewModel
 @{
     ViewData["Title"] = "Blog List";
@@ -27,7 +26,7 @@
                     else
                     {
                         <a class="list-group-item list-group-item-action d-flex w-100 justify-content-between"
-                            asp-controller="Blog" asp-action="List" asp-route-categoryId="@item.Id">
+                           asp-controller="Blog" asp-action="List" asp-route-categoryId="@item.Id">
                             <span>@item.Name</span>
                             <span>(@item.Posts.Count.ToString())</span>
                         </a>
@@ -39,18 +38,18 @@
         <div class="col-lg-9">
             @foreach (var post in Model.Posts)
             {
-                <partial name="Widgets/PostCard" model="post" />
+                <partial name="Widgets/PostCard" model="post"/>
             }
         </div>
     </div>
     <nav aria-label="Page navigation example">
         @Html.PagedListPager(Model.Posts, page => Url.Action(
-                 RazorHelper.GetCurrentActionName(ViewContext), new { page, categoryId = Model.CurrentCategoryId }),
-                 new PagedListRenderOptions
-        {
-            LiElementClasses = new[] { "page-item" },
-            PageClasses = new[] { "page-link" },
-            UlElementClasses = new[] { "pagination justify-content-center" }
-        })
+                RazorHelper.GetCurrentActionName(ViewContext), new { page, categoryId = Model.CurrentCategoryId }),
+            new PagedListRenderOptions
+            {
+                LiElementClasses = new[] { "page-item" },
+                PageClasses = new[] { "page-link" },
+                UlElementClasses = new[] { "pagination justify-content-center" }
+            })
     </nav>
 </div>

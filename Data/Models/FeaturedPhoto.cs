@@ -3,7 +3,7 @@
 namespace Data.Models;
 
 /// <summary>
-/// Featured Photo
+///     Featured Photo
 /// </summary>
 [Table(Name = "featured_photo", OldName = "FeaturedPhoto")]
 public class FeaturedPhoto

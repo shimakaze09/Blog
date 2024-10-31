@@ -2,9 +2,13 @@ namespace Contrib.SiteMessage;
 
 public class Messages
 {
-    private Queue<Message> MessagesQueue { get; set; } = new Queue<Message>();
+    private Queue<Message> MessagesQueue { get; } = new();
     public bool IsEmpty => MessagesQueue.Count == 0;
-    public Message Dequeue() => MessagesQueue.Dequeue();
+
+    public Message Dequeue()
+    {
+        return MessagesQueue.Dequeue();
+    }
 
     public void Debug(string content)
     {

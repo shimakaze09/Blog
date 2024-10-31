@@ -3,7 +3,6 @@ namespace Web.Services;
 public class ThemeService
 {
     private const string CssUrlPrefix = "/lib/bootswatch/dist";
-    public List<Theme> Themes { get; set; } = new List<Theme>();
 
     public ThemeService(IWebHostEnvironment env)
     {
@@ -19,6 +18,8 @@ public class ThemeService
             });
         }
     }
+
+    public List<Theme> Themes { get; set; } = new();
 }
 
 public class Theme

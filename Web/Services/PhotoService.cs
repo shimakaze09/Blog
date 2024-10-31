@@ -1,7 +1,7 @@
-using FreeSql;
-using SixLabors.ImageSharp;
 using Contrib.Utils;
 using Data.Models;
+using FreeSql;
+using SixLabors.ImageSharp;
 using Web.ViewModels.Photography;
 using X.PagedList;
 using X.PagedList.Extensions;
@@ -10,11 +10,12 @@ namespace Web.Services;
 
 public class PhotoService
 {
-    private readonly IBaseRepository<Photo> _photoRepo;
-    private readonly IBaseRepository<FeaturedPhoto> _featuredPhotoRepo;
     private readonly IWebHostEnvironment _environment;
+    private readonly IBaseRepository<FeaturedPhoto> _featuredPhotoRepo;
+    private readonly IBaseRepository<Photo> _photoRepo;
 
-    public PhotoService(IBaseRepository<Photo> photoRepo, IWebHostEnvironment environment, IBaseRepository<FeaturedPhoto> featuredPhotoRepo)
+    public PhotoService(IBaseRepository<Photo> photoRepo, IWebHostEnvironment environment,
+        IBaseRepository<FeaturedPhoto> featuredPhotoRepo)
     {
         _photoRepo = photoRepo;
         _environment = environment;
@@ -66,9 +67,24 @@ public class PhotoService
         return _photoRepo.Insert(photo);
     }
 
+    public FeaturedPhoto AddFeaturedPhoto(Photo photo)
+    {
+        var item = _featuredPhotoRepo.Where(a => a.PhotoId == photo.Id).First();
+        if (item != null) return item;
+        item = new FeaturedPhoto { PhotoId = photo.Id };
+        _featuredPhotoRepo.Insert(item);
+        return item;
+    }
+
+    public int DeleteFeaturedPhoto(Photo photo)
+    {
+        var item = _featuredPhotoRepo.Where(a => a.PhotoId == photo.Id).First();
+        return item == null ? 0 : _featuredPhotoRepo.Delete(item);
+    }
+
     /// <summary>
-    /// Deletes a photo
-    /// <para>Deletes the photo file and database record</para>
+    ///     Deletes a photo
+    ///     <para>Deletes the photo file and database record</para>
     /// </summary>
     /// <param name="id">The ID of the photo to delete</param>
     /// <returns>The number of affected rows (-1 if not found)</returns>
@@ -83,7 +99,7 @@ public class PhotoService
     }
 
     /// <summary>
-    /// Batch Import Photos
+    ///     Batch Import Photos
     /// </summary>
     /// <returns></returns>
     public List<Photo> BatchImport()
@@ -109,6 +125,7 @@ public class PhotoService
             _photoRepo.Insert(photo);
             result.Add(photo);
         }
+
         return result;
     }
 
@@ -119,7 +136,7 @@ public class PhotoService
 
 
     /// <summary>
-    /// Rebuild image library data (rescan each image's size etc.)
+    ///     Rebuild image library data (rescan each image's size etc.)
     /// </summary>
     public int ReBuildData()
     {
@@ -128,7 +145,7 @@ public class PhotoService
     }
 
     /// <summary>
-    /// Rebuild image data (scan image size etc.)
+    ///     Rebuild image data (scan image size etc.)
     /// </summary>
     /// <param name="photo"></param>
     /// <returns></returns>
@@ -140,6 +157,7 @@ public class PhotoService
             photo.Height = img.Height;
             photo.Width = img.Width;
         }
+
         return photo;
     }
 }

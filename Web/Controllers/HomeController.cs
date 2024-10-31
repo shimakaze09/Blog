@@ -1,6 +1,4 @@
-using FreeSql;
 using Microsoft.AspNetCore.Mvc;
-using Data.Models;
 using Web.Services;
 using Web.ViewModels;
 
@@ -9,8 +7,8 @@ namespace Web.Controllers;
 public class HomeController : Controller
 {
     private readonly BlogService _blogService;
-    private readonly PhotoService _photoService;
     private readonly CategoryService _categoryService;
+    private readonly PhotoService _photoService;
 
     public HomeController(BlogService blogService, PhotoService photoService, CategoryService categoryService)
     {

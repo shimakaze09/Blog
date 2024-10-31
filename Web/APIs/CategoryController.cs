@@ -1,38 +1,41 @@
-using FreeSql;
-using Microsoft.AspNetCore.Mvc;
 using Data.Models;
+using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
 using Web.Extensions;
-using Web.ViewModels;
+using Web.Services;
+using Web.ViewModels.Categories;
 using Web.ViewModels.Response;
-using X.PagedList;
-using X.PagedList.Extensions;
 
 namespace Web.Apis;
 
 /// <summary>
-/// Article Categories
+///     Article Categories
 /// </summary>
+[Authorize]
 [ApiController]
 [Route("api/[controller]")]
+[ApiExplorerSettings(GroupName = "blog")]
 public class CategoryController : ControllerBase
 {
-    private IBaseRepository<Category> _categoryRepo;
+    private readonly CategoryService _cService;
 
-    public CategoryController(IBaseRepository<Category> categoryRepo)
+    public CategoryController(CategoryService cService)
     {
-        _categoryRepo = categoryRepo;
+        _cService = cService;
     }
 
+    [AllowAnonymous]
     [HttpGet("All")]
-    public List<Category> GetAll()
+    public ApiResponse<List<Category>> GetAll()
     {
-        return _categoryRepo.Select.ToList();
+        return new ApiResponse<List<Category>>(_cService.GetAll());
     }
 
+    [AllowAnonymous]
     [HttpGet]
     public ApiResponsePaged<Category> GetList(int page = 1, int pageSize = 10)
     {
-        var paged = _categoryRepo.Select.ToList().ToPagedList(page, pageSize);
+        var paged = _cService.GetPagedList(page, pageSize);
         return new ApiResponsePaged<Category>
         {
             Pagination = paged.ToPaginationMetadata(),
@@ -40,28 +43,52 @@ public class CategoryController : ControllerBase
         };
     }
 
+    [AllowAnonymous]
     [HttpGet("{id:int}")]
     public IApiResponse Get(int id)
     {
-        var item = _categoryRepo.Where(a => a.Id == id).First();
-        if (item == null) return ApiResponse.NotFound();
-        return new ApiResponse<Category> { Data = item };
+        var item = _cService.GetById(id);
+        return item == null ? ApiResponse.NotFound() : new ApiResponse<Category> { Data = item };
     }
 
     /// <summary>
-    /// Category Word Cloud
+    ///     Category Word Cloud
     /// </summary>
     /// <returns></returns>
+    [AllowAnonymous]
     [HttpGet("[action]")]
     public ApiResponse<List<object>> WordCloud()
     {
-        var list = _categoryRepo.Select.IncludeMany(a => a.Posts).ToList();
-        var data = new List<object>();
-        foreach (var item in list)
-        {
-            data.Add(new { name = item.Name, value = item.Posts.Count });
-        }
+        return new ApiResponse<List<object>>(_cService.GetWordCloud());
+    }
 
-        return new ApiResponse<List<object>> { Data = data };
+    /// <summary>
+    ///     Set as featured category
+    /// </summary>
+    /// <seealso href="https://fontawesome.com/search?m=free">FontAwesome icon library</seealso>
+    /// <param name="id"></param>
+    /// <param name="dto">Featured information <see cref="FeaturedCategoryCreationDto" /></param>
+    /// <returns></returns>
+    [HttpPost("{id:int}/[action]")]
+    public ApiResponse<FeaturedCategory> SetFeatured(int id, [FromBody] FeaturedCategoryCreationDto dto)
+    {
+        var item = _cService.GetById(id);
+        return item == null
+            ? ApiResponse.NotFound($"Category {id} does not exist")
+            : new ApiResponse<FeaturedCategory>(_cService.AddOrUpdateFeaturedCategory(item, dto));
+    }
+
+    /// <summary>
+    ///     Cancel featured category
+    /// </summary>
+    /// <param name="id"></param>
+    /// <returns></returns>
+    [HttpPost("{id:int}/[action]")]
+    public ApiResponse CancelFeatured(int id)
+    {
+        var item = _cService.GetById(id);
+        if (item == null) return ApiResponse.NotFound($"Category {id} does not exist");
+        var rows = _cService.DeleteFeaturedCategory(item);
+        return ApiResponse.Ok($"Deleted {rows} rows.");
     }
 }

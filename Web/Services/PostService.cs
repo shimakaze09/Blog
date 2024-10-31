@@ -1,7 +1,6 @@
+using Data.Models;
 using FreeSql;
 using Markdig;
-using Markdown.ColorCode;
-using Data.Models;
 using Web.ViewModels;
 using X.PagedList;
 using X.PagedList.Extensions;
@@ -10,8 +9,8 @@ namespace Web.Services;
 
 public class PostService
 {
-    private readonly IBaseRepository<Post> _postRepo;
     private readonly IBaseRepository<Category> _categoryRepo;
+    private readonly IBaseRepository<Post> _postRepo;
 
     public PostService(IBaseRepository<Post> postRepo, IBaseRepository<Category> categoryRepo)
     {
@@ -19,29 +18,35 @@ public class PostService
         _categoryRepo = categoryRepo;
     }
 
+    public Post? GetById(string id)
+    {
+        return _postRepo.Where(a => a.Id == id).Include(a => a.Category).First();
+    }
+
+    public int Delete(string id)
+    {
+        return _postRepo.Delete(a => a.Id == id);
+    }
+
     public IPagedList<Post> GetPagedList(int categoryId = 0, int page = 1, int pageSize = 10)
     {
         List<Post> posts;
         if (categoryId == 0)
-        {
             posts = _postRepo.Select
                 .OrderByDescending(a => a.LastModifiedTime)
                 .Include(a => a.Category)
                 .ToList();
-        }
         else
-        {
             posts = _postRepo.Where(a => a.CategoryId == categoryId)
                 .OrderByDescending(a => a.LastModifiedTime)
                 .Include(a => a.Category)
                 .ToList();
-        }
 
         return posts.ToPagedList(page, pageSize);
     }
 
     /// <summary>
-    /// Converts a Post object to a PostViewModel object
+    ///     Converts a Post object to a PostViewModel object
     /// </summary>
     /// <param name="post">The Post object to convert</param>
     /// <returns>The converted PostViewModel object</returns>

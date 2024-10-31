@@ -1,8 +1,6 @@
-using FreeSql;
 using Microsoft.AspNetCore.Mvc;
-using Data.Models;
-using Web.ViewModels;
 using Web.Services;
+using Web.ViewModels;
 
 namespace Web.Controllers;
 

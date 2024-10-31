@@ -1,6 +1,7 @@
 using Data.Models;
 
 namespace Web.ViewModels;
+
 public class PostViewModel
 {
     public string Id { get; set; }

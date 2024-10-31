@@ -1,12 +1,12 @@
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using System.Text;
+using Data.Models;
 using FreeSql;
 using Microsoft.Extensions.Options;
 using Microsoft.IdentityModel.Tokens;
-using Data.Models;
 using Web.Models.Config;
-using Web.ViewModels;
+using Web.ViewModels.Auth;
 
 namespace Web.Services;
 
@@ -23,17 +23,18 @@ public class AuthService
 
     public LoginToken GenerateLoginToken(User user)
     {
-        var claims = new List<Claim> {
+        var claims = new List<Claim>
+        {
             new("username", user.Name),
             new(JwtRegisteredClaimNames.Name, user.Id), // User.Identity.Name
-            new(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString()), // JWT ID
+            new(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString()) // JWT ID
         };
         var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_securitySettings.Token.Key));
         var signCredential = new SigningCredentials(key, SecurityAlgorithms.HmacSha256);
         var jwtToken = new JwtSecurityToken(
-            issuer: _securitySettings.Token.Issuer,
-            audience: _securitySettings.Token.Audience,
-            claims: claims,
+            _securitySettings.Token.Issuer,
+            _securitySettings.Token.Audience,
+            claims,
             expires: DateTime.Now.AddDays(7),
             signingCredentials: signCredential);
 

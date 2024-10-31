@@ -1,11 +1,11 @@
 ﻿// See https://aka.ms/new-console-template for more information
 
+using System.Collections.Specialized;
 using Contrib.Extensions;
 using Data;
 using Data.Models;
-using Migrate;
 
-var log = new System.Collections.Specialized.StringCollection();
+var log = new StringCollection();
 
 const string importDir = @"E:\Documents\0_Write\0_blog\";
 const string assetsDir = @"D:\dev\Blog\Web\wwwroot\assets\blog";
@@ -61,7 +61,6 @@ void WalkDirectoryTree(DirectoryInfo root)
     }
 
     if (files != null)
-    {
         foreach (var fi in files)
         {
             // In this example, we only access the existing FileInfo object. If we
@@ -112,22 +111,15 @@ void WalkDirectoryTree(DirectoryInfo root)
             };
             postRepo.Insert(post);
         }
-    }
 
     // Now find all the subdirectories under this directory.
     subDirs = root.GetDirectories();
 
     foreach (var dirInfo in subDirs)
     {
-        if (exclusionDirs.Contains(dirInfo.Name))
-        {
-            continue;
-        }
+        if (exclusionDirs.Contains(dirInfo.Name)) continue;
 
-        if (dirInfo.Name.EndsWith(".assets"))
-        {
-            continue;
-        }
+        if (dirInfo.Name.EndsWith(".assets")) continue;
 
         // Recursive call for each subdirectory.
         WalkDirectoryTree(dirInfo);

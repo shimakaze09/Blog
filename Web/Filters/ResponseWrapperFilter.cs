@@ -18,19 +18,19 @@ public class ResponseWrapperFilter : IAsyncResultFilter
             else
             {
                 var statusCode = objectResult.StatusCode ?? context.HttpContext.Response.StatusCode;
-                
+
                 var wrapperResp = new ApiResponse<object>
                 {
                     StatusCode = statusCode,
                     Successful = statusCode is >= 200 and < 400,
-                    Data = objectResult.Value,
+                    Data = objectResult.Value
                 };
 
                 objectResult.Value = wrapperResp;
                 objectResult.DeclaredType = wrapperResp.GetType();
             }
         }
-        
+
         await next();
     }
 }

@@ -1,22 +1,21 @@
+using Contrib.SiteMessage;
+using Data.Models;
 using FreeSql;
 using Microsoft.AspNetCore.Mvc;
-using Data.Models;
-using Web.ViewModels;
 using Web.Services;
-using X.PagedList;
-using X.PagedList.Extensions;
-using Contrib.SiteMessage;
+using Web.ViewModels;
 
 namespace Web.Controllers;
 
 public class BlogController : Controller
 {
+    private readonly IBaseRepository<Category> _categoryRepo;
     private readonly Messages _messages;
     private readonly IBaseRepository<Post> _postRepo;
-    private readonly IBaseRepository<Category> _categoryRepo;
     private readonly PostService _postService;
 
-    public BlogController(IBaseRepository<Post> postRepo, IBaseRepository<Category> categoryRepo, PostService postService,
+    public BlogController(IBaseRepository<Post> postRepo, IBaseRepository<Category> categoryRepo,
+        PostService postService,
         Messages messages)
     {
         _postRepo = postRepo;
@@ -53,5 +52,4 @@ public class BlogController : Controller
         _messages.Info($"Randomly recommended article <b>{rndPost.Title}</b> for you!");
         return RedirectToAction(nameof(Data.Models.Post), new { id = rndPost.Id });
     }
-
 }

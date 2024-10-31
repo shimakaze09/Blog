@@ -1,15 +1,16 @@
-using Microsoft.AspNetCore.Mvc;
 using Data.Models;
+using Microsoft.AspNetCore.Mvc;
 using Web.Services;
 using Web.ViewModels.Response;
 
 namespace Web.Apis;
 
 /// <summary>
-/// Featured Categories
+///     Featured Categories
 /// </summary>
 [ApiController]
 [Route("api/[controller]")]
+[ApiExplorerSettings(GroupName = "blog")]
 public class FeaturedCategoryController : ControllerBase
 {
     private readonly CategoryService _categoryService;

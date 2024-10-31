@@ -4,10 +4,11 @@ using Web.Services;
 namespace Web.Apis;
 
 /// <summary>
-/// Page themes
+///     Page themes
 /// </summary>
 [ApiController]
 [Route("api/[controller]")]
+[ApiExplorerSettings(GroupName = "common")]
 public class ThemeController : ControllerBase
 {
     private readonly ThemeService _themeService;

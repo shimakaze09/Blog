@@ -21,9 +21,11 @@ public class ApiResponse<T> : IApiResponse<T>
     public T? Data { get; set; }
 
     /// <summary>
-    /// Implements implicit conversion of <see cref="ApiResponse"/> to <see cref="ApiResponse{T}"/>
+    ///     Implements implicit conversion of <see cref="ApiResponse" /> to <see cref="ApiResponse{T}" />
     /// </summary>
-    /// <param name="apiResponse"><see cref="ApiResponse"/></param>
+    /// <param name="apiResponse">
+    ///     <see cref="ApiResponse" />
+    /// </param>
     /// <returns></returns>
     public static implicit operator ApiResponse<T>(ApiResponse apiResponse)
     {
@@ -38,12 +40,6 @@ public class ApiResponse<T> : IApiResponse<T>
 
 public class ApiResponse : IApiResponse, IApiErrorResponse
 {
-    public int StatusCode { get; set; } = 200;
-    public bool Successful { get; set; } = true;
-    public string? Message { get; set; }
-    public object? Data { get; set; }
-    public SerializableError? ErrorData { get; set; }
-
     public ApiResponse()
     {
     }
@@ -52,6 +48,12 @@ public class ApiResponse : IApiResponse, IApiErrorResponse
     {
         Data = data;
     }
+
+    public object? Data { get; set; }
+    public SerializableError? ErrorData { get; set; }
+    public int StatusCode { get; set; } = 200;
+    public bool Successful { get; set; } = true;
+    public string? Message { get; set; }
 
     public static ApiResponse NoContent(string message = "NoContent")
     {
