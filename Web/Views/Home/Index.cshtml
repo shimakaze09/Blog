@@ -12,11 +12,8 @@
                 alt="Bootstrap Themes" width="700" height="500" loading="lazy">
         </div>
         <div class="col-lg-6">
-            <h1 class="display-5 fw-bold lh-1 mb-3">DealiAxy's Blog</h1>
-            <div class="lead">
-                <p>One poem: {{poemSimple}}</p>
-                <p>A quote: {{hitokoto.hitokoto}}</p>
-            </div>
+            <h1 class="display-5 fw-bold lh-1 mb-3">My Blog</h1>
+            <br>
             <div class="d-grid gap-2 d-md-flex justify-content-md-start">
                 <a class="btn btn-primary btn-lg px-4 me-md-2" asp-controller="Blog" asp-action="RandomPost">Read
                     Posts</a>
@@ -40,16 +37,27 @@
             }
         </div>
     }
+    else
+    {
+        @await Html.PartialAsync("Widgets/PlaceholderCard", "Featured photo")
+    }
 </div>
 
 <div class="container px-4 py-3" id="featured-3">
     <h2 class="pb-2 border-bottom">Blog Categories</h2>
-    <div class="row g-4 py-5 row-cols-1 row-cols-lg-3">
-        @foreach (var fc in Model.FeaturedCategories)
-        {
-            @await Html.PartialAsync("Widgets/FeaturedCategoryCard", fc)
-        }
-    </div>
+    @if (Model.FeaturedCategories.Count > 0)
+    {
+        <div class="row g-4 py-5 row-cols-1 row-cols-lg-3">
+            @foreach (var fc in Model.FeaturedCategories)
+            {
+                @await Html.PartialAsync("Widgets/FeaturedCategoryCard", fc)
+            }
+        </div>
+    }
+    else
+    {
+        @await Html.PartialAsync("Widgets/PlaceholderCard", "Featured Category")
+    }
 </div>
 
 <div class="container px-4 py-3">
@@ -61,12 +69,7 @@
     }
     else
     {
-        <div class="card mb-4">
-            <div class="card-header">Featured Post</div>
-            <div class="card-body">
-                <h3>Waiting for content...</h3>
-            </div>
-        </div>
+        @await Html.PartialAsync("Widgets/PlaceholderCard", "Top post")
     }
 
     @if (Model.FeaturedPosts.Count > 0)
@@ -80,12 +83,7 @@
     }
     else
     {
-        <div class="card mb-2">
-            <div class="card-header">Recommended Posts</div>
-            <div class="card-body">
-                <h3>Waiting for content...</h3>
-            </div>
-        </div>
+        @await Html.PartialAsync("Widgets/PlaceholderCard", "Featured post")
     }
 </div>
 

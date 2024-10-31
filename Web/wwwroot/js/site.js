@@ -7,8 +7,8 @@ let app = new Vue({
     created: function () {
         fetch('/Api/Theme')
             .then(res => res.json())
-            .then(data => {
-                this.themes = data
+            .then(res => {
+                this.themes = res.data
             })
         // Read local theme configuration
         let theme = localStorage.getItem('currentTheme')

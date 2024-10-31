@@ -63,4 +63,34 @@ public class PhotoController : ControllerBase
             ? ApiResponse.Ok($"deleted {rows} rows.")
             : ApiResponse.Error(Response, "deleting failed.");
     }
+
+    /// <summary>
+    /// Rebuild image library data (rescan each image's size etc.)
+    /// </summary>
+    /// <returns></returns>
+    [Authorize]
+    [HttpPost("[action]")]
+    public ApiResponse ReBuildData()
+    {
+        return ApiResponse.Ok(new
+        {
+            Rows = _photoService.ReBuildData()
+        }, "Rebuild image library data");
+    }
+
+    /// <summary>
+    /// Batch import images
+    /// </summary>
+    /// <returns></returns>
+    [Authorize]
+    [HttpPost("[action]")]
+    public ApiResponse<List<Photo>> BatchImport()
+    {
+        var result = _photoService.BatchImport();
+        return new ApiResponse<List<Photo>>
+        {
+            Data = result,
+            Message = $"Successfully imported {result.Count} photos"
+        };
+    }
 }
