@@ -91,4 +91,32 @@ public class CategoryController : ControllerBase
         var rows = _cService.DeleteFeaturedCategory(item);
         return ApiResponse.Ok($"Deleted {rows} rows.");
     }
+
+    /// <summary>
+    /// Set category visible
+    /// </summary>
+    /// <param name="id">The ID of the category</param>
+    /// <returns>An API response object</returns>
+    [HttpPost("{id:int}/[action]")]
+    public ApiResponse SetVisible(int id)
+    {
+        var item = _cService.GetById(id);
+        if (item == null) return ApiResponse.NotFound($"Category {id} does not exist");
+        var rows = _cService.SetVisibility(item, true);
+        return ApiResponse.Ok($"Affected {rows} row(s).");
+    }
+
+    /// <summary>
+    /// Set category invisible
+    /// </summary>
+    /// <param name="id">The ID of the category</param>
+    /// <returns>An API response object</returns>
+    [HttpPost("{id:int}/[action]")]
+    public ApiResponse SetInvisible(int id)
+    {
+        var item = _cService.GetById(id);
+        if (item == null) return ApiResponse.NotFound($"Category {id} does not exist");
+        var rows = _cService.SetVisibility(item, false);
+        return ApiResponse.Ok($"Affected {rows} row(s).");
+    }
 }
