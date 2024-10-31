@@ -101,6 +101,7 @@ void WalkDirectoryTree(DirectoryInfo root)
 
             // Save the original file
             var post = new Post
+            // TODO: When importing articles, import images within the article as well and perform relative path replacement for images
             {
                 Id = GuidUtils.GuidTo16String(),
                 Title = fi.Name.Replace(".md", ""),

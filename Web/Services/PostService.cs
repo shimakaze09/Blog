@@ -12,16 +12,22 @@ public class PostService
     private readonly IBaseRepository<Category> _categoryRepo;
     private readonly IBaseRepository<Post> _postRepo;
     private readonly IWebHostEnvironment _environment;
+    private readonly IConfiguration _configuration;
 
-    public PostService(IBaseRepository<Post> postRepo, IBaseRepository<Category> categoryRepo, IWebHostEnvironment environment)
+    public string Host => _configuration.GetSection("Server:Host").Value;
+
+    public PostService(IBaseRepository<Post> postRepo, IBaseRepository<Category> categoryRepo, IWebHostEnvironment environment,
+        IConfiguration configuration)
     {
         _postRepo = postRepo;
         _categoryRepo = categoryRepo;
         _environment = environment;
+        _configuration = configuration;
     }
 
     public Post? GetById(string id)
     {
+        // TODO: Get articles and parse markdown image URLs, add full URLs and return them to the frontend
         return _postRepo.Where(a => a.Id == id).Include(a => a.Category).First();
     }
 
@@ -32,6 +38,7 @@ public class PostService
 
     public Post InsertOrUpdate(Post post)
     {
+        // TODO: Modify the article when editing, replace the markdown image URLs with relative paths before saving
         return _postRepo.InsertOrUpdate(post);
     }
 
@@ -45,6 +52,7 @@ public class PostService
     {
         InitPostMediaDir(post);
 
+        // TODO: Check if uploaded file has the same name as existing files
         var fileRelativePath = Path.Combine("media", "blog", post.Id, file.FileName);
         var savePath = Path.Combine(_environment.WebRootPath, fileRelativePath);
         using (var fs = new FileStream(savePath, FileMode.Create))
@@ -52,7 +60,7 @@ public class PostService
             file.CopyTo(fs);
         }
 
-        return Path.Combine("http://127.0.0.1:5205", fileRelativePath);
+        return Path.Combine(Host, fileRelativePath);
     }
 
     /// <summary>
@@ -66,9 +74,7 @@ public class PostService
         var postDir = InitPostMediaDir(post);
         foreach (var file in Directory.GetFiles(postDir))
         {
-            data.Add(Path.Combine(
-                "http://127.0.0.1:5205", "media", "blog", post.Id, file
-            ));
+            data.Add(Path.Combine(Host, "media", "blog", post.Id, Path.GetFileName(file)));
         }
         return data;
     }
