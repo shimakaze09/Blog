@@ -35,12 +35,15 @@ public class PostService
         return _postRepo.InsertOrUpdate(post);
     }
 
+    /// <summary>
+    /// Uploads an image for a specific article
+    /// </summary>
+    /// <param name="post">The post object</param>
+    /// <param name="file">The uploaded file</param>
+    /// <returns>The URL of the saved image</returns>
     public string UploadImage(Post post, IFormFile file)
     {
-        var blogMediaDir = Path.Combine(_environment.WebRootPath, "media", "blog");
-        var postMediaDir = Path.Combine(_environment.WebRootPath, "media", "blog", post.Id);
-        if (!Directory.Exists(blogMediaDir)) Directory.CreateDirectory(blogMediaDir);
-        if (!Directory.Exists(postMediaDir)) Directory.CreateDirectory(postMediaDir);
+        InitPostMediaDir(post);
 
         var fileRelativePath = Path.Combine("media", "blog", post.Id, file.FileName);
         var savePath = Path.Combine(_environment.WebRootPath, fileRelativePath);
@@ -52,6 +55,23 @@ public class PostService
         return Path.Combine("http://127.0.0.1:5205", fileRelativePath);
     }
 
+    /// <summary>
+    /// Gets the image resources for a specified article
+    /// </summary>
+    /// <param name="post">The article object</param>
+    /// <returns>A list of image URLs</returns>
+    public List<string> GetImages(Post post)
+    {
+        var data = new List<string>();
+        var postDir = InitPostMediaDir(post);
+        foreach (var file in Directory.GetFiles(postDir))
+        {
+            data.Add(Path.Combine(
+                "http://127.0.0.1:5205", "media", "blog", post.Id, file
+            ));
+        }
+        return data;
+    }
 
     public IPagedList<Post> GetPagedList(int categoryId = 0, int page = 1, int pageSize = 10)
     {
@@ -77,25 +97,13 @@ public class PostService
     /// <returns>The converted PostViewModel object</returns>
     public PostViewModel GetPostViewModel(Post post)
     {
-        var mdPipeline = new MarkdownPipelineBuilder()
-            .UseAdvancedExtensions()
-            .UsePipeTables()
-            .UseEmphasisExtras()
-            .UseGenericAttributes()
-            .UseDefinitionLists()
-            .UseAutoIdentifiers()
-            .UseAutoLinks()
-            .UseTaskLists()
-            .UseBootstrap()
-            .Build();
-
         var vm = new PostViewModel
         {
             Id = post.Id,
             Title = post.Title,
             Summary = post.Summary,
             Content = post.Content,
-            ContentHtml = Markdig.Markdown.ToHtml(post.Content, mdPipeline),
+            ContentHtml = Markdig.Markdown.ToHtml(post.Content),
             Path = post.Path,
             CreationTime = post.CreationTime,
             LastUpdateTime = post.LastModifiedTime,
@@ -111,5 +119,15 @@ public class PostService
         }
 
         return vm;
+    }
+
+    private string InitPostMediaDir(Post post)
+    {
+        var blogMediaDir = Path.Combine(_environment.WebRootPath, "media", "blog");
+        var postMediaDir = Path.Combine(_environment.WebRootPath, "media", "blog", post.Id);
+        if (!Directory.Exists(blogMediaDir)) Directory.CreateDirectory(blogMediaDir);
+        if (!Directory.Exists(postMediaDir)) Directory.CreateDirectory(postMediaDir);
+
+        return postMediaDir;
     }
 }

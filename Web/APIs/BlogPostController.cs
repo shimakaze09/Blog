@@ -91,6 +91,19 @@ public class BlogPostController : ControllerBase
     }
 
     /// <summary>
+    /// Gets images from a blog post
+    /// </summary>
+    /// <param name="id">The ID of the blog post</param>
+    /// <returns>A list of image URLs</returns>
+    [HttpGet("{id}/[action]")]
+    public ApiResponse<List<string>> Images(string id)
+    {
+        var post = _postService.GetById(id);
+        if (post == null) return ApiResponse.NotFound($"Blog {id} does not exist");
+        return new ApiResponse<List<string>>(_postService.GetImages(post));
+    }
+
+    /// <summary>
     ///     Set as featured blog
     /// </summary>
     /// <param name="id">The ID of the blog post</param>
