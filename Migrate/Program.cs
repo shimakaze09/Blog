@@ -2,26 +2,24 @@
 
 using System.Collections.Specialized;
 using Contrib.Extensions;
+using Contrib.Utils;
 using Data;
 using Data.Models;
 
-var log = new StringCollection();
-
-const string importDir = @"E:\Documents\0_Write\0_blog\";
-const string assetsDir = @"D:\dev\Blog\Web\wwwroot\assets\blog";
+const string importDir = @"E:\blog\";
 
 var exclusionDirs = new List<string> { ".git", "logseq", "pages" };
 
 // Delete old files
 var removeFileList = new List<string> { "app.db", "app.db-shm", "app.db-wal" };
-foreach (var filename in removeFileList.Where(filename => File.Exists(filename)))
+foreach (var filename in removeFileList.Where(File.Exists))
 {
     Console.WriteLine($"Delete {filename}");
     File.Delete(filename);
 }
 
 // Database
-var freeSql = FreeSqlFactory.Create("Data Source=app.db;Synchronous=Off;Journal Mode=WAL;Cache Size=5000;");
+var freeSql = FreeSqlFactory.Create("Data Source=app.db;Synchronous=Off;Cache Size=5000;");
 var postRepo = freeSql.GetRepository<Post>();
 var categoryRepo = freeSql.GetRepository<Category>();
 
@@ -37,13 +35,15 @@ void WalkDirectoryTree(DirectoryInfo root)
 {
     // Reference: https://docs.microsoft.com/zh-cn/dotnet/csharp/programming-guide/file-system/how-to-iterate-through-a-directory-tree
 
-    FileInfo[] files = null;
-    DirectoryInfo[] subDirs = null;
+    Console.WriteLine($"Scanning folder: {root.FullName}");
+
+    FileInfo[]? files = null;
+    DirectoryInfo[]? subDirs = null;
 
     // First, process all the files directly under this folder
     try
     {
-        files = root.GetFiles("*.*");
+        files = root.GetFiles("*.md");
     }
     // This is thrown if even one of the files requires permissions greater
     // than the application provides.
@@ -52,7 +52,7 @@ void WalkDirectoryTree(DirectoryInfo root)
         // This code just writes out the message and continues to recurse.
         // You may decide to do something different here. For example, you
         // can try to elevate your privileges and access the file again.
-        log.Add(e.Message);
+        Console.WriteLine(e.Message);
     }
 
     catch (DirectoryNotFoundException e)
@@ -71,12 +71,14 @@ void WalkDirectoryTree(DirectoryInfo root)
             var postPath = fi.DirectoryName!.Replace(importDir, "");
 
             var categoryNames = postPath.Split("\\");
+            Console.WriteLine($"categoryNames: {string.Join(",", categoryNames)}");
             var categories = new List<Category>();
             if (categoryNames.Length > 0)
             {
                 var rootCategory = categoryRepo.Where(a => a.Name == categoryNames[0]).First()
                                    ?? categoryRepo.Insert(new Category { Name = categoryNames[0] });
                 categories.Add(rootCategory);
+                Console.WriteLine($"+ Add category: {rootCategory.Id}.{rootCategory.Name}");
                 for (var i = 1; i < categoryNames.Length; i++)
                 {
                     var name = categoryNames[i];
@@ -89,6 +91,7 @@ void WalkDirectoryTree(DirectoryInfo root)
                                        ParentId = parent.Id
                                    });
                     categories.Add(category);
+                    Console.WriteLine($"+ Add subcategory: {category.Id}.{category.Name}");
                 }
             }
 
