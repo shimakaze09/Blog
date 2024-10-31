@@ -1,8 +1,10 @@
+using AutoMapper;
 using Data.Models;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Web.Extensions;
 using Web.Services;
+using Web.ViewModels.Blog;
 using Web.ViewModels.Response;
 
 namespace Web.Apis;
@@ -16,13 +18,15 @@ namespace Web.Apis;
 [ApiExplorerSettings(GroupName = "blog")]
 public class BlogPostController : ControllerBase
 {
+    private readonly IMapper _mapper;
     private readonly BlogService _blogService;
     private readonly PostService _postService;
 
-    public BlogPostController(PostService postService, BlogService blogService)
+    public BlogPostController(PostService postService, BlogService blogService, IMapper mapper)
     {
         _postService = postService;
         _blogService = blogService;
+        _mapper = mapper;
     }
 
     [AllowAnonymous]
@@ -53,6 +57,22 @@ public class BlogPostController : ControllerBase
         if (post == null) return ApiResponse.NotFound($"Blog {id} does not exist");
         var rows = _postService.Delete(id);
         return ApiResponse.Ok($"Deleted {rows} blog posts");
+    }
+
+    [HttpPost]
+    public ApiResponse<Post> Add(Post post)
+    {
+        return new ApiResponse<Post>(_postService.InsertOrUpdate(post));
+    }
+
+    [HttpPut("{id}")]
+    public ApiResponse<Post> Update(string id, PostUpdateDto dto)
+    {
+        var post = _postService.GetById(id);
+        if (post == null) return ApiResponse.NotFound($"Blog {id} does not exist");
+        post = _mapper.Map<Post>(dto);
+        post.LastModifiedTime = DateTime.Now;
+        return new ApiResponse<Post>(_postService.InsertOrUpdate(post));
     }
 
 
