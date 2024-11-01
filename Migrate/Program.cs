@@ -95,7 +95,9 @@ void WalkDirectoryTree(DirectoryInfo root)
             var post = new Post
             {
                 Id = GuidUtils.GuidTo16String(),
+                Status = "Published",
                 Title = fi.Name.Replace(".md", ""),
+                IsPublished = true,
                 Content = content,
                 Path = postPath,
                 CreationTime = fi.CreationTime,
@@ -104,9 +106,13 @@ void WalkDirectoryTree(DirectoryInfo root)
                 Categories = string.Join(",", categories.Select(a => a.Id))
             };
 
+            var processor = new PostProcessor(importDir, assetsPath, post);
+
+            // Process article title and status
+            processor.InflateStatusTitle();
+
             // Process article content
             // When importing articles, import images within the article and perform relative path replacement for images
-            var processor = new PostProcessor(importDir, assetsPath, post);
             post.Content = processor.MarkdownParse();
             post.Summary = processor.GetSummary(200);
 

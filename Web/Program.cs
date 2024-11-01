@@ -1,7 +1,5 @@
-using System.Net.Mime;
 using Contrib.SiteMessage;
 using Data.Extensions;
-using Microsoft.AspNetCore.Diagnostics;
 using Web.Extensions;
 using Web.Filters;
 using Web.Services;

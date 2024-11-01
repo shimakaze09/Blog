@@ -100,12 +100,18 @@ public class PostService
 
     public IPagedList<Post> GetPagedList(PostQueryParameters param)
     {
-        ISelect<Post> querySet;
+        var querySet = _postRepo.Select;
+
+        if (param.OnlyPublished)
+        {
+            querySet = _postRepo.Select.Where(a => a.IsPublished);
+        }
 
         // Category filtering
-        querySet = param.CategoryId == 0
-            ? _postRepo.Select
-            : _postRepo.Where(a => a.CategoryId == param.CategoryId);
+        if (param.CategoryId != 0)
+        {
+            querySet = querySet.Where(a => a.CategoryId == param.CategoryId);
+        }
 
         // Keyword filtering
         if (param.Search != null) querySet = querySet.Where(a => a.Title.Contains(param.Search));

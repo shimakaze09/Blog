@@ -1,6 +1,7 @@
 using Data.Models;
 using Microsoft.AspNetCore.Mvc;
 using Web.Services;
+using Web.ViewModels.Blog;
 using Web.ViewModels.Response;
 
 namespace Web.Apis;
@@ -38,5 +39,15 @@ public class BlogController : ControllerBase
     public ApiResponse<List<Post>> GetFeaturedPostRows()
     {
         return new ApiResponse<List<Post>>(_blogService.GetFeaturedPosts());
+    }
+
+    /// <summary>
+    ///     Blog overview information
+    /// </summary>
+    /// <returns></returns>
+    [HttpGet("[action]")]
+    public ApiResponse<BlogOverview> Overview()
+    {
+        return new ApiResponse<BlogOverview>(_blogService.Overview());
     }
 }

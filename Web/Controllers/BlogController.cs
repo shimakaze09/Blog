@@ -40,7 +40,8 @@ public class BlogController : Controller
             {
                 CategoryId = categoryId,
                 Page = page,
-                PageSize = pageSize
+                PageSize = pageSize,
+                OnlyPublished = true
             })
         });
     }

@@ -6,6 +6,11 @@
 public class PostQueryParameters : QueryParameters
 {
     /// <summary>
+    /// Only request published articles
+    /// </summary>
+    public bool OnlyPublished { get; set; } = false;
+
+    /// <summary>
     ///     Category ID
     /// </summary>
     public int CategoryId { get; set; } = 0;

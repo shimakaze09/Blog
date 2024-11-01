@@ -28,6 +28,11 @@ public class PostProcessor
     /// <returns></returns>
     public string MarkdownParse()
     {
+        if (_post.Content == null)
+        {
+            return string.Empty;
+        }
+
         var document = Markdown.Parse(_post.Content);
 
         foreach (var node in document.AsEnumerable())
@@ -89,7 +94,7 @@ public class PostProcessor
     public (string, string) InflateStatusTitle()
     {
         const string pattern = @"（(.+)）(.+)";
-        var status = "Published";
+        var status = _post.Status ?? "Published";
         var title = _post.Title;
         if (title == null) return (status, "");
         var result = Regex.Match(title, pattern);
@@ -100,6 +105,11 @@ public class PostProcessor
 
         _post.Status = status;
         _post.Title = title;
+
+        if (!new[] { "Published", "Posted" }.Contains(_post.Status))
+        {
+            _post.IsPublished = false;
+        }
 
         return (status, title);
     }

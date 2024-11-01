@@ -31,7 +31,7 @@ public class Post
     /// <summary>
     ///     Whether to publish (if not published, it is a draft).
     /// </summary>
-    public bool IsPublish { get; set; }
+    public bool IsPublished { get; set; }
 
     /// <summary>
     ///     Summary
