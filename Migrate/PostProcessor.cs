@@ -1,19 +1,19 @@
 ﻿using System.Text.RegularExpressions;
+using Contrib.Extensions;
+using Contrib.Utils;
+using Data.Models;
 using Markdig;
 using Markdig.Renderers.Normalize;
 using Markdig.Syntax;
 using Markdig.Syntax.Inlines;
-using Contrib.Extensions;
-using Contrib.Utils;
-using Data.Models;
 
 namespace Migrate;
 
 public class PostProcessor
 {
-    private readonly Post _post;
-    private readonly string _importPath;
     private readonly string _assetsPath;
+    private readonly string _importPath;
+    private readonly Post _post;
 
     public PostProcessor(string importPath, string assetsPath, Post post)
     {
@@ -28,16 +28,13 @@ public class PostProcessor
     /// <returns></returns>
     public string MarkdownParse()
     {
-        if (_post.Content == null)
-        {
-            return string.Empty;
-        }
+        if (_post.Content == null) return string.Empty;
 
         var document = Markdown.Parse(_post.Content);
 
         foreach (var node in document.AsEnumerable())
         {
-            if (node is not ParagraphBlock { Inline: { } } paragraphBlock) continue;
+            if (node is not ParagraphBlock { Inline: not null } paragraphBlock) continue;
             foreach (var inline in paragraphBlock.Inline)
             {
                 if (inline is not LinkInline { IsImage: true } linkInline) continue;
@@ -76,7 +73,7 @@ public class PostProcessor
     }
 
     /// <summary>
-    /// Extract a summary of length characters from the beginning of the article content
+    ///     Extract a summary of length characters from the beginning of the article content
     /// </summary>
     /// <param name="length"></param>
     /// <returns></returns>
@@ -88,15 +85,15 @@ public class PostProcessor
     }
 
     /// <summary>
-    /// Fill in article status and title
+    ///     Fill in article status and title
     /// </summary>
     /// <returns></returns>
     public (string, string) InflateStatusTitle()
     {
-        const string pattern = @"（(.+)）(.+)";
+        const string pattern = @"^（(.+)）(.+)$";
         var status = _post.Status ?? "Published";
         var title = _post.Title;
-        if (title == null) return (status, "");
+        if (string.IsNullOrEmpty(title)) return (status, "");
         var result = Regex.Match(title, pattern);
         if (!result.Success) return (status, title);
 
@@ -106,10 +103,7 @@ public class PostProcessor
         _post.Status = status;
         _post.Title = title;
 
-        if (!new[] { "Published", "Posted" }.Contains(_post.Status))
-        {
-            _post.IsPublished = false;
-        }
+        if (!new[] { "Published", "Posted" }.Contains(_post.Status)) _post.IsPublished = false;
 
         return (status, title);
     }

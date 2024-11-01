@@ -107,6 +107,18 @@ public class PostService
             querySet = _postRepo.Select.Where(a => a.IsPublished);
         }
 
+        // Is published
+        if (param.OnlyPublished)
+        {
+            querySet = _postRepo.Select.Where(a => a.IsPublished);
+        }
+
+        // Status filter
+        if (!string.IsNullOrEmpty(param.Status))
+        {
+            querySet = querySet.Where(a => a.Status == param.Status);
+        }
+
         // Category filtering
         if (param.CategoryId != 0)
         {
@@ -114,10 +126,10 @@ public class PostService
         }
 
         // Keyword filtering
-        if (param.Search != null) querySet = querySet.Where(a => a.Title.Contains(param.Search));
+        if (!string.IsNullOrEmpty(param.Search)) querySet = querySet.Where(a => a.Title.Contains(param.Search));
 
         // Sorting
-        if (param.SortBy != null)
+        if (!string.IsNullOrEmpty(param.SortBy))
         {
             // Whether ascending order
             var isAscending = !param.SortBy.StartsWith("-");

@@ -99,4 +99,14 @@ public class BlogService
         _topPostRepo.Insert(item);
         return (item, rows);
     }
+
+    /// <summary>
+    /// Gets the list of article statuses
+    /// </summary>
+    /// <returns>A list of nullable string values representing article statuses</returns>
+    public List<string?> GetStatusList()
+    {
+        return _postRepo.Select.GroupBy(a => a.Status)
+            .ToList(a => a.Key);
+    }
 }
