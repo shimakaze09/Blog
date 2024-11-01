@@ -6,6 +6,7 @@ using Markdig.Renderers.Normalize;
 using Markdig.Syntax;
 using Markdig.Syntax.Inlines;
 using Web.ViewModels;
+using Web.ViewModels.QueryFilters;
 using X.PagedList;
 using X.PagedList.Extensions;
 
@@ -18,7 +19,8 @@ public class PostService
     private readonly IWebHostEnvironment _environment;
     private readonly IBaseRepository<Post> _postRepo;
 
-    public PostService(IBaseRepository<Post> postRepo, IBaseRepository<Category> categoryRepo,
+    public PostService(IBaseRepository<Post> postRepo,
+        IBaseRepository<Category> categoryRepo,
         IWebHostEnvironment environment,
         IConfiguration configuration)
     {
@@ -32,7 +34,7 @@ public class PostService
 
     public Post? GetById(string id)
     {
-        // When fetching articles, parse markdown image URLs, add full URLs and return them to the frontend
+        // When retrieving posts, parse markdown image URLs and add full URLs to return to the frontend
         var post = _postRepo.Where(a => a.Id == id).Include(a => a.Category).First();
         post.Content = MdImageLinkConvert(post);
         return post;
@@ -45,7 +47,7 @@ public class PostService
 
     public Post InsertOrUpdate(Post post)
     {
-        // When editing articles, replace the image URLs in markdown with relative paths and save
+        // When updating posts, replace markdown image URLs with relative paths before saving
         post.Content = MdImageLinkConvert(post, false);
         return _postRepo.InsertOrUpdate(post);
     }
@@ -64,7 +66,7 @@ public class PostService
         var savePath = Path.Combine(_environment.WebRootPath, fileRelativePath);
         if (File.Exists(savePath))
         {
-            // File renaming for uploaded files
+            // Handle file renaming
             var newFilename =
                 $"{Path.GetFileNameWithoutExtension(file.FileName)}-{GuidUtils.GuidTo16String()}.{Path.GetExtension(file.FileName)}";
             fileRelativePath = Path.Combine("media", "blog", post.Id, newFilename);
@@ -90,31 +92,41 @@ public class PostService
         var postDir = InitPostMediaDir(post);
         foreach (var file in Directory.GetFiles(postDir))
             data.Add(Path.Combine(Host, "media", "blog", post.Id, Path.GetFileName(file)));
+
         return data;
     }
 
-    public IPagedList<Post> GetPagedList(int categoryId = 0, int page = 1, int pageSize = 10)
+    public IPagedList<Post> GetPagedList(PostQueryParameters param)
     {
-        List<Post> posts;
-        if (categoryId == 0)
-            posts = _postRepo.Select
-                .OrderByDescending(a => a.LastModifiedTime)
-                .Include(a => a.Category)
-                .ToList();
-        else
-            posts = _postRepo.Where(a => a.CategoryId == categoryId)
-                .OrderByDescending(a => a.LastModifiedTime)
-                .Include(a => a.Category)
-                .ToList();
+        ISelect<Post> querySet;
 
-        return posts.ToPagedList(page, pageSize);
+        // Category filtering
+        querySet = param.CategoryId == 0
+            ? _postRepo.Select
+            : _postRepo.Where(a => a.CategoryId == param.CategoryId);
+
+        // Keyword filtering
+        if (param.Search != null) querySet = querySet.Where(a => a.Title.Contains(param.Search));
+
+        // Sorting
+        if (param.SortBy != null)
+        {
+            // Whether ascending order
+            var isAscending = !param.SortBy.StartsWith("-");
+            var orderByProperty = param.SortBy.Trim('-');
+
+            querySet = querySet.OrderByPropertyName(orderByProperty, isAscending);
+        }
+
+        return querySet.Include(a => a.Category).ToList()
+            .ToPagedList(param.Page, param.PageSize);
     }
 
     /// <summary>
-    ///     Converts a Post object to a PostViewModel object
+    ///     Convert Post object to PostViewModel object
     /// </summary>
-    /// <param name="post">The Post object to convert</param>
-    /// <returns>The converted PostViewModel object</returns>
+    /// <param name="post"></param>
+    /// <returns></returns>
     public PostViewModel GetPostViewModel(Post post)
     {
         var vm = new PostViewModel
@@ -130,7 +142,6 @@ public class PostService
             Category = post.Category,
             Categories = new List<Category>()
         };
-
 
         foreach (var itemId in post.Categories.Split(",").Select(int.Parse))
         {
@@ -165,12 +176,14 @@ public class PostService
     private string MdImageLinkConvert(Post post, bool isAddPrefix = true)
     {
         var document = Markdown.Parse(post.Content);
+
         foreach (var node in document.AsEnumerable())
         {
             if (node is not ParagraphBlock { Inline: not null } paragraphBlock) continue;
             foreach (var inline in paragraphBlock.Inline)
             {
                 if (inline is not LinkInline { IsImage: true } linkInline) continue;
+
                 var imgUrl = linkInline.Url;
                 if (imgUrl == null) continue;
                 if (isAddPrefix && imgUrl.StartsWith("http")) continue;
@@ -182,7 +195,7 @@ public class PostService
                 }
                 else
                 {
-                    // Set relative URL
+                    // Set relative link
                     linkInline.Url = Path.GetFileName(imgUrl);
                 }
             }

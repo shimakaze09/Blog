@@ -5,6 +5,7 @@ using Microsoft.AspNetCore.Mvc;
 using Web.Extensions;
 using Web.Services;
 using Web.ViewModels.Blog;
+using Web.ViewModels.QueryFilters;
 using Web.ViewModels.Response;
 
 namespace Web.Apis;
@@ -31,9 +32,9 @@ public class BlogPostController : ControllerBase
 
     [AllowAnonymous]
     [HttpGet]
-    public ApiResponsePaged<Post> GetList(int categoryId = 0, int page = 1, int pageSize = 10)
+    public ApiResponsePaged<Post> GetList([FromQuery] PostQueryParameters param)
     {
-        var pagedList = _postService.GetPagedList(categoryId, page, pageSize);
+        var pagedList = _postService.GetPagedList(param);
         return new ApiResponsePaged<Post>
         {
             Message = "Get posts list",

@@ -4,6 +4,7 @@ using FreeSql;
 using Microsoft.AspNetCore.Mvc;
 using Web.Services;
 using Web.ViewModels;
+using Web.ViewModels.QueryFilters;
 
 namespace Web.Controllers;
 
@@ -35,7 +36,12 @@ public class BlogController : Controller
             CurrentCategory = categoryId == 0 ? categories[0] : categories.First(a => a.Id == categoryId),
             CurrentCategoryId = categoryId,
             Categories = categories,
-            Posts = _postService.GetPagedList(categoryId, page, pageSize)
+            Posts = _postService.GetPagedList(new PostQueryParameters
+            {
+                CategoryId = categoryId,
+                Page = page,
+                PageSize = pageSize
+            })
         });
     }
 
