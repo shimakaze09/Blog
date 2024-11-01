@@ -13,5 +13,5 @@ public class PostQueryParameters : QueryParameters
     /// <summary>
     ///     Sorting field
     /// </summary>
-    public new string? SortBy { get; set; } = "LastUpdateTime";
+    public new string? SortBy { get; set; } = "-LastUpdateTime";
 }
