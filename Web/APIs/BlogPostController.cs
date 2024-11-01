@@ -86,7 +86,6 @@ public class BlogPostController : ControllerBase
         return new ApiResponse<Post>(_postService.InsertOrUpdate(post));
     }
 
-
     [HttpPut("{id}")]
     public ApiResponse<Post> Update(string id, PostUpdateDto dto)
     {
