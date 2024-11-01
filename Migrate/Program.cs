@@ -1,11 +1,13 @@
 ﻿// See https://aka.ms/new-console-template for more information
 
-using Contrib.Extensions;
 using Contrib.Utils;
 using Data;
 using Data.Models;
+using Migrate;
 
 const string importDir = @"E:\blog\";
+
+var assetsPath = Path.GetFullPath("../Web/wwwroot/media/blog");
 
 var exclusionDirs = new List<string> { ".git", "logseq", "pages" };
 
@@ -100,18 +102,23 @@ void WalkDirectoryTree(DirectoryInfo root)
 
             // Save the original file
             var post = new Post
-                // TODO: When importing articles, import images within the article as well and perform relative path replacement for images
-                {
-                    Id = GuidUtils.GuidTo16String(),
-                    Title = fi.Name.Replace(".md", ""),
-                    Summary = content.Limit(200),
-                    Content = content,
-                    Path = postPath,
-                    CreationTime = fi.CreationTime,
-                    LastModifiedTime = fi.LastWriteTime,
-                    CategoryId = categories[^1].Id,
-                    Categories = string.Join(",", categories.Select(a => a.Id))
-                };
+            {
+                Id = GuidUtils.GuidTo16String(),
+                Title = fi.Name.Replace(".md", ""),
+                Content = content,
+                Path = postPath,
+                CreationTime = fi.CreationTime,
+                LastModifiedTime = fi.LastWriteTime,
+                CategoryId = categories[^1].Id,
+                Categories = string.Join(",", categories.Select(a => a.Id))
+            };
+
+            // Process article content
+            // When importing articles, import images within the article and perform relative path replacement for images
+            var processor = new PostProcessor(importDir, assetsPath, post);
+            post.Content = processor.MarkdownParse();
+            post.Summary = processor.GetSummary(200);
+
             postRepo.Insert(post);
         }
 
