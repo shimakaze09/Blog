@@ -1,6 +1,10 @@
 using Contrib.Utils;
 using Data.Models;
 using FreeSql;
+using Markdig;
+using Markdig.Renderers.Normalize;
+using Markdig.Syntax;
+using Markdig.Syntax.Inlines;
 using Web.ViewModels;
 using X.PagedList;
 using X.PagedList.Extensions;
@@ -28,8 +32,10 @@ public class PostService
 
     public Post? GetById(string id)
     {
-        // TODO: Get articles and parse markdown image URLs, add full URLs and return them to the frontend
-        return _postRepo.Where(a => a.Id == id).Include(a => a.Category).First();
+        // When fetching articles, parse markdown image URLs, add full URLs and return them to the frontend
+        var post = _postRepo.Where(a => a.Id == id).Include(a => a.Category).First();
+        post.Content = MdImageLinkConvert(post);
+        return post;
     }
 
     public int Delete(string id)
@@ -39,7 +45,8 @@ public class PostService
 
     public Post InsertOrUpdate(Post post)
     {
-        // TODO: Modify the article when editing, replace the markdown image URLs with relative paths before saving
+        // When editing articles, replace the image URLs in markdown with relative paths and save
+        post.Content = MdImageLinkConvert(post, false);
         return _postRepo.InsertOrUpdate(post);
     }
 
@@ -116,7 +123,7 @@ public class PostService
             Title = post.Title,
             Summary = post.Summary,
             Content = post.Content,
-            ContentHtml = Markdig.Markdown.ToHtml(post.Content),
+            ContentHtml = Markdown.ToHtml(post.Content),
             Path = post.Path,
             CreationTime = post.CreationTime,
             LastUpdateTime = post.LastModifiedTime,
@@ -134,6 +141,11 @@ public class PostService
         return vm;
     }
 
+    /// <summary>
+    ///     Initializes the resource directory for blog posts
+    /// </summary>
+    /// <param name="post">The blog post object</param>
+    /// <returns>The path of the post media directory</returns>
     private string InitPostMediaDir(Post post)
     {
         var blogMediaDir = Path.Combine(_environment.WebRootPath, "media", "blog");
@@ -142,5 +154,43 @@ public class PostService
         if (!Directory.Exists(postMediaDir)) Directory.CreateDirectory(postMediaDir);
 
         return postMediaDir;
+    }
+
+    /// <summary>
+    ///     Converts image links in Markdown
+    /// </summary>
+    /// <param name="post">The blog post object</param>
+    /// <param name="isAddPrefix">Whether to add a prefix to the image URLs</param>
+    /// <returns>The converted Markdown content</returns>
+    private string MdImageLinkConvert(Post post, bool isAddPrefix = true)
+    {
+        var document = Markdown.Parse(post.Content);
+        foreach (var node in document.AsEnumerable())
+        {
+            if (node is not ParagraphBlock { Inline: not null } paragraphBlock) continue;
+            foreach (var inline in paragraphBlock.Inline)
+            {
+                if (inline is not LinkInline { IsImage: true } linkInline) continue;
+                var imgUrl = linkInline.Url;
+                if (imgUrl == null) continue;
+                if (isAddPrefix && imgUrl.StartsWith("http")) continue;
+                if (isAddPrefix)
+                {
+                    if (imgUrl.StartsWith("http")) continue;
+                    // Set full URL
+                    linkInline.Url = $"{Host}/media/blog/{post.Id}/{imgUrl}";
+                }
+                else
+                {
+                    // Set relative URL
+                    linkInline.Url = Path.GetFileName(imgUrl);
+                }
+            }
+        }
+
+        using var writer = new StringWriter();
+        var render = new NormalizeRenderer(writer);
+        render.Render(document);
+        return writer.ToString();
     }
 }
