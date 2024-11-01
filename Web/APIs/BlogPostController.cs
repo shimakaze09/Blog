@@ -60,11 +60,32 @@ public class BlogPostController : ControllerBase
         return ApiResponse.Ok($"Deleted {rows} blog posts");
     }
 
+    // FIXME: This parameter for adding articles is incorrect, we need to change it to DTO
     [HttpPost]
-    public ApiResponse<Post> Add(Post post)
+    public ApiResponse<Post> Add(PostCreationDto dto,
+        [FromServices] CategoryService categoryService)
     {
+        var post = _mapper.Map<Post>(dto);
+        var category = categoryService.GetById(dto.CategoryId);
+        if (category == null) return ApiResponse.BadRequest($"Category {dto.CategoryId} does not exist!");
+
+        post.Id = Guid.NewGuid().ToString();
+        post.CreationTime = DateTime.Now;
+        post.LastModifiedTime = DateTime.Now;
+
+        var categories = new List<Category> { category };
+        var parent = category.Parent;
+        while (parent != null)
+        {
+            categories.Add(parent);
+            parent = parent.Parent;
+        }
+
+        categories.Reverse();
+        post.Categories = string.Join(",", categories.Select(a => a.Id));
         return new ApiResponse<Post>(_postService.InsertOrUpdate(post));
     }
+
 
     [HttpPut("{id}")]
     public ApiResponse<Post> Update(string id, PostUpdateDto dto)

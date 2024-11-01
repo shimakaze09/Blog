@@ -29,7 +29,8 @@ public class CategoryService
 
     public Category? GetById(int id)
     {
-        return _cRepo.Where(a => a.Id == id).First();
+        return _cRepo.Where(a => a.Id == id)
+            .Include(a => a.Parent).First();
     }
 
     /// <summary>

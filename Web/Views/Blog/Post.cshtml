@@ -1,5 +1,4 @@
 @model PostViewModel
-
 @{
     ViewData["Title"] = Model.Title;
 }
@@ -7,18 +6,17 @@
 @section head {
     <link rel="stylesheet" href="~/lib/editormd/css/editormd.preview.min.css">
     <style>
-        .post-content {
-            padding: 0;
-            font-size: 1.2em;
-        }
-    </style>
+    .post-content {
+        padding: 0;
+        font-size: 1.2em;
+    }
+</style>
 }
 
 <div class="container">
     <div class="row">
         <div class="col-lg-2">
             <div id="sidebar" class="p-3 sticky-lg-top">
-                @* <h5>Table of Contents</h5> *@
                 <div href="/" class="d-flex align-items-center pb-3 mb-3 link-dark text-decoration-none border-bottom">
                     <span class="bi me-2">
                         <i class="fa-solid fa-table-list fa-2xl"></i>
@@ -33,17 +31,27 @@
             <header class="post-header py-3 mb-3 border-bottom">
                 <div class="post-title h3 font-weight-bold">@Model.Title</div>
                 <div class="post-meta">
-                    <span>
-                        @Model.LastUpdateTime.ToString()
-                        @Model.LastUpdateTime.ToString()
-                    </span>
+                    <div>
+                        Published on:
+                        <span>@Model.CreationTime.ToShortDateString()</span>
+                        <span>@Model.CreationTime.ToString("hh:mm")</span>
+                    </div>
+                    <div>
+                        Last updated:
+                        @Model.LastUpdateTime?.ToLongDateString()
+                        @Model.LastUpdateTime?.ToLongTimeString()
+                    </div>
                     <span>Word Count: @Model.Content.Length.ToString()</span>
                     <span>
                         Category:
-                        <a asp-controller="Blog" asp-action="List"
-                           asp-route-categoryId="@Model.Category.Id">
-                            @Model.Category.Name
-                        </a>
+                        @foreach (var category in Model.Categories)
+                        {
+                            <span> / </span>
+                            <a asp-controller="Blog" asp-action="List"
+                               asp-route-categoryId="@category.Id">
+                                @category.Name
+                            </a>
+                        }
                     </span>
                 </div>
             </header>
@@ -68,6 +76,6 @@
     <script src="~/lib/editormd/editormd.min.js"></script>
     <script src="~/js/blog-post.js"></script>
     <script>
-        procImages('@Model.Id')
-    </script>
+    procImages('@Model.Id')
+</script>
 }

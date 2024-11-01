@@ -1,6 +1,7 @@
 @using Web.Utils
 @using X.PagedList.Mvc.Core
 @model BlogListViewModel
+
 @{
     ViewData["Title"] = "Blog List";
 }
@@ -42,6 +43,7 @@
             }
         </div>
     </div>
+
     <nav aria-label="Page navigation example">
         @Html.PagedListPager(Model.Posts, page => Url.Action(
                 RazorHelper.GetCurrentActionName(ViewContext), new { page, categoryId = Model.CurrentCategoryId }),

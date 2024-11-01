@@ -1,3 +1,4 @@
+using System.Net;
 using Contrib.Utils;
 using Data.Models;
 using FreeSql;
@@ -62,13 +63,14 @@ public class PostService
     {
         InitPostMediaDir(post);
 
-        var fileRelativePath = Path.Combine("media", "blog", post.Id, file.FileName);
+        var filename = WebUtility.UrlEncode(file.FileName);
+        var fileRelativePath = Path.Combine("media", "blog", post.Id, filename);
         var savePath = Path.Combine(_environment.WebRootPath, fileRelativePath);
         if (File.Exists(savePath))
         {
             // Handle file renaming
             var newFilename =
-                $"{Path.GetFileNameWithoutExtension(file.FileName)}-{GuidUtils.GuidTo16String()}.{Path.GetExtension(file.FileName)}";
+                $"{Path.GetFileNameWithoutExtension(filename)}-{GuidUtils.GuidTo16String()}.{Path.GetExtension(filename)}";
             fileRelativePath = Path.Combine("media", "blog", post.Id, newFilename);
             savePath = Path.Combine(_environment.WebRootPath, fileRelativePath);
         }

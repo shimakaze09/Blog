@@ -45,8 +45,10 @@ public class PostProcessor
                 var destPath = Path.Combine(destDir, imgFilename);
                 if (File.Exists(destPath))
                 {
+                    // Image renaming handling
                     var imgId = GuidUtils.GuidTo16String();
-                    imgFilename = $"{imgId}-{Path.GetFileName(linkInline.Url)}";
+                    imgFilename =
+                        $"{Path.GetFileNameWithoutExtension(imgFilename)}-{imgId}.{Path.GetExtension(imgFilename)}";
                     destPath = Path.Combine(destDir, imgFilename);
                 }
 
