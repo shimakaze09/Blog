@@ -70,7 +70,9 @@ public class BlogPostController : ControllerBase
     {
         var post = _postService.GetById(id);
         if (post == null) return ApiResponse.NotFound($"Blog {id} does not exist");
-        post = _mapper.Map<Post>(dto);
+        // mapper.Map(source) creates a completely new object
+        // mapper.Map(source, dest) modifies the source object
+        post = _mapper.Map(dto, post);
         post.LastModifiedTime = DateTime.Now;
         return new ApiResponse<Post>(_postService.InsertOrUpdate(post));
     }
@@ -87,7 +89,11 @@ public class BlogPostController : ControllerBase
         var post = _postService.GetById(id);
         if (post == null) return ApiResponse.NotFound($"Blog {id} does not exist");
         var imgUrl = _postService.UploadImage(post, file);
-        return ApiResponse.Ok(new { imgUrl });
+        return ApiResponse.Ok(new
+        {
+            imgUrl,
+            imgName = Path.GetFileNameWithoutExtension(imgUrl)
+        });
     }
 
     /// <summary>
