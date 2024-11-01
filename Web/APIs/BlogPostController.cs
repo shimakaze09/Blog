@@ -18,8 +18,8 @@ namespace Web.Apis;
 [ApiExplorerSettings(GroupName = "blog")]
 public class BlogPostController : ControllerBase
 {
-    private readonly IMapper _mapper;
     private readonly BlogService _blogService;
+    private readonly IMapper _mapper;
     private readonly PostService _postService;
 
     public BlogPostController(PostService postService, BlogService blogService, IMapper mapper)
@@ -76,7 +76,7 @@ public class BlogPostController : ControllerBase
     }
 
     /// <summary>
-    /// Upload image
+    ///     Upload image
     /// </summary>
     /// <param name="id">The ID of the blog post</param>
     /// <param name="file">The uploaded image file</param>
@@ -91,7 +91,7 @@ public class BlogPostController : ControllerBase
     }
 
     /// <summary>
-    /// Gets images from a blog post
+    ///     Gets images from a blog post
     /// </summary>
     /// <param name="id">The ID of the blog post</param>
     /// <returns>A list of image URLs</returns>

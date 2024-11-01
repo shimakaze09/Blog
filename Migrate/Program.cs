@@ -1,6 +1,5 @@
 ﻿// See https://aka.ms/new-console-template for more information
 
-using System.Collections.Specialized;
 using Contrib.Extensions;
 using Contrib.Utils;
 using Data;
@@ -101,18 +100,18 @@ void WalkDirectoryTree(DirectoryInfo root)
 
             // Save the original file
             var post = new Post
-            // TODO: When importing articles, import images within the article as well and perform relative path replacement for images
-            {
-                Id = GuidUtils.GuidTo16String(),
-                Title = fi.Name.Replace(".md", ""),
-                Summary = content.Limit(200),
-                Content = content,
-                Path = postPath,
-                CreationTime = fi.CreationTime,
-                LastModifiedTime = fi.LastWriteTime,
-                CategoryId = categories[^1].Id,
-                Categories = string.Join(",", categories.Select(a => a.Id))
-            };
+                // TODO: When importing articles, import images within the article as well and perform relative path replacement for images
+                {
+                    Id = GuidUtils.GuidTo16String(),
+                    Title = fi.Name.Replace(".md", ""),
+                    Summary = content.Limit(200),
+                    Content = content,
+                    Path = postPath,
+                    CreationTime = fi.CreationTime,
+                    LastModifiedTime = fi.LastWriteTime,
+                    CategoryId = categories[^1].Id,
+                    Categories = string.Join(",", categories.Select(a => a.Id))
+                };
             postRepo.Insert(post);
         }
 

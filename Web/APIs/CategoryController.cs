@@ -93,7 +93,7 @@ public class CategoryController : ControllerBase
     }
 
     /// <summary>
-    /// Set category visible
+    ///     Set category visible
     /// </summary>
     /// <param name="id">The ID of the category</param>
     /// <returns>An API response object</returns>
@@ -107,7 +107,7 @@ public class CategoryController : ControllerBase
     }
 
     /// <summary>
-    /// Set category invisible
+    ///     Set category invisible
     /// </summary>
     /// <param name="id">The ID of the category</param>
     /// <returns>An API response object</returns>

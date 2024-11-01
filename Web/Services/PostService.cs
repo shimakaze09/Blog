@@ -1,6 +1,6 @@
+using Contrib.Utils;
 using Data.Models;
 using FreeSql;
-using Markdig;
 using Web.ViewModels;
 using X.PagedList;
 using X.PagedList.Extensions;
@@ -10,13 +10,12 @@ namespace Web.Services;
 public class PostService
 {
     private readonly IBaseRepository<Category> _categoryRepo;
-    private readonly IBaseRepository<Post> _postRepo;
-    private readonly IWebHostEnvironment _environment;
     private readonly IConfiguration _configuration;
+    private readonly IWebHostEnvironment _environment;
+    private readonly IBaseRepository<Post> _postRepo;
 
-    public string Host => _configuration.GetSection("Server:Host").Value;
-
-    public PostService(IBaseRepository<Post> postRepo, IBaseRepository<Category> categoryRepo, IWebHostEnvironment environment,
+    public PostService(IBaseRepository<Post> postRepo, IBaseRepository<Category> categoryRepo,
+        IWebHostEnvironment environment,
         IConfiguration configuration)
     {
         _postRepo = postRepo;
@@ -24,6 +23,8 @@ public class PostService
         _environment = environment;
         _configuration = configuration;
     }
+
+    public string Host => _configuration.GetSection("Server:Host").Value;
 
     public Post? GetById(string id)
     {
@@ -43,7 +44,7 @@ public class PostService
     }
 
     /// <summary>
-    /// Uploads an image for a specific article
+    ///     Uploads an image for a specific article
     /// </summary>
     /// <param name="post">The post object</param>
     /// <param name="file">The uploaded file</param>
@@ -52,9 +53,17 @@ public class PostService
     {
         InitPostMediaDir(post);
 
-        // TODO: Check if uploaded file has the same name as existing files
         var fileRelativePath = Path.Combine("media", "blog", post.Id, file.FileName);
         var savePath = Path.Combine(_environment.WebRootPath, fileRelativePath);
+        if (File.Exists(savePath))
+        {
+            // File renaming for uploaded files
+            var newFilename =
+                $"{Path.GetFileNameWithoutExtension(file.FileName)}-{GuidUtils.GuidTo16String()}.{Path.GetExtension(file.FileName)}";
+            fileRelativePath = Path.Combine("media", "blog", post.Id, newFilename);
+            savePath = Path.Combine(_environment.WebRootPath, fileRelativePath);
+        }
+
         using (var fs = new FileStream(savePath, FileMode.Create))
         {
             file.CopyTo(fs);
@@ -64,7 +73,7 @@ public class PostService
     }
 
     /// <summary>
-    /// Gets the image resources for a specified article
+    ///     Gets the image resources for a specified article
     /// </summary>
     /// <param name="post">The article object</param>
     /// <returns>A list of image URLs</returns>
@@ -73,9 +82,7 @@ public class PostService
         var data = new List<string>();
         var postDir = InitPostMediaDir(post);
         foreach (var file in Directory.GetFiles(postDir))
-        {
             data.Add(Path.Combine(Host, "media", "blog", post.Id, Path.GetFileName(file)));
-        }
         return data;
     }
 

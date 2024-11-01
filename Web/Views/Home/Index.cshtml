@@ -18,7 +18,9 @@
                     Posts
                 </a>
                 <a class="btn btn-outline-secondary btn-lg px-4" asp-controller="Photography"
-                    asp-action="RandomPhoto">View Images</a>
+                   asp-action="RandomPhoto">
+                    View Images
+                </a>
                 <button class="btn btn-outline-secondary btn-lg px-4" @@click="switchChartType">Switch Chart</button>
             </div>
         </div>
@@ -34,7 +36,7 @@
             @foreach (var photo in Model.FeaturedPhotos)
             {
                 <div class="col">
-                    <partial name="Widgets/PhotoCardSmall" model="photo" />
+                    <partial name="Widgets/PhotoCardSmall" model="photo"/>
                 </div>
             }
         </div>
@@ -68,7 +70,7 @@
 
     @if (Model.TopPost != null)
     {
-        <partial name="Widgets/TopPostCard" model="Model.TopPost" />
+        <partial name="Widgets/TopPostCard" model="Model.TopPost"/>
     }
     else
     {
@@ -80,7 +82,7 @@
         <div class="row mb-2">
             @foreach (var post in Model.FeaturedPosts)
             {
-                <partial name="Widgets/FeaturedPostCard" model="post" />
+                <partial name="Widgets/FeaturedPostCard" model="post"/>
             }
         </div>
     }

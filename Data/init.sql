@@ -72,6 +72,15 @@ create table User
 );
 
 
-INSERT INTO FeaturedCategory (Id, CategoryId, Name, Description, IconCssClass) VALUES (1, 3, 'C# / Asp.Net Core', 'Paragraph of text beneath the heading to explain the heading. We''ll add onto it with another sentence and probably just keep going until we run out of words.', 'fa-solid fa-globe');
-INSERT INTO FeaturedCategory (Id, CategoryId, Name, Description, IconCssClass) VALUES (2, 8, 'C / C++', 'Paragraph of text beneath the heading to explain the heading. We''ll add onto it with another sentence and probably just keep going until we run out of words.', 'fa-brands fa-c');
-INSERT INTO FeaturedCategory (Id, CategoryId, Name, Description, IconCssClass) VALUES (3, 2, 'Flutter / Android', 'Paragraph of text beneath the heading to explain the heading. We''ll add onto it with another sentence and probably just keep going until we run out of words.', 'fa-brands fa-android');
+INSERT INTO FeaturedCategory (Id, CategoryId, Name, Description, IconCssClass)
+VALUES (1, 3, 'C# / Asp.Net Core',
+        'Paragraph of text beneath the heading to explain the heading. We''ll add onto it with another sentence and probably just keep going until we run out of words.',
+        'fa-solid fa-globe');
+INSERT INTO FeaturedCategory (Id, CategoryId, Name, Description, IconCssClass)
+VALUES (2, 8, 'C / C++',
+        'Paragraph of text beneath the heading to explain the heading. We''ll add onto it with another sentence and probably just keep going until we run out of words.',
+        'fa-brands fa-c');
+INSERT INTO FeaturedCategory (Id, CategoryId, Name, Description, IconCssClass)
+VALUES (3, 2, 'Flutter / Android',
+        'Paragraph of text beneath the heading to explain the heading. We''ll add onto it with another sentence and probably just keep going until we run out of words.',
+        'fa-brands fa-android');

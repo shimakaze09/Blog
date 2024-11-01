@@ -39,8 +39,11 @@
                     </span>
                     <span>Word Count: @Model.Content.Length.ToString()</span>
                     <span>
-                        Category: <a asp-controller="Blog" asp-action="List"
-                            asp-route-categoryId="@Model.Category.Id">@Model.Category.Name</a>
+                        Category:
+                        <a asp-controller="Blog" asp-action="List"
+                           asp-route-categoryId="@Model.Category.Id">
+                            @Model.Category.Name
+                        </a>
                     </span>
                 </div>
             </header>
