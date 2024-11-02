@@ -37,7 +37,7 @@ public class PostService
     {
         // When retrieving posts, parse markdown image URLs and add full URLs to return to the frontend
         var post = _postRepo.Where(a => a.Id == id).Include(a => a.Category).First();
-        post.Content = MdImageLinkConvert(post);
+        if (post != null) post.Content = MdImageLinkConvert(post, true);
         return post;
     }
 
@@ -158,7 +158,7 @@ public class PostService
             ContentHtml = Markdown.ToHtml(post.Content),
             Path = post.Path,
             CreationTime = post.CreationTime,
-            LastUpdateTime = post.LastModifiedTime,
+            LastUpdateTime = post.LastUpdateTime,
             Category = post.Category,
             Categories = new List<Category>()
         };

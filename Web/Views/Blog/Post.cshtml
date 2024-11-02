@@ -6,11 +6,11 @@
 @section head {
     <link rel="stylesheet" href="~/lib/editormd/css/editormd.preview.min.css">
     <style>
-    .post-content {
-        padding: 0;
-        font-size: 1.2em;
-    }
-</style>
+        .post-content {
+            padding: 0;
+            font-size: 1.2em;
+        }
+    </style>
 }
 
 <div class="container">
@@ -51,8 +51,7 @@
                                 <span> / </span>
                             }
 
-                            <a asp-controller="Blog" asp-action="List"
-                               asp-route-categoryId="@category.Id">
+                            <a asp-controller="Blog" asp-action="List" asp-route-categoryId="@category.Id">
                                 @category.Name
                             </a>
                         }
@@ -61,6 +60,28 @@
             </header>
             <div id="test-editormd-view" class="post-content">
                 <textarea id="append-test" style="display:none;">@Model.Content</textarea>
+            </div>
+
+            <div class="my-3 text-center">
+                <span style="font-size: 1.5em; color: #bababa">_EOF_</span>
+            </div>
+
+            <div class="card my-3">
+                <div class="row g-0">
+                    <div class="col-md-2">
+                        <img src="~/images/codelab.png" class="img-fluid rounded-start" width="200" alt="...">
+                    </div>
+                    <div class="col-md-10">
+                        <div class="card-body">
+                            <h5 class="card-title">Card title</h5>
+                            <p class="card-text">This is a wider card with supporting text below as a natural lead-in to
+                                additional content. This content is a little bit longer.</p>
+                            <p class="card-text">
+                                <small class="text-muted">Last updated 3 mins ago</small>
+                            </p>
+                        </div>
+                    </div>
+                </div>
             </div>
         </div>
     </div>
@@ -79,7 +100,4 @@
 
     <script src="~/lib/editormd/editormd.min.js"></script>
     <script src="~/js/blog-post.js"></script>
-    <script>
-    procImages('@Model.Id')
-</script>
 }

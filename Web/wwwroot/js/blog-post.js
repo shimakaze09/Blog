@@ -16,6 +16,13 @@ $(function () {
     });
 })
 
+/**
+ * Convert image links in articles
+ * 
+ * @deprecated No longer needed, images are now handled directly in the backend
+ * @param postId
+ */
+
 function procImages(postId) {
     $.get(`/Api/BlogPost/${postId}/`, function (res) {
         console.log(res)

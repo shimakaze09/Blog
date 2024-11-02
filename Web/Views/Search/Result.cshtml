@@ -10,9 +10,23 @@
         <div>@Model.Posts.Count.ToString() Posts</div>
     </h2>
     <div>
+        @if (Model.Posts.Count == 0)
+        {
+            <div class="d-flex justify-content-center">
+                <div class="card" style="width: 18rem;">
+                    <img src="~/images/codelab.png" class="card-img-top" alt="...">
+                    <div class="card-body">
+                        <h5 class="card-title">No Result</h5>
+                        <p class="card-text">No result.</p>
+                        <a class="btn btn-primary" asp-controller="Home" asp-action="Index">Back to home page</a>
+                    </div>
+                </div>
+            </div>
+        }
+
         @foreach (var post in Model.Posts)
         {
-            <partial name="Widgets/PostCard" model="post"/>
+            <partial name="Widgets/PostCard" model="post" />
         }
     </div>
 </div>

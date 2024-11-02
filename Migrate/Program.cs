@@ -101,7 +101,7 @@ void WalkDirectoryTree(DirectoryInfo root)
                 Content = content,
                 Path = postPath,
                 CreationTime = fi.CreationTime,
-                LastModifiedTime = fi.LastWriteTime,
+                LastUpdateTime = fi.LastWriteTime,
                 CategoryId = categories[^1].Id,
                 Categories = string.Join(",", categories.Select(a => a.Id))
             };

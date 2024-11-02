@@ -34,6 +34,20 @@ public class BlogController : Controller
             .IncludeMany(a => a.Posts).ToList();
         categories.Insert(0, new Category { Id = 0, Name = "All", Posts = _postRepo.Select.ToList() });
 
+        var currentCategory = categoryId == 0 ? categories[0] : _categoryService.GetById(categoryId);
+
+        if (currentCategory == null)
+        {
+            _messages.Error($"Category {categoryId} not exists!");
+            return RedirectToAction(nameof(List));
+        }
+
+        if (!currentCategory.Visible)
+        {
+            _messages.Warning($"Category {categoryId} not visible!");
+            return RedirectToAction(nameof(List));
+        }
+
         return View(new BlogListViewModel
         {
             CurrentCategory = categoryId == 0 ? categories[0] : categories.First(a => a.Id == categoryId),
@@ -52,9 +66,21 @@ public class BlogController : Controller
 
     public IActionResult Post(string id)
     {
-        return View(_postService.GetPostViewModel(_postRepo.Where(a => a.Id == id)
-            .Include(a => a.Category)
-            .First()));
+        var post = _postService.GetById(id);
+
+        if (post == null)
+        {
+            _messages.Error($"Article {id} not exists!");
+            return RedirectToAction(nameof(List));
+        }
+
+        if (!post.IsPublished)
+        {
+            _messages.Warning($"Article {id} not published!");
+            return RedirectToAction(nameof(List));
+        }
+
+        return View(_postService.GetPostViewModel(post));
     }
 
     public IActionResult RandomPost()

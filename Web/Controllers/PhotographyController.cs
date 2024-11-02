@@ -26,7 +26,14 @@ public class PhotographyController : Controller
 
     public IActionResult Photo(string id)
     {
-        return View(_photoService.GetById(id));
+        var photo = _photoService.GetById(id);
+        if (photo == null)
+        {
+            _messages.Error($"Photo {id} not exists.");
+            return RedirectToAction(nameof(Index));
+        }
+
+        return View(photo);
     }
 
     public IActionResult RandomPhoto()

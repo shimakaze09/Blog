@@ -71,7 +71,7 @@ public class BlogPostController : ControllerBase
 
         post.Id = Guid.NewGuid().ToString();
         post.CreationTime = DateTime.Now;
-        post.LastModifiedTime = DateTime.Now;
+        post.LastUpdateTime = DateTime.Now;
 
         var categories = new List<Category> { category };
         var parent = category.Parent;
@@ -94,7 +94,7 @@ public class BlogPostController : ControllerBase
         // mapper.Map(source) creates a completely new object
         // mapper.Map(source, dest) modifies the source object
         post = _mapper.Map(dto, post);
-        post.LastModifiedTime = DateTime.Now;
+        post.LastUpdateTime = DateTime.Now;
         return new ApiResponse<Post>(_postService.InsertOrUpdate(post));
     }
 
