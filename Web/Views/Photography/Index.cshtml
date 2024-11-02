@@ -11,14 +11,14 @@
         <div>@Model?.Photos.TotalItemCount.ToString() Photos</div>
     </h2>
 
-    @if (Model?.Photos == null)
+    @if (Model?.Photos == null || Model?.Photos.Count == 0)
     {
         <div class="d-flex justify-content-center">
             <div class="card" style="width: 18rem;">
-                <img src="~/images/feature.png" class="card-img-top" alt="...">
+                <img src="~/images/codelab.png" class="card-img-top" alt="...">
                 <div class="card-body">
-                    <h5 class="card-title">Features Features Features</h5>
-                    <p class="card-text">Features are under development.</p>
+                    <h5 class="card-title">There are currently no photo data.</h5>
+                    <p class="card-text">No photos available.</p>
                     <a class="btn btn-primary" asp-controller="Home" asp-action="Index">Return to Home</a>
                 </div>
             </div>
@@ -34,18 +34,18 @@
                 </div>
             }
         </div>
-    }
 
-    <nav aria-label="Page navigation example">
-        @Html.PagedListPager(Model.Photos, page => Url.Action(
-                RazorHelper.GetCurrentActionName(ViewContext), new { page }),
-            new PagedListRenderOptions
-            {
-                LiElementClasses = new[] { "page-item" },
-                PageClasses = new[] { "page-link" },
-                UlElementClasses = new[] { "pagination justify-content-center" }
-            })
-    </nav>
+        <nav aria-label="Page navigation example" class="mt-3">
+            @Html.PagedListPager(Model.Photos, page => Url.Action(
+                    RazorHelper.GetCurrentActionName(ViewContext), new { page }),
+                new PagedListRenderOptions
+                {
+                    LiElementClasses = new[] { "page-item" },
+                    PageClasses = new[] { "page-link" },
+                    UlElementClasses = new[] { "pagination justify-content-center" }
+                })
+        </nav>
+    }
 </div>
 
 @section bottom {

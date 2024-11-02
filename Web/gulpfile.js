@@ -31,22 +31,23 @@ paths.concatJsDist = paths.js + "app.min.js"; // Path after concatenating all JS
 
 // Paths for npm downloaded frontend component packages
 const libs = [
-    { name: "jquery", dist: "./node_modules/jquery/dist/**/*.*" },
-    { name: "popper", dist: "./node_modules/popper.js/dist/**/*.*" },
-    { name: "bootstrap", dist: "./node_modules/bootstrap/dist/**/*.*" },
-    { name: "bootswatch", dist: "./node_modules/bootswatch/dist/**/*.*" },
-    { name: "prismjs", dist: "./node_modules/prismjs/**/*.*" },
-    { name: 'vue', dist: './node_modules/vue/dist/**/*.*' },
+    {name: "jquery", dist: "./node_modules/jquery/dist/**/*.*"},
+    {name: "popper", dist: "./node_modules/popper.js/dist/**/*.*"},
+    {name: "bootstrap", dist: "./node_modules/bootstrap/dist/**/*.*"},
+    {name: "bootstrap-treeview", dist: "./node_modules/bootstrap-treeview/dist/**/*.*"},
+    {name: "bootswatch", dist: "./node_modules/bootswatch/dist/**/*.*"},
+    {name: "prismjs", dist: "./node_modules/prismjs/**/*.*"},
+    {name: 'vue', dist: './node_modules/vue/dist/**/*.*'},
     {name: 'masonry-layout', dist: './node_modules/masonry-layout/dist/*.*'},
 ];
 
 // Paths for npm downloaded frontend components, custom storage location
 const customLibs = [
-    { name: "editormd", dist: "./node_modules/editor.md/*.js" },
-    { name: "editormd/css", dist: "./node_modules/editor.md/css/*.css" },
-    { name: "editormd/lib", dist: "./node_modules/editor.md/lib/*.js" },
-    { name: "editormd/examples/js", dist: "./node_modules/editor.md/examples/js/*.js" },
-    { name: 'font-awesome', dist: './node_modules/@fortawesome/fontawesome-free/**/*.*' },
+    {name: "editormd", dist: "./node_modules/editor.md/*.js"},
+    {name: "editormd/css", dist: "./node_modules/editor.md/css/*.css"},
+    {name: "editormd/lib", dist: "./node_modules/editor.md/lib/*.js"},
+    {name: "editormd/examples/js", dist: "./node_modules/editor.md/examples/js/*.js"},
+    {name: 'font-awesome', dist: './node_modules/@fortawesome/fontawesome-free/**/*.*'},
 ]
 
 // Tasks for cleaning compressed files
@@ -73,8 +74,8 @@ gulp.task("move:custom", done => {
 
 // Tasks for minifying CSS files
 gulp.task("min:css", () => {
-    return gulp.src([paths.cssDist, "!" + paths.minCssDist], { base: "." })
-        .pipe(rename({ suffix: '.min' }))
+    return gulp.src([paths.cssDist, "!" + paths.minCssDist], {base: "."})
+        .pipe(rename({suffix: '.min'}))
         .pipe(changed('.'))
         .pipe(cssmin())
         .pipe(gulp.dest('.'));
@@ -82,7 +83,7 @@ gulp.task("min:css", () => {
 
 // Task for concatenating all CSS files
 gulp.task("concat:css", () => {
-    return gulp.src([paths.cssDist, "!" + paths.minCssDist], { base: "." })
+    return gulp.src([paths.cssDist, "!" + paths.minCssDist], {base: "."})
         .pipe(concat(paths.concatCssDist))
         .pipe(changed('.'))
         .pipe(cssmin())
@@ -91,8 +92,8 @@ gulp.task("concat:css", () => {
 
 // Tasks for minifying JS files
 gulp.task("min:js", () => {
-    return gulp.src([paths.jsDist, "!" + paths.minJsDist], { base: "." })
-        .pipe(rename({ suffix: '.min' }))
+    return gulp.src([paths.jsDist, "!" + paths.minJsDist], {base: "."})
+        .pipe(rename({suffix: '.min'}))
         .pipe(changed('.'))
         .pipe(uglify())
         .pipe(gulp.dest('.'));
@@ -100,7 +101,7 @@ gulp.task("min:js", () => {
 
 // Task for concatenating all JS files
 gulp.task("concat:js", () => {
-    return gulp.src([paths.jsDist, "!" + paths.minJsDist], { base: "." })
+    return gulp.src([paths.jsDist, "!" + paths.minJsDist], {base: "."})
         .pipe(concat(paths.concatJsDist))
         .pipe(changed('.'))
         .pipe(uglify())

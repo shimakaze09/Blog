@@ -93,7 +93,7 @@ public class PostProcessor
         const string pattern = @"^（(.+)）(.+)$";
         var status = _post.Status ?? "Published";
         var title = _post.Title;
-        if (string.IsNullOrEmpty(title)) return (status, "");
+        if (string.IsNullOrEmpty(title)) return (status, $"Untitled Article {_post.CreationTime.ToLongDateString()}");
         var result = Regex.Match(title, pattern);
         if (!result.Success) return (status, title);
 

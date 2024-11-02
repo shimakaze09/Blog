@@ -25,6 +25,13 @@ public class CategoryController : ControllerBase
     }
 
     [AllowAnonymous]
+    [HttpGet("Nodes")]
+    public ApiResponse<List<CategoryNode>> GetNodes()
+    {
+        return new ApiResponse<List<CategoryNode>>(_cService.GetNodes());
+    }
+
+    [AllowAnonymous]
     [HttpGet("All")]
     public ApiResponse<List<Category>> GetAll()
     {

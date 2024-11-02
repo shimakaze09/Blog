@@ -15,9 +15,9 @@
 
 <div class="container">
     <div class="row">
-        <div class="col-lg-2">
+        <div class="col-lg-3">
             <div id="sidebar" class="p-3 sticky-lg-top">
-                <div href="/" class="d-flex align-items-center pb-3 mb-3 link-dark text-decoration-none border-bottom">
+                <div class="d-flex align-items-center pb-3 mb-3 link-dark text-decoration-none border-bottom">
                     <span class="bi me-2">
                         <i class="fa-solid fa-table-list fa-2xl"></i>
                     </span>
@@ -27,7 +27,7 @@
                 <div id="custom-toc-container">#custom-toc-container</div>
             </div>
         </div>
-        <div class="col-lg-10">
+        <div class="col-lg-9">
             <header class="post-header py-3 mb-3 border-bottom">
                 <div class="post-title h3 font-weight-bold">@Model.Title</div>
                 <div class="post-meta">
@@ -46,7 +46,11 @@
                         Category:
                         @foreach (var category in Model.Categories)
                         {
-                            <span> / </span>
+                            @if (Model.Categories.IndexOf(category) > 0)
+                            {
+                                <span> / </span>
+                            }
+
                             <a asp-controller="Blog" asp-action="List"
                                asp-route-categoryId="@category.Id">
                                 @category.Name
