@@ -64,4 +64,9 @@ public class BlogController : Controller
         _messages.Info($"Randomly recommended article <b>{rndPost.Title}</b> for you!");
         return RedirectToAction(nameof(Post), new { id = rndPost.Id });
     }
+
+    public IActionResult Temp()
+    {
+        return View();
+    }
 }
