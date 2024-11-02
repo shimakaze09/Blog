@@ -1,5 +1,6 @@
 using Data.Models;
 using FreeSql;
+using Web.Controllers;
 using Web.ViewModels.Categories;
 using X.PagedList;
 using X.PagedList.Extensions;
@@ -10,23 +11,34 @@ public class CategoryService
 {
     private readonly IBaseRepository<Category> _cRepo;
     private readonly IBaseRepository<FeaturedCategory> _fcRepo;
+    private readonly IHttpContextAccessor _accessor;
+    private readonly LinkGenerator _generator;
 
-    public CategoryService(IBaseRepository<Category> cRepo, IBaseRepository<FeaturedCategory> fcRepo)
+    public CategoryService(IBaseRepository<Category> cRepo, IBaseRepository<FeaturedCategory> fcRepo,
+       IHttpContextAccessor accessor, LinkGenerator generator)
     {
         _cRepo = cRepo;
         _fcRepo = fcRepo;
+        _accessor = accessor;
+        _generator = generator;
     }
 
     public List<CategoryNode>? GetNodes(int parentId = 0)
     {
         var categories = _cRepo.Select
-            .Where(a => a.ParentId == parentId).ToList();
+            .Where(a => a.ParentId == parentId && a.Visible).ToList();
 
         if (categories.Count == 0) return null;
-        
+
         return categories.Select(category => new CategoryNode
         {
             text = category.Name,
+            href = _generator.GetUriByAction(
+                _accessor.HttpContext!,
+                nameof(BlogController.List),
+                "Blog",
+                new { categoryId = category.Id }
+            ),
             nodes = GetNodes(category.Id)
         }).ToList();
     }

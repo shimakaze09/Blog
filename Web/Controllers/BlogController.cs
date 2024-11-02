@@ -14,15 +14,18 @@ public class BlogController : Controller
     private readonly Messages _messages;
     private readonly IBaseRepository<Post> _postRepo;
     private readonly PostService _postService;
+    private readonly CategoryService _categoryService;
 
     public BlogController(IBaseRepository<Post> postRepo, IBaseRepository<Category> categoryRepo,
         PostService postService,
-        Messages messages)
+        Messages messages,
+        CategoryService categoryService)
     {
         _postRepo = postRepo;
         _categoryRepo = categoryRepo;
         _postService = postService;
         _messages = messages;
+        _categoryService = categoryService;
     }
 
     public IActionResult List(int categoryId = 0, int page = 1, int pageSize = 5)
@@ -36,6 +39,7 @@ public class BlogController : Controller
             CurrentCategory = categoryId == 0 ? categories[0] : categories.First(a => a.Id == categoryId),
             CurrentCategoryId = categoryId,
             Categories = categories,
+            CategoryNodes = _categoryService.GetNodes(),
             Posts = _postService.GetPagedList(new PostQueryParameters
             {
                 CategoryId = categoryId,
@@ -44,11 +48,6 @@ public class BlogController : Controller
                 OnlyPublished = true
             })
         });
-    }
-
-    public IActionResult List2()
-    {
-        return View();
     }
 
     public IActionResult Post(string id)

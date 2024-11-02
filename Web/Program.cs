@@ -23,6 +23,7 @@ builder.Services.AddCors(options =>
 builder.Services.AddSwagger();
 builder.Services.AddSettings(builder.Configuration);
 builder.Services.AddAuth(builder.Configuration);
+builder.Services.AddHttpContextAccessor();
 
 // Custom services
 builder.Services.AddScoped<BlogService>();
