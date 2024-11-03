@@ -2,6 +2,7 @@ using Contrib.SiteMessage;
 using Data.Extensions;
 using Web.Extensions;
 using Web.Filters;
+using Web.Middlewares;
 using Web.Services;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -45,6 +46,8 @@ if (!app.Environment.IsDevelopment())
 
 // app.UseHttpsRedirection();
 app.UseStaticFiles();
+
+app.UseMiddleware<VisitRecordMiddleware>();
 
 app.UseRouting();
 app.UseCors();
