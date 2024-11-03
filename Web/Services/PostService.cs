@@ -15,20 +15,27 @@ namespace Web.Services;
 
 public class PostService
 {
-    private readonly IBaseRepository<Category> _categoryRepo;
-    private readonly IConfiguration _configuration;
-    private readonly IWebHostEnvironment _environment;
     private readonly IBaseRepository<Post> _postRepo;
+    private readonly IBaseRepository<Category> _categoryRepo;
+    private readonly IWebHostEnvironment _environment;
+    private readonly IConfiguration _configuration;
+    private readonly IHttpContextAccessor _accessor;
+    private readonly LinkGenerator _generator;
 
     public PostService(IBaseRepository<Post> postRepo,
         IBaseRepository<Category> categoryRepo,
         IWebHostEnvironment environment,
-        IConfiguration configuration)
+        IConfiguration configuration,
+        IHttpContextAccessor accessor,
+        LinkGenerator generator
+    )
     {
         _postRepo = postRepo;
         _categoryRepo = categoryRepo;
         _environment = environment;
         _configuration = configuration;
+        _accessor = accessor;
+        _generator = generator;
     }
 
     public string Host => _configuration.GetSection("Server:Host").Value;
@@ -157,6 +164,11 @@ public class PostService
             Content = post.Content,
             ContentHtml = Markdown.ToHtml(post.Content),
             Path = post.Path,
+            Url = _generator.GetUriByAction(
+                _accessor.HttpContext!,
+                "Post", "Blog",
+                new { Id = post.Id }
+            ),
             CreationTime = post.CreationTime,
             LastUpdateTime = post.LastUpdateTime,
             Category = post.Category,

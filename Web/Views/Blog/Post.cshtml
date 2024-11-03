@@ -17,6 +17,7 @@
     <div class="row">
         <div class="col-lg-3">
             <div id="sidebar" class="p-3 sticky-lg-top">
+                @* <h5>Table of Contents</h5> *@
                 <div class="d-flex align-items-center pb-3 mb-3 link-dark text-decoration-none border-bottom">
                     <span class="bi me-2">
                         <i class="fa-solid fa-table-list fa-2xl"></i>
@@ -28,34 +29,39 @@
             </div>
         </div>
         <div class="col-lg-9">
-            <header class="post-header py-3 mb-3 border-bottom">
+            <header class="post-header py-3 mb-3">
                 <div class="post-title h3 font-weight-bold">@Model.Title</div>
+                <div class="border-bottom my-3"></div>
                 <div class="post-meta">
-                    <div>
-                        Published on:
-                        <span>@Model.CreationTime.ToShortDateString()</span>
-                        <span>@Model.CreationTime.ToString("hh:mm")</span>
+                    <div class="d-flex justify-content-between">
+                        <div>
+                            Published:
+                            <span>@Model.CreationTime.ToShortDateString()</span>
+                            <span>@Model.CreationTime.ToString("hh:mm")</span>
+                        </div>
+                        <div>
+                            Last update:
+                            @Model.LastUpdateTime?.ToShortDateString()
+                            @Model.LastUpdateTime?.ToString("hh:mm")
+                        </div>
                     </div>
-                    <div>
-                        Last updated:
-                        @Model.LastUpdateTime?.ToLongDateString()
-                        @Model.LastUpdateTime?.ToLongTimeString()
-                    </div>
-                    <span>Word Count: @Model.Content.Length.ToString()</span>
-                    <span>
-                        Category:
-                        @foreach (var category in Model.Categories)
-                        {
-                            @if (Model.Categories.IndexOf(category) > 0)
-                            {
-                                <span> / </span>
-                            }
 
-                            <a asp-controller="Blog" asp-action="List" asp-route-categoryId="@category.Id">
-                                @category.Name
-                            </a>
-                        }
-                    </span>
+                    <div class="d-flex justify-content-between">
+                        <nav aria-label="breadcrumb">
+                            <ol class="breadcrumb">
+                                <li class="breadcrumb-item active">Blog</li>
+                                @foreach (var category in Model.Categories) {
+                                    <li class="breadcrumb-item">
+                                        <a asp-controller="Blog" asp-action="List"
+                                           asp-route-categoryId="@category.Id">
+                                            @category.Name
+                                        </a>
+                                    </li>
+                                }
+                            </ol>
+                        </nav>
+                        <div>Words: @Model.Content.Length.ToString()</div>
+                    </div>
                 </div>
             </header>
             <div id="test-editormd-view" class="post-content">
@@ -69,19 +75,29 @@
             <div class="card my-3">
                 <div class="row g-0">
                     <div class="col-md-2">
-                        <img src="~/images/codelab.png" class="img-fluid rounded-start" width="200" alt="...">
+                        <img src="~/images/codelab.png" class="img-fluid rounded-start" width="200" alt="">
                     </div>
                     <div class="col-md-10">
                         <div class="card-body">
-                            <h5 class="card-title">Card title</h5>
-                            <p class="card-text">This is a wider card with supporting text below as a natural lead-in to
-                                additional content. This content is a little bit longer.</p>
-                            <p class="card-text">
-                                <small class="text-muted">Last updated 3 mins ago</small>
-                            </p>
+                            <h5 class="card-title">@Model.Title</h5>
+                            <div class="card-text">
+                                <b>Author: </b> John
+                            </div>
+                            <div class="card-text">
+                                <b>Link: </b>
+                                <a href="@Model.Url">@Model.Url</a>
+                            </div>
+                            <div class="card-text">
+                                <b>Copyright: </b>
+                                All articles in this blog are licensed under the <a href="https://opensource.org/license/mit">MIT</a> license agreement unless otherwise stated. Please indicate the source when reprinting!
+                            </div>
+                            <div class="card-text">
+                                <b>About me: </b> Amateur programmer, proficient in googling. Hope one day can write text for living.
+                            </div>
                         </div>
                     </div>
                 </div>
+            </div>
             </div>
         </div>
     </div>
