@@ -31,6 +31,7 @@ paths.concatJsDist = paths.js + "app.min.js"; // Path after concatenating all JS
 
 // Paths for npm downloaded frontend component packages
 const libs = [
+    {name: "chart.js", dist: "./node_modules/chart.js/dist/**/*.*"},
     {name: "jquery", dist: "./node_modules/jquery/dist/**/*.*"},
     {name: "popper", dist: "./node_modules/popper.js/dist/**/*.*"},
     {name: "bootstrap", dist: "./node_modules/bootstrap/dist/**/*.*"},
