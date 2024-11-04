@@ -15,12 +15,12 @@ namespace Web.Services;
 
 public class PostService
 {
-    private readonly IBaseRepository<Post> _postRepo;
-    private readonly IBaseRepository<Category> _categoryRepo;
-    private readonly IWebHostEnvironment _environment;
-    private readonly IConfiguration _configuration;
     private readonly IHttpContextAccessor _accessor;
+    private readonly IBaseRepository<Category> _categoryRepo;
+    private readonly IConfiguration _configuration;
+    private readonly IWebHostEnvironment _environment;
     private readonly LinkGenerator _generator;
+    private readonly IBaseRepository<Post> _postRepo;
 
     public PostService(IBaseRepository<Post> postRepo,
         IBaseRepository<Category> categoryRepo,
@@ -44,7 +44,7 @@ public class PostService
     {
         // When retrieving posts, parse markdown image URLs and add full URLs to return to the frontend
         var post = _postRepo.Where(a => a.Id == id).Include(a => a.Category).First();
-        if (post != null) post.Content = MdImageLinkConvert(post, true);
+        if (post != null) post.Content = MdImageLinkConvert(post);
         return post;
     }
 
@@ -109,28 +109,16 @@ public class PostService
     {
         var querySet = _postRepo.Select;
 
-        if (param.OnlyPublished)
-        {
-            querySet = _postRepo.Select.Where(a => a.IsPublished);
-        }
+        if (param.OnlyPublished) querySet = _postRepo.Select.Where(a => a.IsPublished);
 
         // Is published
-        if (param.OnlyPublished)
-        {
-            querySet = _postRepo.Select.Where(a => a.IsPublished);
-        }
+        if (param.OnlyPublished) querySet = _postRepo.Select.Where(a => a.IsPublished);
 
         // Status filter
-        if (!string.IsNullOrEmpty(param.Status))
-        {
-            querySet = querySet.Where(a => a.Status == param.Status);
-        }
+        if (!string.IsNullOrEmpty(param.Status)) querySet = querySet.Where(a => a.Status == param.Status);
 
         // Category filtering
-        if (param.CategoryId != 0)
-        {
-            querySet = querySet.Where(a => a.CategoryId == param.CategoryId);
-        }
+        if (param.CategoryId != 0) querySet = querySet.Where(a => a.CategoryId == param.CategoryId);
 
         // Keyword filtering
         if (!string.IsNullOrEmpty(param.Search)) querySet = querySet.Where(a => a.Title.Contains(param.Search));
@@ -167,7 +155,7 @@ public class PostService
             Url = _generator.GetUriByAction(
                 _accessor.HttpContext!,
                 "Post", "Blog",
-                new { Id = post.Id }
+                new { post.Id }
             ),
             CreationTime = post.CreationTime,
             LastUpdateTime = post.LastUpdateTime,

@@ -1,6 +1,5 @@
-using System;
 using System.Collections;
-using System.Collections.Generic;
+using System.Globalization;
 using System.Reflection;
 using System.Runtime.Serialization;
 using System.Text;
@@ -8,14 +7,14 @@ using System.Text;
 namespace Contrib.CLRStats;
 
 /// <summary>
-/// Modified based on the original code, By John, 3/11/2024
-/// https://github.com/zanders3/json/blob/master/src/JSONWriter.cs
+///     Modified based on the original code, By John, 3/11/2024
+///     https://github.com/zanders3/json/blob/master/src/JSONWriter.cs
 /// </summary>
 internal static class ObjectExtensions
 {
     public static string ToJson(this object obj)
     {
-        StringBuilder stringBuilder = new StringBuilder();
+        var stringBuilder = new StringBuilder();
         AppendValue(stringBuilder, obj);
         return stringBuilder.ToString();
     }
@@ -41,49 +40,51 @@ internal static class ObjectExtensions
                     if (j >= 0)
                         stringBuilder.Append("\"\\nrtbf"[j]);
                     else
-                        stringBuilder.AppendFormat("u{0:X4}", (UInt32)str[i]);
+                        stringBuilder.AppendFormat("u{0:X4}", (uint)str[i]);
                 }
                 else
+                {
                     stringBuilder.Append(str[i]);
+                }
 
             stringBuilder.Append('"');
         }
         else if (type == typeof(byte) || type == typeof(sbyte))
         {
-            stringBuilder.Append(item.ToString());
+            stringBuilder.Append(item);
         }
         else if (type == typeof(short) || type == typeof(ushort))
         {
-            stringBuilder.Append(item.ToString());
+            stringBuilder.Append(item);
         }
         else if (type == typeof(int) || type == typeof(uint))
         {
-            stringBuilder.Append(item.ToString());
+            stringBuilder.Append(item);
         }
         else if (type == typeof(long) || type == typeof(ulong))
         {
-            stringBuilder.Append(item.ToString());
+            stringBuilder.Append(item);
         }
         else if (type == typeof(float))
         {
-            stringBuilder.Append(((float)item).ToString(System.Globalization.CultureInfo.InvariantCulture));
+            stringBuilder.Append(((float)item).ToString(CultureInfo.InvariantCulture));
         }
         else if (type == typeof(double))
         {
-            stringBuilder.Append(((double)item).ToString(System.Globalization.CultureInfo.InvariantCulture));
+            stringBuilder.Append(((double)item).ToString(CultureInfo.InvariantCulture));
         }
         else if (type == typeof(decimal))
         {
-            stringBuilder.Append(((decimal)item).ToString(System.Globalization.CultureInfo.InvariantCulture));
+            stringBuilder.Append(((decimal)item).ToString(CultureInfo.InvariantCulture));
         }
         else if (type == typeof(bool))
         {
-            stringBuilder.Append(((bool)item) ? "true" : "false");
+            stringBuilder.Append((bool)item ? "true" : "false");
         }
         else if (type.IsEnum)
         {
             stringBuilder.Append('"');
-            stringBuilder.Append(item.ToString());
+            stringBuilder.Append(item);
             stringBuilder.Append('"');
         }
         else if (item is IList)
@@ -135,7 +136,8 @@ internal static class ObjectExtensions
             stringBuilder.Append('{');
 
             var isFirst = true;
-            var fieldInfos = type.GetFields(BindingFlags.Instance | BindingFlags.Public | BindingFlags.FlattenHierarchy);
+            var fieldInfos =
+                type.GetFields(BindingFlags.Instance | BindingFlags.Public | BindingFlags.FlattenHierarchy);
             foreach (var t in fieldInfos)
             {
                 if (t.IsDefined(typeof(IgnoreDataMemberAttribute), true))
@@ -154,7 +156,8 @@ internal static class ObjectExtensions
                 AppendValue(stringBuilder, value);
             }
 
-            var propertyInfo = type.GetProperties(BindingFlags.Instance | BindingFlags.Public | BindingFlags.FlattenHierarchy);
+            var propertyInfo =
+                type.GetProperties(BindingFlags.Instance | BindingFlags.Public | BindingFlags.FlattenHierarchy);
             foreach (var t in propertyInfo)
             {
                 if (!t.CanRead || t.IsDefined(typeof(IgnoreDataMemberAttribute), true))

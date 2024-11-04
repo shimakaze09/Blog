@@ -9,8 +9,6 @@ internal static class CpuHelper
     private static readonly int _processorCount = Environment.ProcessorCount;
     private static readonly Process process = Process.GetCurrentProcess();
 
-    public static double UsagePercent => _usagePercent;
-
     static CpuHelper()
     {
         Task.Factory.StartNew(async () =>
@@ -27,4 +25,6 @@ internal static class CpuHelper
             }
         }, TaskCreationOptions.LongRunning);
     }
+
+    public static double UsagePercent => _usagePercent;
 }

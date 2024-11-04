@@ -21,6 +21,8 @@ let app = new Vue({
             this.currentTheme = themeName
             localStorage.setItem('currentTheme', themeName)
             localStorage.setItem('currentThemeCssUrl', theme.cssUrl)
+            // After changing the theme, it's best to refresh the page, otherwise there may be conflicts with styles
+            location.reload()
         }
     }
 })

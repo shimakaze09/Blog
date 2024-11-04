@@ -2,6 +2,7 @@ namespace Web.Services;
 
 public class ThemeService
 {
+    public const string BootstrapTheme = "Bootstrap";
     private const string CssUrlPrefix = "/lib/bootswatch/dist";
 
     public ThemeService(IWebHostEnvironment env)
@@ -19,7 +20,10 @@ public class ThemeService
         }
     }
 
-    public List<Theme> Themes { get; set; } = new();
+    public List<Theme> Themes { get; set; } = new()
+    {
+        new Theme { Name = BootstrapTheme, Path = "", CssUrl = "" }
+    };
 }
 
 public class Theme

@@ -9,9 +9,9 @@ namespace Web.Services;
 
 public class CategoryService
 {
+    private readonly IHttpContextAccessor _accessor;
     private readonly IBaseRepository<Category> _cRepo;
     private readonly IBaseRepository<FeaturedCategory> _fcRepo;
-    private readonly IHttpContextAccessor _accessor;
     private readonly LinkGenerator _generator;
 
     public CategoryService(IBaseRepository<Category> cRepo,

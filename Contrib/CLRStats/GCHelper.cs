@@ -25,10 +25,7 @@ internal static class GCHelper
     {
         get
         {
-            if (_maxGen < 1)
-            {
-                return 0;
-            }
+            if (_maxGen < 1) return 0;
 
             var count = GC.CollectionCount(1);
             var prevCount = _prevGen1CollectCount;
@@ -41,10 +38,7 @@ internal static class GCHelper
     {
         get
         {
-            if (_maxGen < 2)
-            {
-                return 0;
-            }
+            if (_maxGen < 2) return 0;
 
             var count = GC.CollectionCount(2);
             var prevCount = _prevGen2CollectCount;

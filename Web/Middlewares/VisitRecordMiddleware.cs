@@ -1,6 +1,5 @@
 using Data.Models;
 using FreeSql;
-using Contrib.SiteMessage;
 
 namespace Web.Middlewares;
 

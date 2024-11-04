@@ -52,7 +52,7 @@ public class BlogController : ControllerBase
     }
 
     /// <summary>
-    /// Blog article status list
+    ///     Blog article status list
     /// </summary>
     /// <returns></returns>
     [HttpGet("[action]")]

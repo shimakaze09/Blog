@@ -50,7 +50,8 @@
                         <nav aria-label="breadcrumb">
                             <ol class="breadcrumb">
                                 <li class="breadcrumb-item active">Blog</li>
-                                @foreach (var category in Model.Categories) {
+                                @foreach (var category in Model.Categories)
+                                {
                                     <li class="breadcrumb-item">
                                         <a asp-controller="Blog" asp-action="List"
                                            asp-route-categoryId="@category.Id">
@@ -98,9 +99,9 @@
                     </div>
                 </div>
             </div>
-            </div>
         </div>
     </div>
+</div>
 </div>
 
 @section bottom {

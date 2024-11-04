@@ -1,12 +1,12 @@
-using System;
-using System.Threading;
+using System.Diagnostics;
+using System.Runtime;
 
 namespace Contrib.CLRStats;
 
 public class CLRStatsModel
 {
-    private static readonly ServerRequest serverRequest = new ServerRequest();
-    private static readonly ApplicationRequest applicationRequest = new ApplicationRequest();
+    private static readonly ServerRequest serverRequest = new();
+    private static readonly ApplicationRequest applicationRequest = new();
 
     public ServerRequest Server => serverRequest;
     public ApplicationRequest Application => applicationRequest;
@@ -14,14 +14,14 @@ public class CLRStatsModel
 
 public class ApplicationRequest
 {
-    private static readonly CPUStatsRequest cPUStatsRequest = new CPUStatsRequest();
-    private static readonly GCStatsRequest gCStatsRequest = new GCStatsRequest();
+    private static readonly CPUStatsRequest cPUStatsRequest = new();
+    private static readonly GCStatsRequest gCStatsRequest = new();
 
     public CPUStatsRequest CPU => cPUStatsRequest;
 
     public GCStatsRequest GC => gCStatsRequest;
 
-    public ThreadStatsRequest Thread => new ThreadStatsRequest();
+    public ThreadStatsRequest Thread => new();
 }
 
 public class ServerRequest
@@ -46,9 +46,9 @@ public class GCStatsRequest
 
     public long HeapMemory => GCHelper.TotalMemory;
 
-    public string HeapMemoryFormat => $"{(HeapMemory / (1024 * 1024))} M";
+    public string HeapMemoryFormat => $"{HeapMemory / (1024 * 1024)} M";
 
-    public bool IsServerGC => System.Runtime.GCSettings.IsServerGC;
+    public bool IsServerGC => GCSettings.IsServerGC;
 }
 
 public class ThreadStatsRequest
@@ -63,17 +63,17 @@ public class ThreadStatsRequest
         AvailableWorkerThreads = availableWorkerThreads;
     }
 
-    public int AvailableCompletionPortThreads { get; private set; }
+    public int AvailableCompletionPortThreads { get; }
 
-    public int AvailableWorkerThreads { get; private set; }
+    public int AvailableWorkerThreads { get; }
 
     public int UsedCompletionPortThreads => MaxCompletionPortThreads - AvailableCompletionPortThreads;
 
     public int UsedWorkerThreads => MaxWorkerThreads - AvailableWorkerThreads;
 
-    public int UsedThreadCount => System.Diagnostics.Process.GetCurrentProcess().Threads.Count;
+    public int UsedThreadCount => Process.GetCurrentProcess().Threads.Count;
 
-    public int MaxCompletionPortThreads { get; private set; }
+    public int MaxCompletionPortThreads { get; }
 
-    public int MaxWorkerThreads { get; private set; }
+    public int MaxWorkerThreads { get; }
 }

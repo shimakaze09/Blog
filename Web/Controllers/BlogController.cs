@@ -11,10 +11,10 @@ namespace Web.Controllers;
 public class BlogController : Controller
 {
     private readonly IBaseRepository<Category> _categoryRepo;
+    private readonly CategoryService _categoryService;
     private readonly Messages _messages;
     private readonly IBaseRepository<Post> _postRepo;
     private readonly PostService _postService;
-    private readonly CategoryService _categoryService;
 
     public BlogController(IBaseRepository<Post> postRepo, IBaseRepository<Category> categoryRepo,
         PostService postService,

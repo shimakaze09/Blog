@@ -6,12 +6,12 @@
 public class PostQueryParameters : QueryParameters
 {
     /// <summary>
-    /// Only request published articles
+    ///     Only request published articles
     /// </summary>
     public bool OnlyPublished { get; set; } = false;
 
     /// <summary>
-    /// Article status
+    ///     Article status
     /// </summary>
     public string? Status { get; set; }
 

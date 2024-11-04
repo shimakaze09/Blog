@@ -101,7 +101,7 @@ public class BlogService
     }
 
     /// <summary>
-    /// Gets the list of article statuses
+    ///     Gets the list of article statuses
     /// </summary>
     /// <returns>A list of nullable string values representing article statuses</returns>
     public List<string?> GetStatusList()
