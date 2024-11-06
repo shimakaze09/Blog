@@ -69,7 +69,9 @@ public class CategoryService
     /// <returns></returns>
     public List<object> GetWordCloud()
     {
-        var list = _cRepo.Select.IncludeMany(a => a.Posts).ToList();
+        var list = _cRepo.Select
+            .Where(a => a.Visible && a.ParentId == 0)
+            .IncludeMany(a => a.Posts).ToList();
         var data = new List<object>();
         foreach (var item in list) data.Add(new { name = item.Name, value = item.Posts.Count });
         return data;
