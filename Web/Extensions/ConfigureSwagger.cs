@@ -9,29 +9,39 @@ public static class ConfigureSwagger
     {
         services.AddSwaggerGen(options =>
         {
+            options.SwaggerDoc("admin", new OpenApiInfo
+            {
+                Version = "v1",
+                Title = "Admin APIs",
+                Description = "Administrator related interfaces"
+            });
+
             options.SwaggerDoc("common", new OpenApiInfo
             {
                 Version = "v1",
                 Title = "Common APIs",
-                Description = "通用公共接口"
+                Description = "General public interfaces"
             });
+
             options.SwaggerDoc("auth", new OpenApiInfo
             {
                 Version = "v1",
                 Title = "Auth APIs",
-                Description = "授权接口"
+                Description = "Authorization interfaces"
             });
+
             options.SwaggerDoc("blog", new OpenApiInfo
             {
                 Version = "v1",
                 Title = "Blog APIs",
-                Description = "博客管理接口"
+                Description = "Blog management interfaces"
             });
+
             options.SwaggerDoc("test", new OpenApiInfo
             {
                 Version = "v1",
                 Title = "Test APIs",
-                Description = "测试接口"
+                Description = "Test interfaces"
             });
 
             // Enable little green lock
