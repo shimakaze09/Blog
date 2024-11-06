@@ -1,9 +1,9 @@
+using Data.Models;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using Data.Models;
 using Web.Services;
-using Web.ViewModels.Response;
 using Web.ViewModels.QueryFilters;
+using Web.ViewModels.Response;
 
 namespace Web.Apis;
 
@@ -35,7 +35,7 @@ public class VisitRecordController : ControllerBase
     }
 
     /// <summary>
-    /// Retrieves all visit records
+    ///     Retrieves all visit records
     /// </summary>
     /// <returns></returns>
     [HttpGet("All")]
@@ -45,7 +45,7 @@ public class VisitRecordController : ControllerBase
     }
 
     /// <summary>
-    /// Gets an overview of the data
+    ///     Gets an overview of the data
     /// </summary>
     /// <returns></returns>
     [HttpGet("[action]")]
@@ -55,7 +55,7 @@ public class VisitRecordController : ControllerBase
     }
 
     /// <summary>
-    /// Statistical API
+    ///     Statistical API
     /// </summary>
     /// <returns></returns>
     [HttpGet("[action]")]

@@ -1,8 +1,8 @@
-using FreeSql;
 using Data.Models;
-using X.PagedList.Extensions;
-using X.PagedList;
+using FreeSql;
 using Web.ViewModels.QueryFilters;
+using X.PagedList;
+using X.PagedList.Extensions;
 
 namespace Web.Services;
 
@@ -31,10 +31,7 @@ public class VisitRecordService
         var querySet = _repo.Select;
 
         // Search
-        if (!string.IsNullOrEmpty(param.Search))
-        {
-            querySet = querySet.Where(a => a.RequestPath.Contains(param.Search));
-        }
+        if (!string.IsNullOrEmpty(param.Search)) querySet = querySet.Where(a => a.RequestPath.Contains(param.Search));
 
         // Sort
         if (!string.IsNullOrEmpty(param.SortBy))
@@ -50,7 +47,7 @@ public class VisitRecordService
     }
 
     /// <summary>
-    /// Summary data
+    ///     Summary data
     /// </summary>
     /// <returns></returns>
     public object Overview()
@@ -64,7 +61,7 @@ public class VisitRecordService
     }
 
     /// <summary>
-    /// Statistics data
+    ///     Statistics data
     /// </summary>
     /// <returns></returns>
     public object Stats(DateTime date)
