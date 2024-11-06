@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Mvc;
 using Data.Models;
 using Web.Services;
 using Web.ViewModels.Response;
+using Web.ViewModels.QueryFilters;
 
 namespace Web.Apis;
 
@@ -17,6 +18,13 @@ public class VisitRecordController : ControllerBase
     public VisitRecordController(VisitRecordService service)
     {
         _service = service;
+    }
+
+    [HttpGet]
+    public ApiResponsePaged<VisitRecord> GetList([FromQuery] VisitRecordQueryParameters param)
+    {
+        var pagedList = _service.GetPagedList(param);
+        return new ApiResponsePaged<VisitRecord>(pagedList);
     }
 
     [HttpGet("All")]

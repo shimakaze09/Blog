@@ -1,5 +1,8 @@
 using FreeSql;
 using Data.Models;
+using X.PagedList.Extensions;
+using X.PagedList;
+using Web.ViewModels.QueryFilters;
 
 namespace Web.Services;
 
@@ -20,6 +23,29 @@ public class VisitRecordService
 
     public List<VisitRecord> GetAll()
     {
-        return _repo.Select.ToList();
+        return _repo.Select.OrderByDescending(a => a.Time).ToList();
+    }
+
+    public IPagedList<VisitRecord> GetPagedList(VisitRecordQueryParameters param)
+    {
+        var querySet = _repo.Select;
+
+        // Search
+        if (!string.IsNullOrEmpty(param.Search))
+        {
+            querySet = querySet.Where(a => a.RequestPath.Contains(param.Search));
+        }
+
+        // Sort
+        if (!string.IsNullOrEmpty(param.SortBy))
+        {
+            // Determine if ascending order
+            var isAscending = !param.SortBy.StartsWith("-");
+            var orderByProperty = param.SortBy.Trim('-');
+
+            querySet = querySet.OrderByPropertyName(orderByProperty, isAscending);
+        }
+
+        return querySet.ToList().ToPagedList(param.Page, param.PageSize);
     }
 }
