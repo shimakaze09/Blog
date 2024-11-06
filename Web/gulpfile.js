@@ -45,8 +45,12 @@ const libs = [
 // Paths for npm downloaded frontend components, custom storage location
 const customLibs = [
     {name: "editormd", dist: "./node_modules/editor.md/*.js"},
-    {name: "editormd/css", dist: "./node_modules/editor.md/css/*.css"},
-    {name: "editormd/lib", dist: "./node_modules/editor.md/lib/*.js"},
+    {name: "editormd/css", dist: "./node_modules/editor.md/css/*.*"},
+    {name: "editormd/fonts", dist: "./node_modules/editor.md/fonts/*.*"},
+    {name: "editormd/images", dist: "./node_modules/editor.md/images/*.*"},
+    {name: "editormd/languages", dist: "./node_modules/editor.md/languages/*.*"},
+    {name: "editormd/lib", dist: "./node_modules/editor.md/lib/*.*"},
+    {name: "editormd/plugins", dist: "./node_modules/editor.md/plugins/*.*"},
     {name: "editormd/examples/js", dist: "./node_modules/editor.md/examples/js/*.js"},
     {name: 'font-awesome', dist: './node_modules/@fortawesome/fontawesome-free/**/*.*'},
 ]
