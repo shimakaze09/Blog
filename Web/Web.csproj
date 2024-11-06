@@ -19,6 +19,11 @@
     </ItemGroup>
 
     <ItemGroup>
+        <Content Update="wwwroot/assets/**/*" CopyToPublishDirectory="Never" CopyToOutputDirectory="Never"/>
+        <Content Update="wwwroot/media/**/*" CopyToPublishDirectory="Never" CopyToOutputDirectory="Never"/>
+    </ItemGroup>
+
+    <ItemGroup>
         <PackageReference Include="AutoMapper.Extensions.Microsoft.DependencyInjection" Version="12.0.1"/>
         <PackageReference Include="Markdig" Version="0.38.0"/>
         <PackageReference Include="Microsoft.AspNetCore.Authentication.JwtBearer" Version="8.0.10"/>
@@ -28,13 +33,6 @@
         <PackageReference Include="Swashbuckle.AspNetCore.Filters" Version="8.0.2"/>
         <PackageReference Include="Swashbuckle.AspNetCore.ReDoc" Version="6.9.0"/>
         <PackageReference Include="X.PagedList.Mvc.Core" Version="10.5.7"/>
-    </ItemGroup>
-
-    <ItemGroup>
-        <Compile Remove="Views\razor\backup\**"/>
-        <EmbeddedResource Remove="Views\razor\backup\**"/>
-        <None Remove="Views\razor\backup\**"/>
-        <Content Remove="Views\razor\backup\**"/>
     </ItemGroup>
 
 </Project>
