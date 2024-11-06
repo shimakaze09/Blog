@@ -2,6 +2,7 @@ using Contrib.Utils;
 using Data.Models;
 using FreeSql;
 using SixLabors.ImageSharp;
+using SixLabors.ImageSharp.Processing;
 using Web.ViewModels.Photography;
 using X.PagedList;
 using X.PagedList.Extensions;
@@ -57,9 +58,15 @@ public class PhotoService
 
         var savePath = GetPhotoFilePath(photo);
 
-        using (var fs = new FileStream(savePath, FileMode.Create))
+        const int maxWidth = 2000;
+        const int maxHeight = 2000;
+        using (var image = Image.Load(photoFile.OpenReadStream()))
         {
-            photoFile.CopyTo(fs);
+            if (image.Width > maxWidth)
+                image.Mutate(a => a.Resize(maxWidth, 0));
+            if (image.Height > maxHeight)
+                image.Mutate(a => a.Resize(0, maxHeight));
+            image.Save(savePath);
         }
 
         photo = BuildPhotoData(photo);
