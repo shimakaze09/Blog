@@ -27,16 +27,41 @@ public class VisitRecordController : ControllerBase
         return new ApiResponsePaged<VisitRecord>(pagedList);
     }
 
+    [HttpGet("{id:int}")]
+    public ApiResponse<VisitRecord> GetById(int id)
+    {
+        var item = _service.GetById(id);
+        return item == null ? ApiResponse.NotFound() : new ApiResponse<VisitRecord>(item);
+    }
+
+    /// <summary>
+    /// Retrieves all visit records
+    /// </summary>
+    /// <returns></returns>
     [HttpGet("All")]
     public ApiResponse<List<VisitRecord>> GetAll()
     {
         return new ApiResponse<List<VisitRecord>>(_service.GetAll());
     }
 
-    [HttpGet("{id:int}")]
-    public ApiResponse<VisitRecord> GetById(int id)
+    /// <summary>
+    /// Gets an overview of the data
+    /// </summary>
+    /// <returns></returns>
+    [HttpGet("[action]")]
+    public ApiResponse Overview()
     {
-        var item = _service.GetById(id);
-        return item == null ? ApiResponse.NotFound() : new ApiResponse<VisitRecord>(item);
+        return ApiResponse.Ok(_service.Overview());
+    }
+
+    /// <summary>
+    /// Statistical API
+    /// </summary>
+    /// <returns></returns>
+    [HttpGet("[action]")]
+    public ApiResponse Stats(int year, int month, int day)
+    {
+        var date = new DateTime(year, month, day);
+        return ApiResponse.Ok(_service.Stats(date));
     }
 }
