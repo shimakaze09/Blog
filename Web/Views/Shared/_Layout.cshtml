@@ -65,12 +65,20 @@
                             Products
                         </a>
                     </li>
+                    @* <li> *@
+                    @*     <a href="#" class="nav-link text-white"> *@
+                    @*         <div class="bi d-block mx-auto mb-1 text-center"> *@
+                    @*             <i class="fa-solid fa-terminal fa-2xl"></i> *@
+                    @*         </div> *@
+                    @*         Console *@
+                    @*     </a> *@
+                    @* </li> *@
                     <li>
-                        <a href="#" class="nav-link text-white">
+                        <a class="nav-link text-white" asp-controller="About" asp-action="Index">
                             <div class="bi d-block mx-auto mb-1 text-center">
-                                <i class="fa-solid fa-terminal fa-2xl"></i>
+                                <i class="fa-solid fa-circle-info fa-2xl"></i>
                             </div>
-                            Console
+                            About
                         </a>
                     </li>
                 </ul>
@@ -129,12 +137,17 @@
                         </a>
                     </p>
 
-                    <p>Copyright 2024 <b>John</b>. All Rights Reserved.</p>
+                    <p>Copyright © @DateTime.Now.Year.ToString() 
+                        <a href="https://github.com/shimakaze09">shimakaze09</a>.
+                         All Rights Reserved.</p>
                     <p>
                         All content is released under
                         <a href="https://opensource.org/license/mit" rel="external nofollow" target="_blank">
                             MIT License
                         </a>.
+                    </p>
+                    <p>
+                        This site built using <a href="https://dotnet.microsoft.com/">.NET Core</a> technology
                     </p>
                 </div>
             </div>
