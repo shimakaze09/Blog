@@ -10,6 +10,11 @@ public class HomeViewModel
     public Photo? RandomPhoto { get; set; }
 
     /// <summary>
+    /// Whether to display Chart
+    /// </summary>
+    public bool ChartVisible { get; set; } = false;
+
+    /// <summary>
     ///     Featured blog posts
     /// </summary>
     public Post? TopPost { get; set; }

@@ -1,3 +1,5 @@
+const HEIGHT = 400
+
 let homeApp = new Vue({
     el: '#vue-app',
     data: {
@@ -28,7 +30,7 @@ let homeApp = new Vue({
             })
     },
     mounted() {
-        this.loadChart()
+        if (CHART_VISIBLE === true) this.loadChart()
     },
     methods: {
         /**
@@ -108,7 +110,7 @@ let homeApp = new Vue({
                     };
 
                     this.currentChart = new Chart(this.chartElem, config)
-                    this.currentChart.resize(null, 400)
+                    this.currentChart.resize(null, HEIGHT)
                 })
         },
         loadBarChart() {
@@ -144,7 +146,7 @@ let homeApp = new Vue({
                     }
 
                     this.currentChart = new Chart(this.chartElem, config)
-                    this.currentChart.resize(null, 400)
+                    this.currentChart.resize(null, HEIGHT)
                 })
         }
     }
