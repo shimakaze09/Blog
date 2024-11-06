@@ -14,7 +14,7 @@ public class VisitRecord
     /// <summary>
     ///     IP Address
     /// </summary>
-    public string Ip { get; set; }
+    public string? Ip { get; set; }
 
     /// <summary>
     ///     Request Path

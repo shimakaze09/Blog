@@ -1,5 +1,6 @@
 using Data.Models;
 using FreeSql;
+using Web.Extensions;
 
 namespace Web.Middlewares;
 
@@ -19,7 +20,7 @@ public class VisitRecordMiddleware
 
         visitRecordRepo.InsertAsync(new VisitRecord
         {
-            Ip = "",
+            Ip = context.GetRemoteIPAddress()?.ToString().Split(":")?.Last(),
             RequestPath = request.Path,
             RequestQueryString = request.QueryString.Value,
             RequestMethod = request.Method,
