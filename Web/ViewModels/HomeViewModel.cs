@@ -10,7 +10,7 @@ public class HomeViewModel
     public Photo? RandomPhoto { get; set; }
 
     /// <summary>
-    /// Whether to display Chart
+    ///     Whether to display Chart
     /// </summary>
     public bool ChartVisible { get; set; } = false;
 
@@ -33,4 +33,9 @@ public class HomeViewModel
     ///     Recommended categories. Generally, there should be three.
     /// </summary>
     public List<FeaturedCategory> FeaturedCategories { get; set; } = new();
+
+    /// <summary>
+    ///     Friend links
+    /// </summary>
+    public List<Link> Links { get; set; } = new();
 }
