@@ -109,10 +109,10 @@ public class PostService
     {
         var querySet = _postRepo.Select;
 
-        if (param.OnlyPublished) querySet = _postRepo.Select.Where(a => a.IsPublished);
+        if (param.OnlyPublished) querySet = _postRepo.Select.Where(a => a.IsPublish);
 
         // Is published
-        if (param.OnlyPublished) querySet = _postRepo.Select.Where(a => a.IsPublished);
+        if (param.OnlyPublished) querySet = _postRepo.Select.Where(a => a.IsPublish);
 
         // Status filter
         if (!string.IsNullOrEmpty(param.Status)) querySet = querySet.Where(a => a.Status == param.Status);

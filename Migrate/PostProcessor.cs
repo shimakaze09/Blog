@@ -103,7 +103,7 @@ public class PostProcessor
         _post.Status = status;
         _post.Title = title;
 
-        if (!new[] { "Published", "Posted" }.Contains(_post.Status)) _post.IsPublished = false;
+        if (!new[] { "Published", "Posted" }.Contains(_post.Status)) _post.IsPublish = false;
 
         return (status, title);
     }

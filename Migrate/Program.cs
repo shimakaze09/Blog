@@ -97,7 +97,7 @@ void WalkDirectoryTree(DirectoryInfo root)
                 Id = GuidUtils.GuidTo16String(),
                 Status = "Published",
                 Title = fi.Name.Replace(".md", ""),
-                IsPublished = true,
+                IsPublish = true,
                 Content = content,
                 Path = postPath,
                 CreationTime = fi.CreationTime,

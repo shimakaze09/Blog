@@ -74,7 +74,7 @@ public class BlogController : Controller
             return RedirectToAction(nameof(List));
         }
 
-        if (!post.IsPublished)
+        if (!post.IsPublish)
         {
             _messages.Warning($"Article {id} not published!");
             return RedirectToAction(nameof(List));
@@ -85,7 +85,7 @@ public class BlogController : Controller
 
     public IActionResult RandomPost()
     {
-        var posts = _postRepo.Select.ToList();
+        var posts = _postRepo.Where(a => a.IsPublish).ToList();
         var rndPost = posts[new Random().Next(posts.Count)];
         _messages.Info($"Randomly recommended article <b>{rndPost.Title}</b> for you!");
         return RedirectToAction(nameof(Post), new { id = rndPost.Id });
