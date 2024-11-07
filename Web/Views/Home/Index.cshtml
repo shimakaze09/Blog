@@ -41,7 +41,7 @@
             @foreach (var photo in Model.FeaturedPhotos)
             {
                 <div class="col">
-                    <partial name="Widgets/PhotoCardSmall" model="photo" />
+                    <partial name="Widgets/PhotoCardSmall" model="photo"/>
                 </div>
             }
         </div>
@@ -75,7 +75,7 @@
 
     @if (Model.TopPost != null)
     {
-        <partial name="Widgets/TopPostCard" model="Model.TopPost" />
+        <partial name="Widgets/TopPostCard" model="Model.TopPost"/>
     }
     else
     {
@@ -87,7 +87,7 @@
         <div class="row mb-2">
             @foreach (var post in Model.FeaturedPosts)
             {
-                <partial name="Widgets/FeaturedPostCard" model="post" />
+                <partial name="Widgets/FeaturedPostCard" model="post"/>
             }
         </div>
     }
@@ -95,6 +95,16 @@
     {
         @await Html.PartialAsync("Widgets/PlaceholderCard", "Featured post")
     }
+</div>
+
+<div class="container px-4 py-3">
+    <h2 class="pb-2 border-bottom">Link Exchange</h2>
+    <div class="d-grid gap-2 d-md-block">
+        @for (var i = 0; i < 30; i++)
+        {
+            <button type="button" class="btn btn-outline-primary">Primary</button>
+        }
+    </div>
 </div>
 
 @section bottom {
