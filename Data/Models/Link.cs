@@ -1,3 +1,5 @@
+using FreeSql.DataAnnotations;
+
 namespace Data.Models;
 
 /// <summary>
@@ -5,6 +7,9 @@ namespace Data.Models;
 /// </summary>
 public class Link
 {
+    [Column(IsIdentity = true, IsPrimary = true)]
+    public int Id { get; set; }
+
     /// <summary>
     ///     Website Name
     /// </summary>
@@ -13,7 +18,7 @@ public class Link
     /// <summary>
     ///     Introduction
     /// </summary>
-    public string Description { get; set; }
+    public string? Description { get; set; }
 
     /// <summary>
     ///     URL

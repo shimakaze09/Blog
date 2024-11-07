@@ -1,3 +1,5 @@
+using FreeSql.DataAnnotations;
+
 namespace Data.Models;
 
 /// <summary>
@@ -5,6 +7,9 @@ namespace Data.Models;
 /// </summary>
 public class LinkExchange
 {
+    [Column(IsIdentity = true, IsPrimary = true)]
+    public int Id { get; set; }
+
     /// <summary>
     ///     Website Name
     /// </summary>
@@ -34,10 +39,10 @@ public class LinkExchange
     ///     Is Verified
     ///     <para>Link exchanges need verification before they can be displayed on the website.</para>
     /// </summary>
-    public bool Verified { get; set; }
+    public bool Verified { get; set; } = false;
 
     /// <summary>
     ///     Application Time
     /// </summary>
-    public DateTime ApplyTime { get; set; }
+    public DateTime ApplyTime { get; set; } = DateTime.Now;
 }
