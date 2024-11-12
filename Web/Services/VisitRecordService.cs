@@ -15,31 +15,44 @@ public class VisitRecordService
         _repo = repo;
     }
 
+    /// <summary>
+    ///     Retrieves a visit record by its ID.
+    /// </summary>
+    /// <param name="id">The ID of the visit record.</param>
+    /// <returns>The visit record if found; otherwise, null.</returns>
     public VisitRecord? GetById(int id)
     {
         var item = _repo.Where(a => a.Id == id).First();
         return item;
     }
 
+    /// <summary>
+    ///     Retrieves all visit records.
+    /// </summary>
+    /// <returns>A list of all visit records.</returns>
     public List<VisitRecord> GetAll()
     {
         return _repo.Select.OrderByDescending(a => a.Time).ToList();
     }
 
+    /// <summary>
+    ///     Retrieves a paginated list of visit records based on query parameters.
+    /// </summary>
+    /// <param name="param">The query parameters for filtering and pagination.</param>
+    /// <returns>A paginated list of visit records.</returns>
     public IPagedList<VisitRecord> GetPagedList(VisitRecordQueryParameters param)
     {
         var querySet = _repo.Select;
 
-        // Search
+        // Search by request path
         if (!string.IsNullOrEmpty(param.Search)) querySet = querySet.Where(a => a.RequestPath.Contains(param.Search));
 
-        // Sort
+        // Sort by specified property
         if (!string.IsNullOrEmpty(param.SortBy))
         {
-            // Determine if ascending order
+            // Determine if sorting is ascending
             var isAscending = !param.SortBy.StartsWith("-");
             var orderByProperty = param.SortBy.Trim('-');
-
             querySet = querySet.OrderByPropertyName(orderByProperty, isAscending);
         }
 
@@ -47,29 +60,25 @@ public class VisitRecordService
     }
 
     /// <summary>
-    ///     Summary data
+    ///     Retrieves an overview of visit data.
     /// </summary>
-    /// <returns></returns>
+    /// <returns>An object containing total visits, today's visits, and yesterday's visits.</returns>
     public object Overview()
     {
-        ISelect<VisitRecord> GetQuerySet()
-        {
-            return _repo.Where(a => !a.RequestPath.StartsWith("/Api"));
-        }
-
-        return new
-        {
-            TotalVisit = GetQuerySet().Count(),
-            TodayVisit = GetQuerySet().Where(a => a.Time.Date == DateTime.Today).Count(),
-            YesterdayVisit = GetQuerySet().Where(a => a.Time.Date == DateTime.Today.AddDays(-2).Date).Count()
-        };
+        return _repo.Where(a => !a.RequestPath.StartsWith("/Api"))
+            .ToAggregate(g => new
+            {
+                TotalVisit = g.Count(),
+                TodayVisit = g.Sum(g.Key.Time.Date == DateTime.Today ? 1 : 0),
+                YesterdayVisit = g.Sum(g.Key.Time.Date == DateTime.Today.AddDays(-1).Date ? 1 : 0)
+            });
     }
 
     /// <summary>
-    ///     Trend data
+    ///     Retrieves trend data for the specified number of days.
     /// </summary>
-    /// <param name="days">Number of days to view data, default is 7 days</param>
-    /// <returns></returns>
+    /// <param name="days">The number of days to view data for, default is 7 days.</param>
+    /// <returns>A list of objects containing date and visit count for each day.</returns>
     public object Trend(int days = 7)
     {
         return _repo.Where(a => !a.RequestPath.StartsWith("/Api"))
@@ -84,18 +93,18 @@ public class VisitRecordService
     }
 
     /// <summary>
-    ///     Statistics data
+    ///     Retrieves statistical data for a specific date.
     /// </summary>
-    /// <returns></returns>
+    /// <param name="date">The date to retrieve statistics for.</param>
+    /// <returns>An object containing the visit count for the specified date.</returns>
     public object Stats(DateTime date)
     {
-        var data = _repo.Where(
+        return _repo.Where(
             a => a.Time.Date == date.Date
                  && !a.RequestPath.StartsWith("/Api")
-        );
-        return new
+        ).ToAggregate(g => new
         {
-            Count = data.Count()
-        };
+            Count = g.Count()
+        });
     }
 }
