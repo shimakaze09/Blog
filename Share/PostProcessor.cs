@@ -7,7 +7,7 @@ using Markdig.Renderers.Normalize;
 using Markdig.Syntax;
 using Markdig.Syntax.Inlines;
 
-namespace Migrate;
+namespace Share;
 
 public class PostProcessor
 {

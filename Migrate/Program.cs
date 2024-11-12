@@ -3,7 +3,7 @@
 using Contrib.Utils;
 using Data;
 using Data.Models;
-using Migrate;
+using Share;
 
 const string importDir = @"E:\blog\";
 
