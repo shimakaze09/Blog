@@ -3,9 +3,6 @@ const HEIGHT = 400
 let homeApp = new Vue({
     el: '#vue-app',
     data: {
-        poem: {},
-        hitokoto: {},
-        poemSimple: '',
         chartTypes: ['bubble', 'bar'],
         currentChartTypeIndex: 0,
         currentChart: null
@@ -14,20 +11,6 @@ let homeApp = new Vue({
         chartElem() {
             return document.getElementById('myChart')
         }
-    },
-    created() {
-        fetch('http://dc.sblt.deali.cn:9800/poem/simple')
-            .then(res => res.text()).then(data => this.poemSimple = data)
-        fetch('http://dc.sblt.deali.cn:9800/poem/tang')
-            .then(res => res.json())
-            .then(data => {
-                this.poem = data.data
-            })
-        fetch('http://dc.sblt.deali.cn:9800/hitokoto/get')
-            .then(res => res.json())
-            .then(data => {
-                this.hitokoto = data.data[0]
-            })
     },
     mounted() {
         if (CHART_VISIBLE === true) this.loadChart()

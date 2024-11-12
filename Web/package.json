@@ -29,7 +29,6 @@
         "editor.md": "^1.5.0",
         "jquery": "^3.6.0",
         "masonry-layout": "^4.2.2",
-        "my-blog": "file:",
         "vue": "^2.7.16"
     }
 }
