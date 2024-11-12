@@ -17,7 +17,7 @@ public class PostService
 {
     private readonly IHttpContextAccessor _accessor;
     private readonly IBaseRepository<Category> _categoryRepo;
-    private readonly IConfiguration _configuration;
+    private readonly ConfigService _conf;
     private readonly IWebHostEnvironment _environment;
     private readonly LinkGenerator _generator;
     private readonly IBaseRepository<Post> _postRepo;
@@ -25,26 +25,26 @@ public class PostService
     public PostService(IBaseRepository<Post> postRepo,
         IBaseRepository<Category> categoryRepo,
         IWebHostEnvironment environment,
-        IConfiguration configuration,
         IHttpContextAccessor accessor,
-        LinkGenerator generator
-    )
+        LinkGenerator generator,
+        ConfigService conf)
     {
         _postRepo = postRepo;
         _categoryRepo = categoryRepo;
         _environment = environment;
-        _configuration = configuration;
         _accessor = accessor;
         _generator = generator;
+        _conf = conf;
     }
 
-    public string Host => _configuration.GetSection("Server:Host").Value;
+    public string Host => _conf["host"];
 
     public Post? GetById(string id)
     {
-        // When retrieving posts, parse markdown image URLs and add full URLs to return to the frontend
+        // When retrieving posts, parse markdown image links and add full URLs to return to the frontend
         var post = _postRepo.Where(a => a.Id == id).Include(a => a.Category).First();
         if (post != null) post.Content = MdImageLinkConvert(post);
+
         return post;
     }
 
@@ -55,17 +55,17 @@ public class PostService
 
     public Post InsertOrUpdate(Post post)
     {
-        // When updating posts, replace markdown image URLs with relative paths before saving
+        // When updating posts, replace markdown image links with relative paths before saving
         post.Content = MdImageLinkConvert(post, false);
         return _postRepo.InsertOrUpdate(post);
     }
 
     /// <summary>
-    ///     Uploads an image for a specific article
+    ///     Upload images for a specified post
     /// </summary>
-    /// <param name="post">The post object</param>
-    /// <param name="file">The uploaded file</param>
-    /// <returns>The URL of the saved image</returns>
+    /// <param name="post"></param>
+    /// <param name="file"></param>
+    /// <returns></returns>
     public string UploadImage(Post post, IFormFile file)
     {
         InitPostMediaDir(post);
@@ -75,7 +75,7 @@ public class PostService
         var savePath = Path.Combine(_environment.WebRootPath, fileRelativePath);
         if (File.Exists(savePath))
         {
-            // Handle file renaming
+            // Handle duplicate filenames
             var newFilename =
                 $"{Path.GetFileNameWithoutExtension(filename)}-{GuidUtils.GuidTo16String()}.{Path.GetExtension(filename)}";
             fileRelativePath = Path.Combine("media", "blog", post.Id, newFilename);
@@ -91,10 +91,10 @@ public class PostService
     }
 
     /// <summary>
-    ///     Gets the image resources for a specified article
+    ///     Get images for a specified post
     /// </summary>
-    /// <param name="post">The article object</param>
-    /// <returns>A list of image URLs</returns>
+    /// <param name="post"></param>
+    /// <returns></returns>
     public List<string> GetImages(Post post)
     {
         var data = new List<string>();
@@ -109,24 +109,22 @@ public class PostService
     {
         var querySet = _postRepo.Select;
 
-        if (param.OnlyPublished) querySet = _postRepo.Select.Where(a => a.IsPublish);
-
-        // Is published
+        // Filter by published status
         if (param.OnlyPublished) querySet = _postRepo.Select.Where(a => a.IsPublish);
 
         // Status filter
         if (!string.IsNullOrEmpty(param.Status)) querySet = querySet.Where(a => a.Status == param.Status);
 
-        // Category filtering
+        // Category filter
         if (param.CategoryId != 0) querySet = querySet.Where(a => a.CategoryId == param.CategoryId);
 
-        // Keyword filtering
+        // Keyword filter
         if (!string.IsNullOrEmpty(param.Search)) querySet = querySet.Where(a => a.Title.Contains(param.Search));
 
         // Sorting
         if (!string.IsNullOrEmpty(param.SortBy))
         {
-            // Whether ascending order
+            // Determine if ascending order
             var isAscending = !param.SortBy.StartsWith("-");
             var orderByProperty = param.SortBy.Trim('-');
 
@@ -173,10 +171,10 @@ public class PostService
     }
 
     /// <summary>
-    ///     Initializes the resource directory for blog posts
+    ///     Initialize the directory for blog post resources
     /// </summary>
-    /// <param name="post">The blog post object</param>
-    /// <returns>The path of the post media directory</returns>
+    /// <param name="post"></param>
+    /// <returns></returns>
     private string InitPostMediaDir(Post post)
     {
         var blogMediaDir = Path.Combine(_environment.WebRootPath, "media", "blog");
@@ -188,11 +186,11 @@ public class PostService
     }
 
     /// <summary>
-    ///     Converts image links in Markdown
+    ///     Convert markdown image links
     /// </summary>
-    /// <param name="post">The blog post object</param>
-    /// <param name="isAddPrefix">Whether to add a prefix to the image URLs</param>
-    /// <returns>The converted Markdown content</returns>
+    /// <param name="post"></param>
+    /// <param name="isAddPrefix"></param>
+    /// <returns></returns>
     private string MdImageLinkConvert(Post post, bool isAddPrefix = true)
     {
         var document = Markdown.Parse(post.Content);
@@ -215,7 +213,7 @@ public class PostService
                 }
                 else
                 {
-                    // Set relative link
+                    // Set relative URL
                     linkInline.Url = Path.GetFileName(imgUrl);
                 }
             }
