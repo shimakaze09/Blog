@@ -266,7 +266,10 @@ public class PostService
                 if (inline is not LinkInline { IsImage: true } linkInline) continue;
 
                 var imgUrl = linkInline.Url;
+                // Skip empty links
                 if (imgUrl == null) continue;
+                // Skip images from the current site
+                if (imgUrl.StartsWith(Host)) continue;
 
                 // Download the image
                 _logger.LogDebug("Post: {Title}, downloading image: {Url}", post.Title, imgUrl);
