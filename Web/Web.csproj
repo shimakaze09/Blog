@@ -28,6 +28,8 @@
         <PackageReference Include="Markdig" Version="0.38.0"/>
         <PackageReference Include="Microsoft.AspNetCore.Authentication.JwtBearer" Version="8.0.10"/>
         <PackageReference Include="Microsoft.AspNetCore.Mvc.Razor.RuntimeCompilation" Version="8.0.10"/>
+        <PackageReference Include="Microsoft.CodeAnalysis.Common" Version="4.11.0" />
+        <PackageReference Include="Microsoft.CodeAnalysis.CSharp" Version="4.11.0" />
         <PackageReference Include="SixLabors.ImageSharp" Version="2.1.9"/>
         <PackageReference Include="Swashbuckle.AspNetCore" Version="6.9.0"/>
         <PackageReference Include="Swashbuckle.AspNetCore.Filters" Version="8.0.2"/>
