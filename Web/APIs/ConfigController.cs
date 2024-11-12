@@ -53,4 +53,12 @@ public class ConfigController : ControllerBase
         item.Description = dto.Description;
         return new ApiResponse<ConfigItem>(_service.AddOrUpdate(item));
     }
+
+    [HttpDelete("{key}")]
+    public ApiResponse Delete(string key)
+    {
+        var item = _service.GetByKey(key);
+        if (item == null) return ApiResponse.NotFound();
+        return ApiResponse.Ok($"Deleted {_service.DeleteByKey(key)} records");
+    }
 }
