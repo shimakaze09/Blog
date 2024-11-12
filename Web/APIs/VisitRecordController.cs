@@ -55,6 +55,18 @@ public class VisitRecordController : ControllerBase
     }
 
     /// <summary>
+    ///     Trend data
+    /// </summary>
+    /// <param name="days">Number of days to view data, default is 7 days</param>
+    /// <returns></returns>
+    [HttpGet("[action]")]
+    public ApiResponse Trend(int days = 7)
+    {
+        return ApiResponse.Ok(_service.Trend(days));
+    }
+
+
+    /// <summary>
     ///     Statistical API
     /// </summary>
     /// <returns></returns>

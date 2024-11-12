@@ -52,19 +52,35 @@ public class VisitRecordService
     /// <returns></returns>
     public object Overview()
     {
-        ISelect<VisitRecord> GetQuerySet() => _repo.Where(a => !a.RequestPath.StartsWith("/Api"));
+        ISelect<VisitRecord> GetQuerySet()
+        {
+            return _repo.Where(a => !a.RequestPath.StartsWith("/Api"));
+        }
 
         return new
         {
             TotalVisit = GetQuerySet().Count(),
             TodayVisit = GetQuerySet().Where(a => a.Time.Date == DateTime.Today).Count(),
-            YesterdayVisit = GetQuerySet().Where(a => a.Time.Date == DateTime.Today.AddDays(-2).Date).Count(),
-            Daily = GetQuerySet().GroupBy(a => a.Time.Date).ToList(a => new
-            {
-                time = $"{a.Key.Year}-{a.Key.Month}-{a.Key.Day}",
-                count = a.Count()
-            })
+            YesterdayVisit = GetQuerySet().Where(a => a.Time.Date == DateTime.Today.AddDays(-2).Date).Count()
         };
+    }
+
+    /// <summary>
+    ///     Trend data
+    /// </summary>
+    /// <param name="days">Number of days to view data, default is 7 days</param>
+    /// <returns></returns>
+    public object Trend(int days = 7)
+    {
+        return _repo.Where(a => !a.RequestPath.StartsWith("/Api"))
+            .Where(a => a.Time.Date > DateTime.Today.AddDays(-days).Date)
+            .GroupBy(a => a.Time.Date)
+            .ToList(a => new
+            {
+                time = a.Key,
+                date = $"{a.Key.Month}-{a.Key.Day}",
+                count = a.Count()
+            });
     }
 
     /// <summary>
