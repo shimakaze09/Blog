@@ -30,7 +30,7 @@ public class BlogService
     }
 
     /// <summary>
-    ///     Gets blog overview information
+    ///     Get blog overview information
     /// </summary>
     /// <returns></returns>
     public BlogOverview Overview()
@@ -52,10 +52,10 @@ public class BlogService
     }
 
     /// <summary>
-    ///     Get recommended blog rows, with a maximum of two blogs per row
+    ///     Get recommended blog rows, each row contains at most two blogs
     /// </summary>
     /// <returns></returns>
-    [Obsolete("No need to separate rows anymore, use GetFeaturedPosts() directly")]
+    [Obsolete("No longer needed to separate into rows, use GetFeaturedPosts() directly")]
     public List<List<Post>> GetFeaturedPostRows()
     {
         var data = new List<List<Post>>();
@@ -88,10 +88,10 @@ public class BlogService
     }
 
     /// <summary>
-    ///     Set the top blog
+    ///     Set a blog as featured
     /// </summary>
     /// <param name="post"></param>
-    /// <returns>Returns the <see cref="TopPost" /> object and the number of rows deleted for the existing top blog</returns>
+    /// <returns>Return TopPost object and the number of deleted original featured blog rows</returns>
     public (TopPost, int) SetTopPost(Post post)
     {
         var rows = _topPostRepo.Select.ToDelete().ExecuteAffrows();
@@ -101,7 +101,7 @@ public class BlogService
     }
 
     /// <summary>
-    ///     Gets the list of article statuses
+    ///     Get list of article statuses
     /// </summary>
     /// <returns>A list of nullable string values representing article statuses</returns>
     public List<string?> GetStatusList()

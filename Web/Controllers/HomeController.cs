@@ -26,7 +26,7 @@ public class HomeController : Controller
         {
             RandomPhoto = _photoService.GetRandomPhoto(),
             TopPost = _blogService.GetTopOnePost(),
-            FeaturedPosts = _blogService.GetFeaturedPostRows(),
+            FeaturedPosts = _blogService.GetFeaturedPosts(),
             FeaturedPhotos = _photoService.GetFeaturedPhotos(),
             FeaturedCategories = _categoryService.GetFeaturedCategories(),
             Links = _linkService.GetAll()
