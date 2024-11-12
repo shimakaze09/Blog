@@ -23,7 +23,8 @@ public class ConfigService
         }
         set
         {
-            var item = GetByKey(key) ?? new ConfigItem { Key = key, Value = value };
+            var item = GetByKey(key) ?? new ConfigItem { Key = key };
+            item.Value = value;
             AddOrUpdate(item);
         }
     }

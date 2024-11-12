@@ -1,0 +1,47 @@
+﻿@model InitViewModel
+@{
+    ViewData["Title"] = "Init";
+}
+
+<div class="container px-4 py-3">
+    <h2 class="d-flex w-100 justify-content-between pb-2 mb-3 border-bottom">
+        <div>Blog Init</div>
+        <div>System Initialization</div>
+    </h2>
+
+    <div class="card px-1">
+        <form enctype="multipart/form-data" class="card-body row" asp-controller="Home" asp-action="Init" method="post">
+            <div class="text-danger" asp-validation-summary="All"></div>
+
+            <div class="col-xl-6 py-3">
+                <h5 class="card-title">Create Admin Account</h5>
+                <h6 class="card-subtitle mb-3 text-muted">Used for logging into the admin backend</h6>
+                <div class="mb-3">
+                    <label asp-for="Username" class="form-label">Username</label>
+                    <input asp-for="Username" class="form-control" aria-describedby="usernameHelp">
+                    <div id="usernameHelp" class="form-text">Set a username for the administrator</div>
+                </div>
+                <div class="mb-3">
+                    <label asp-for="Password" class="form-label">Password</label>
+                    <input asp-for="Password" class="form-control" aria-describedby="passwordHelp">
+                    <div id="passwordHelp" class="form-text">A password is required to log in</div>
+                </div>
+            </div>
+
+            <div class="col-xl-6 py-3">
+                <h5 class="card-title">System Configuration</h5>
+                <h6 class="card-subtitle mb-3 text-muted">Some initial configuration settings</h6>
+                <div class="mb-3">
+                    <label asp-for="Host" class="form-label">Host</label>
+                    <input asp-for="Host" class="form-control" aria-describedby="hostHelp">
+                    <div id="hostHelp" class="form-text">Set the link prefix. This can be modified later in the admin backend.</div>
+                </div>
+            </div>
+
+            <div class="form-group">
+                <button type="reset" class="btn btn-outline-warning">Reset</button>
+                <button type="submit" class="btn btn-outline-primary">Submit</button>
+            </div>
+        </form>
+    </div>
+</div>
