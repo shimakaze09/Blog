@@ -148,6 +148,7 @@ public class PostService
             Title = post.Title,
             Summary = post.Summary,
             Content = post.Content,
+            // TODO Research backend rendering of Markdown
             ContentHtml = Markdown.ToHtml(post.Content),
             Path = post.Path,
             Url = _generator.GetUriByAction(
@@ -187,9 +188,11 @@ public class PostService
 
     /// <summary>
     ///     Convert markdown image links
+    ///     <para>Supports adding or removing URL prefixes from Markdown image links</para>
+    ///     TODO If Markdown contains external image URLs, download them locally and replace
     /// </summary>
     /// <param name="post"></param>
-    /// <param name="isAddPrefix"></param>
+    /// <param name="isAddPrefix">Whether to add the full site URL prefix</param>
     /// <returns></returns>
     private string MdImageLinkConvert(Post post, bool isAddPrefix = true)
     {
