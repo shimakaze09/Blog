@@ -60,4 +60,26 @@ public class BlogController : ControllerBase
     {
         return ApiResponse.Ok(_blogService.GetStatusList());
     }
+
+    /// <summary>
+    ///     Uploads a blog post compressed file and imports it.
+    /// </summary>
+    /// <returns>A task that represents the asynchronous operation. The task result contains the uploaded post.</returns>
+    [HttpPost("[action]")]
+    public async Task<ApiResponse<Post>> Upload([FromForm] PostCreationDto dto, IFormFile file,
+        [FromServices] CategoryService categoryService)
+    {
+        if (!file.FileName.EndsWith(".zip")) return ApiResponse.BadRequest("Only zip files are allowed.");
+
+        var category = categoryService.GetById(dto.CategoryId);
+        if (category == null) return ApiResponse.BadRequest($"Category {dto.CategoryId} does not exist!");
+        try
+        {
+            return new ApiResponse<Post>(await _blogService.Upload(dto, file));
+        }
+        catch (Exception ex)
+        {
+            return ApiResponse.Error($"Error extracting file: {ex.Message}");
+        }
+    }
 }

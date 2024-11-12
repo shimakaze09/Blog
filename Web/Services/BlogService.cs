@@ -1,3 +1,5 @@
+using System.IO.Compression;
+using System.Text;
 using Data.Models;
 using FreeSql;
 using Web.ViewModels.Blog;
@@ -108,5 +110,28 @@ public class BlogService
     {
         return _postRepo.Select.GroupBy(a => a.Status)
             .ToList(a => a.Key);
+    }
+
+    /// <summary>
+    ///     Uploads a blog post.
+    ///     This method only completes the extraction part; the import part is yet to be implemented.
+    /// </summary>
+    /// <param name="dto">The data transfer object containing the post details.</param>
+    /// <param name="file">The file to be uploaded.</param>
+    /// <returns>A task that represents the asynchronous operation. The task result contains the uploaded post.</returns>
+    public async Task<Post> Upload(PostCreationDto dto, IFormFile file)
+    {
+        var tempFile = Path.GetTempFileName();
+        await using (var fs = new FileStream(tempFile, FileMode.Create))
+        {
+            await file.CopyToAsync(fs);
+        }
+
+        var extractPath = Path.Combine(Path.GetTempPath(), "StarBlog", Guid.NewGuid().ToString());
+        // Use GBK encoding to extract the file to prevent garbled Chinese filenames
+        // Reference: https://www.cnblogs.com/liguix/p/11883248.html
+        Encoding.RegisterProvider(CodePagesEncodingProvider.Instance);
+        ZipFile.ExtractToDirectory(tempFile, extractPath, Encoding.GetEncoding("GBK"));
+        throw new NotImplementedException();
     }
 }
