@@ -4,12 +4,12 @@ using Contrib.Utils;
 namespace Web.Services;
 
 /// <summary>
-/// Some common services
+///     Some common services
 /// </summary>
 public class CommonService
 {
-    private readonly ILogger<CommonService> _logger;
     private readonly IHttpClientFactory _httpClientFactory;
+    private readonly ILogger<CommonService> _logger;
 
     public CommonService(ILogger<CommonService> logger, IHttpClientFactory httpClientFactory)
     {
@@ -18,12 +18,12 @@ public class CommonService
     }
 
     /// <summary>
-    /// Download a file
+    ///     Download a file
     /// </summary>
     /// <param name="url">URL of the file to download</param>
     /// <param name="savePath">Save path (must be a complete path)</param>
     /// <returns>The name of the downloaded file, or null if the download failed</returns>
-    public async Task<string?> DownloadFile(string url, string savePath)
+    public async Task<string?> DownloadFileAsync(string url, string savePath)
     {
         var httpClient = _httpClientFactory.CreateClient();
         try

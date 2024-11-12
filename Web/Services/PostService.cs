@@ -17,6 +17,7 @@ public class PostService
 {
     private readonly IHttpContextAccessor _accessor;
     private readonly IBaseRepository<Category> _categoryRepo;
+    private readonly CommonService _commonService;
     private readonly ConfigService _conf;
     private readonly IWebHostEnvironment _environment;
     private readonly LinkGenerator _generator;
@@ -27,7 +28,8 @@ public class PostService
         IWebHostEnvironment environment,
         IHttpContextAccessor accessor,
         LinkGenerator generator,
-        ConfigService conf)
+        ConfigService conf,
+        CommonService commonService)
     {
         _postRepo = postRepo;
         _categoryRepo = categoryRepo;
@@ -35,16 +37,15 @@ public class PostService
         _accessor = accessor;
         _generator = generator;
         _conf = conf;
+        _commonService = commonService;
     }
 
     public string Host => _conf["host"];
 
     public Post? GetById(string id)
     {
-        // When retrieving posts, parse markdown image links and add full URLs to return to the frontend
         var post = _postRepo.Where(a => a.Id == id).Include(a => a.Category).First();
         if (post != null) post.Content = MdImageLinkConvert(post);
-
         return post;
     }
 
@@ -55,13 +56,12 @@ public class PostService
 
     public Post InsertOrUpdate(Post post)
     {
-        // When updating posts, replace markdown image links with relative paths before saving
         post.Content = MdImageLinkConvert(post, false);
         return _postRepo.InsertOrUpdate(post);
     }
 
     /// <summary>
-    ///     Upload images for a specified post
+    ///     Upload images for a specific post
     /// </summary>
     /// <param name="post"></param>
     /// <param name="file"></param>
@@ -75,7 +75,7 @@ public class PostService
         var savePath = Path.Combine(_environment.WebRootPath, fileRelativePath);
         if (File.Exists(savePath))
         {
-            // Handle duplicate filenames
+            // Handle file rename
             var newFilename =
                 $"{Path.GetFileNameWithoutExtension(filename)}-{GuidUtils.GuidTo16String()}.{Path.GetExtension(filename)}";
             fileRelativePath = Path.Combine("media", "blog", post.Id, newFilename);
@@ -91,7 +91,7 @@ public class PostService
     }
 
     /// <summary>
-    ///     Get images for a specified post
+    ///     Get images for a specific post
     /// </summary>
     /// <param name="post"></param>
     /// <returns></returns>
@@ -109,25 +109,23 @@ public class PostService
     {
         var querySet = _postRepo.Select;
 
-        // Filter by published status
+        // Filter published posts
         if (param.OnlyPublished) querySet = _postRepo.Select.Where(a => a.IsPublish);
 
-        // Status filter
+        // Apply status filter
         if (!string.IsNullOrEmpty(param.Status)) querySet = querySet.Where(a => a.Status == param.Status);
 
-        // Category filter
+        // Apply category filter
         if (param.CategoryId != 0) querySet = querySet.Where(a => a.CategoryId == param.CategoryId);
 
-        // Keyword filter
+        // Apply keyword filter
         if (!string.IsNullOrEmpty(param.Search)) querySet = querySet.Where(a => a.Title.Contains(param.Search));
 
-        // Sorting
+        // Apply sorting
         if (!string.IsNullOrEmpty(param.SortBy))
         {
-            // Determine if ascending order
             var isAscending = !param.SortBy.StartsWith("-");
             var orderByProperty = param.SortBy.Trim('-');
-
             querySet = querySet.OrderByPropertyName(orderByProperty, isAscending);
         }
 
@@ -172,7 +170,7 @@ public class PostService
     }
 
     /// <summary>
-    ///     Initialize the directory for blog post resources
+    ///     Initialize the resource directory for blog posts
     /// </summary>
     /// <param name="post"></param>
     /// <returns></returns>
@@ -187,15 +185,20 @@ public class PostService
     }
 
     /// <summary>
-    ///     Convert markdown image links
-    ///     <para>Supports adding or removing URL prefixes from Markdown image links</para>
-    ///     TODO If Markdown contains external image URLs, download them locally and replace
+    ///     <para>Convert Markdown image links</para>
+    ///     <list type="number">
+    ///         <listheader>Function</listheader>
+    ///         <item>Support adding or removing URL prefixes from Markdown image links</item>
+    ///         <item>If Markdown contains external image URLs, download them locally and replace the URLs</item>
+    ///     </list>
     /// </summary>
     /// <param name="post"></param>
-    /// <param name="isAddPrefix">Whether to add the full site URL prefix</param>
+    /// <param name="isAddPrefix">Whether to add the full URL prefix of the site</param>
+    /// <param name="isDownloadExternalUrl">Whether to download images with external URLs</param>
     /// <returns></returns>
-    private string MdImageLinkConvert(Post post, bool isAddPrefix = true)
+    private string MdImageLinkConvert(Post post, bool isAddPrefix = true, bool isDownloadExternalUrl = false)
     {
+        if (post.Content == null) return string.Empty;
         var document = Markdown.Parse(post.Content);
 
         foreach (var node in document.AsEnumerable())
@@ -207,17 +210,29 @@ public class PostService
 
                 var imgUrl = linkInline.Url;
                 if (imgUrl == null) continue;
-                if (isAddPrefix && imgUrl.StartsWith("http")) continue;
+
+                // Already has Host prefix, skip
+                if (isAddPrefix && imgUrl.StartsWith(Host)) continue;
+
+                // Set full link
                 if (isAddPrefix)
                 {
                     if (imgUrl.StartsWith("http")) continue;
-                    // Set full URL
                     linkInline.Url = $"{Host}/media/blog/{post.Id}/{imgUrl}";
                 }
+                // Set relative link
                 else
                 {
-                    // Set relative URL
-                    linkInline.Url = Path.GetFileName(imgUrl);
+                    if (!isDownloadExternalUrl)
+                    {
+                        linkInline.Url = Path.GetFileName(imgUrl);
+                        continue;
+                    }
+
+                    // Download image
+                    var savePath = Path.Combine(_environment.WebRootPath);
+                    // TODO: Complete image download logic
+                    // var fileName= await _commonService.DownloadFileAsync(imgUrl, savePath);
                 }
             }
         }
