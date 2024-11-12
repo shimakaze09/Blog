@@ -6,7 +6,7 @@ using Web.ViewModels.Response;
 namespace Web.Apis;
 
 /// <summary>
-///     Configuration center
+///     Configuration Center
 /// </summary>
 [ApiController]
 [Route("Api/[controller]")]
@@ -34,14 +34,18 @@ public class ConfigController : ControllerBase
     }
 
     [HttpPost]
-    public ConfigItem Add(ConfigItemCreationDto dto)
+    public ApiResponse<ConfigItem> Add(ConfigItemCreationDto dto)
     {
-        return _service.AddOrUpdate(new ConfigItem
+        var item = _service.GetByKey(dto.Key);
+        if (item != null) return ApiResponse.BadRequest($"Key {dto.Key} already exists!");
+
+        item = _service.AddOrUpdate(new ConfigItem
         {
             Key = dto.Key,
             Value = dto.Value,
             Description = dto.Description
         });
+        return new ApiResponse<ConfigItem>(item);
     }
 
     [HttpPut("{key}")]
@@ -58,7 +62,6 @@ public class ConfigController : ControllerBase
     public ApiResponse Delete(string key)
     {
         var item = _service.GetByKey(key);
-        if (item == null) return ApiResponse.NotFound();
-        return ApiResponse.Ok($"Deleted {_service.DeleteByKey(key)} records");
+        return item == null ? ApiResponse.NotFound() : ApiResponse.Ok($"Deleted {_service.DeleteByKey(key)} records");
     }
 }
