@@ -8,7 +8,7 @@
 @{
     var content = Model.Content;
 
-    // Remove markdown formatting
+    // Remove Markdown formatting
     content = Regex.Replace(content, @"#.*\n", "");
     content = Regex.Replace(content, @"\[.*?\]\(.*?\)", "");
     content = Regex.Replace(content, @"\*.*?\*\s?", "");
@@ -29,8 +29,13 @@
     </style>
 }
 
-<div class="btn-group-vertical position-fixed bottom-0 end-0 me-3 mb-3" role="group" aria-label="Bottom right corner tools">
-    <a class="btn btn-outline-primary" href="#" role="button">
+<div class="btn-group-vertical position-fixed bottom-0 end-0 me-3 mb-3" role="group"
+     aria-label="Bottom right corner tools" style="z-index: 11">
+    <button type="button" class="btn btn-success" id="liveToastBtn">
+        <i class="fa-brands fa-github"></i>
+        <span>Github</span>
+    </button>
+    <a class="btn btn-primary" href="#" role="button">
         <i class="fa-solid fa-arrow-up"></i>
         <span>Back to top</span>
     </a>
@@ -114,9 +119,6 @@
                             <div class="card-text">
                                 <b>Copyright: </b>
                                 All articles in this blog are licensed under the <a href="https://opensource.org/license/mit">MIT</a> license agreement unless otherwise stated. Please indicate the source when reprinting!
-                            </div>
-                            <div class="card-text">
-                                <b>About me: </b> Amateur programmer, proficient in googling. Hope one day can write text for living.
                             </div>
                         </div>
                     </div>
