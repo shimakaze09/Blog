@@ -33,6 +33,7 @@ builder.Services.AddHttpContextAccessor();
 // Custom services
 builder.Services.AddScoped<BlogService>();
 builder.Services.AddScoped<CategoryService>();
+builder.Services.AddScoped<ConfigService>();
 builder.Services.AddScoped<LinkExchangeService>();
 builder.Services.AddScoped<LinkService>();
 builder.Services.AddScoped<PhotoService>();
