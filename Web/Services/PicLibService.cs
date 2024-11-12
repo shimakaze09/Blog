@@ -5,7 +5,7 @@ using SixLabors.ImageSharp.Processing;
 namespace Web.Services;
 
 /// <summary>
-///     Picture Library Service
+///     Image library service
 /// </summary>
 public class PicLibService
 {
@@ -24,7 +24,7 @@ public class PicLibService
 
     public List<string> ImageList { get; set; } = new();
 
-    [Obsolete("Some images may break proportions or fail cropping")]
+    [Obsolete("Some images may distort proportions or fail cropping")]
     public static async Task<(Image, IImageFormat)> GenerateSizedImageAsyncOld(string imagePath, int width, int height)
     {
         await using var fileStream = new FileStream(imagePath, FileMode.Open);
@@ -48,7 +48,7 @@ public class PicLibService
             else
             {
                 newHeight = height;
-                // Converting to int after scaling loses decimal places, so add 1
+                // Rounding up after division will lose decimal part, so add 1
                 newWidth = image.Width / image.Height * newHeight + 1;
             }
 
@@ -89,32 +89,27 @@ public class PicLibService
     }
 
     /// <summary>
-    ///     Calculate Greatest Common Divisor and Least Common Multiple
+    ///     Calculate greatest common divisor
     /// </summary>
-    /// <param name="num1"></param>
-    /// <param name="num2"></param>
-    /// <returns>Greatest Common Divisor, Least Common Multiple</returns>
-    private static (int, int) GetGreatestCommonDivisor(int num1, int num2)
+    /// <param name="m"></param>
+    /// <param name="n"></param>
+    /// <returns>Greatest common divisor</returns>
+    private static int GetGreatestCommonDivisor(int m, int n)
     {
-        // Define variable to save product of two numbers
-        var product = num1 * num2;
+        if (m < n) (n, m) = (m, n);
 
-        // Define temporary variable to save remainder
-        var temp = num1 % num2;
-        // Euclidean algorithm
-        do
+        while (n != 0)
         {
-            num1 = num2;
-            num2 = temp;
-            temp = num1 % num2;
-        } while (temp != 0);
+            var r = m % n;
+            m = n;
+            n = r;
+        }
 
-        // Greatest Common Divisor, Least Common Multiple
-        return (num2, product / num2);
+        return m;
     }
 
     /// <summary>
-    ///     Get Image Aspect Ratio
+    ///     Get image scale
     /// </summary>
     /// <param name="width"></param>
     /// <param name="height"></param>
@@ -122,12 +117,12 @@ public class PicLibService
     private static (double, double) GetPhotoScale(int width, int height)
     {
         if (width == height) return (1, 1);
-        var (gcd, _) = GetGreatestCommonDivisor(width, height);
+        var gcd = GetGreatestCommonDivisor(width, height);
         return ((double)width / gcd, (double)height / gcd);
     }
 
     /// <summary>
-    ///     Generate Sized Image
+    ///     Generate image of specified size
     /// </summary>
     /// <param name="imagePath"></param>
     /// <param name="width"></param>
@@ -145,14 +140,14 @@ public class PicLibService
         }
         else if (width > image.Width || height > image.Height)
         {
-            // Change the side with larger ratio
+            // Adjust the larger dimension
             if (width / image.Width < height / image.Height)
                 image.Mutate(a => a.Resize(0, height));
             else
                 image.Mutate(a => a.Resize(width, 0));
         }
 
-        // Use input size as cropping ratio
+        // Use input dimensions as scaling ratio
         var (scaleWidth, scaleHeight) = GetPhotoScale(width, height);
         var cropWidth = image.Width;
         var cropHeight = (int)(image.Width / scaleWidth * scaleHeight);
@@ -171,7 +166,7 @@ public class PicLibService
     }
 
     /// <summary>
-    ///     Get Random Image from Picture Library
+    ///     Get random image from the image library
     /// </summary>
     /// <param name="width"></param>
     /// <param name="height"></param>
@@ -185,7 +180,7 @@ public class PicLibService
     }
 
     /// <summary>
-    ///     Get Random Image from Picture Library
+    ///     Get random image from the image library
     /// </summary>
     /// <param name="seed"></param>
     /// <returns></returns>
