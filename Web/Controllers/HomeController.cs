@@ -8,8 +8,8 @@ public class HomeController : Controller
 {
     private readonly BlogService _blogService;
     private readonly CategoryService _categoryService;
-    private readonly PhotoService _photoService;
     private readonly LinkService _linkService;
+    private readonly PhotoService _photoService;
 
     public HomeController(BlogService blogService, PhotoService photoService, CategoryService categoryService,
         LinkService linkService)

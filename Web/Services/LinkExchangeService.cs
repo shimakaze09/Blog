@@ -1,12 +1,12 @@
-﻿using FreeSql;
-using Data.Models;
+﻿using Data.Models;
+using FreeSql;
 
 namespace Web.Services;
 
 public class LinkExchangeService
 {
-    private readonly IBaseRepository<LinkExchange> _repo;
     private readonly LinkService _linkService;
+    private readonly IBaseRepository<LinkExchange> _repo;
 
     public LinkExchangeService(IBaseRepository<LinkExchange> repo, LinkService linkService)
     {
@@ -39,7 +39,6 @@ public class LinkExchangeService
         if (status)
         {
             if (link == null)
-            {
                 _linkService.AddOrUpdate(new Link
                 {
                     Name = item.Name,
@@ -47,11 +46,8 @@ public class LinkExchangeService
                     Url = item.Url,
                     Visible = true
                 });
-            }
             else
-            {
                 _linkService.SetVisibility(link.Id, true);
-            }
         }
         else
         {

@@ -738,3 +738,6 @@ obj/
 # Additional files built by Visual Studio
 
 # End of https://www.toptal.com/developers/gitignore/api/database,visualstudiocode,visualstudio,csharp,dotnetcore,aspnetcore
+
+# ignore static files
+/Web/wwwroot/media/**

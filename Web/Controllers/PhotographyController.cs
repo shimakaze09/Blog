@@ -39,7 +39,7 @@ public class PhotographyController : Controller
     public IActionResult RandomPhoto()
     {
         var item = _photoService.GetRandomPhoto();
-        _messages.Info($"Randomly recommended a photo <b>{item.Title}</b> to you~");
+        _messages.Info($"Randomly recommended a photo <b>{item?.Title}</b> to you");
         return RedirectToAction(nameof(Photo), new { id = item.Id });
     }
 }
