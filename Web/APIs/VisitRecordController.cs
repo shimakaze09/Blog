@@ -7,6 +7,9 @@ using Web.ViewModels.Response;
 
 namespace Web.Apis;
 
+/// <summary>
+///     Visit Record
+/// </summary>
 [Authorize]
 [ApiController]
 [Route("api/[controller]")]
