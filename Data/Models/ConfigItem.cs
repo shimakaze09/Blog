@@ -2,6 +2,9 @@
 
 namespace Data.Models;
 
+/// <summary>
+/// Configure Item
+/// </summary>
 public class ConfigItem
 {
     [Column(IsIdentity = true, IsPrimary = true)]
