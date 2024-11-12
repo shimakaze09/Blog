@@ -1,4 +1,5 @@
 using AutoMapper;
+using Contrib.Utils;
 using Data.Models;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -11,7 +12,7 @@ using Web.ViewModels.Response;
 namespace Web.Apis;
 
 /// <summary>
-///     Article
+///     Blog Post Controller
 /// </summary>
 [Authorize]
 [ApiController]
@@ -60,16 +61,15 @@ public class BlogPostController : ControllerBase
         return ApiResponse.Ok($"Deleted {rows} blog posts");
     }
 
-    // FIXME: This parameter for adding articles is incorrect, we need to change it to DTO
     [HttpPost]
-    public ApiResponse<Post> Add(PostCreationDto dto,
+    public async Task<ApiResponse<Post>> Add(PostCreationDto dto,
         [FromServices] CategoryService categoryService)
     {
         var post = _mapper.Map<Post>(dto);
         var category = categoryService.GetById(dto.CategoryId);
         if (category == null) return ApiResponse.BadRequest($"Category {dto.CategoryId} does not exist!");
 
-        post.Id = Guid.NewGuid().ToString();
+        post.Id = GuidUtils.GuidTo16String();
         post.CreationTime = DateTime.Now;
         post.LastUpdateTime = DateTime.Now;
 
@@ -83,23 +83,25 @@ public class BlogPostController : ControllerBase
 
         categories.Reverse();
         post.Categories = string.Join(",", categories.Select(a => a.Id));
-        return new ApiResponse<Post>(_postService.InsertOrUpdate(post));
+
+        return new ApiResponse<Post>(await _postService.InsertOrUpdateAsync(post));
     }
 
     [HttpPut("{id}")]
-    public ApiResponse<Post> Update(string id, PostUpdateDto dto)
+    public async Task<ApiResponse<Post>> Update(string id, PostUpdateDto dto)
     {
         var post = _postService.GetById(id);
         if (post == null) return ApiResponse.NotFound($"Blog {id} does not exist");
-        // mapper.Map(source) creates a completely new object
+
+        // mapper.Map(source) gets a brand new object
         // mapper.Map(source, dest) modifies the source object
         post = _mapper.Map(dto, post);
         post.LastUpdateTime = DateTime.Now;
-        return new ApiResponse<Post>(_postService.InsertOrUpdate(post));
+        return new ApiResponse<Post>(await _postService.InsertOrUpdateAsync(post));
     }
 
     /// <summary>
-    ///     Upload image
+    ///     Upload an image
     /// </summary>
     /// <param name="id">The ID of the blog post</param>
     /// <param name="file">The uploaded image file</param>
@@ -118,7 +120,7 @@ public class BlogPostController : ControllerBase
     }
 
     /// <summary>
-    ///     Gets images from a blog post
+    ///     Get images in the post
     /// </summary>
     /// <param name="id">The ID of the blog post</param>
     /// <returns>A list of image URLs</returns>
@@ -155,11 +157,11 @@ public class BlogPostController : ControllerBase
         var post = _postService.GetById(id);
         if (post == null) return ApiResponse.NotFound($"Blog {id} does not exist");
         var rows = _blogService.DeleteFeaturedPost(post);
-        return ApiResponse.Ok($"deleted {rows} rows.");
+        return ApiResponse.Ok($"Deleted {rows} rows.");
     }
 
     /// <summary>
-    ///     Set as top post (can only have one top post)
+    ///     Set as top post (only one top post allowed)
     /// </summary>
     /// <param name="id">The ID of the blog post</param>
     /// <returns>An ApiResponse object containing TopPost data</returns>
@@ -169,6 +171,6 @@ public class BlogPostController : ControllerBase
         var post = _postService.GetById(id);
         if (post == null) return ApiResponse.NotFound($"Blog {id} does not exist");
         var (data, rows) = _blogService.SetTopPost(post);
-        return new ApiResponse<TopPost> { Data = data, Message = $"ok. deleted {rows} old topPosts." };
+        return new ApiResponse<TopPost> { Data = data, Message = $"ok. Deleted {rows} old top posts." };
     }
 }

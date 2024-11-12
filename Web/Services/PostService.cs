@@ -21,6 +21,7 @@ public class PostService
     private readonly ConfigService _conf;
     private readonly IWebHostEnvironment _environment;
     private readonly LinkGenerator _generator;
+    private readonly ILogger<PostService> _logger;
     private readonly IBaseRepository<Post> _postRepo;
 
     public PostService(IBaseRepository<Post> postRepo,
@@ -29,7 +30,7 @@ public class PostService
         IHttpContextAccessor accessor,
         LinkGenerator generator,
         ConfigService conf,
-        CommonService commonService)
+        CommonService commonService, ILogger<PostService> logger)
     {
         _postRepo = postRepo;
         _categoryRepo = categoryRepo;
@@ -38,14 +39,17 @@ public class PostService
         _generator = generator;
         _conf = conf;
         _commonService = commonService;
+        _logger = logger;
     }
 
     public string Host => _conf["host"];
 
     public Post? GetById(string id)
     {
+        // When retrieving the post, parse the image URLs in the markdown content and return the complete URLs to the frontend
         var post = _postRepo.Where(a => a.Id == id).Include(a => a.Category).First();
         if (post != null) post.Content = MdImageLinkConvert(post);
+
         return post;
     }
 
@@ -54,14 +58,23 @@ public class PostService
         return _postRepo.Delete(a => a.Id == id);
     }
 
-    public Post InsertOrUpdate(Post post)
+    public async Task<Post> InsertOrUpdateAsync(Post post)
     {
+        // If it's a new post, save it to the database first
+        if (await _postRepo.Where(a => a.Id == post.Id).CountAsync() == 0) post = await _postRepo.InsertAsync(post);
+
+        // Check for external images in the post content, download and replace them
+        post.Content = await MdExternalUrlDownloadAsync(post);
+        // When updating the post, replace the image URLs in the markdown content with relative paths before saving
         post.Content = MdImageLinkConvert(post, false);
-        return _postRepo.InsertOrUpdate(post);
+
+        // Update the post content again after processing
+        await _postRepo.UpdateAsync(post);
+        return post;
     }
 
     /// <summary>
-    ///     Upload images for a specific post
+    ///     Upload an image for the specified post
     /// </summary>
     /// <param name="post"></param>
     /// <param name="file"></param>
@@ -71,14 +84,14 @@ public class PostService
         InitPostMediaDir(post);
 
         var filename = WebUtility.UrlEncode(file.FileName);
-        var fileRelativePath = Path.Combine("media", "blog", post.Id, filename);
+        var fileRelativePath = Path.Combine("media", "blog", post.Id!, filename);
         var savePath = Path.Combine(_environment.WebRootPath, fileRelativePath);
         if (File.Exists(savePath))
         {
-            // Handle file rename
+            // Handle duplicate file names
             var newFilename =
                 $"{Path.GetFileNameWithoutExtension(filename)}-{GuidUtils.GuidTo16String()}.{Path.GetExtension(filename)}";
-            fileRelativePath = Path.Combine("media", "blog", post.Id, newFilename);
+            fileRelativePath = Path.Combine("media", "blog", post.Id!, newFilename);
             savePath = Path.Combine(_environment.WebRootPath, fileRelativePath);
         }
 
@@ -91,7 +104,7 @@ public class PostService
     }
 
     /// <summary>
-    ///     Get images for a specific post
+    ///     Get the image resources for the specified post
     /// </summary>
     /// <param name="post"></param>
     /// <returns></returns>
@@ -109,23 +122,25 @@ public class PostService
     {
         var querySet = _postRepo.Select;
 
-        // Filter published posts
+        // Filter by published status
         if (param.OnlyPublished) querySet = _postRepo.Select.Where(a => a.IsPublish);
 
-        // Apply status filter
+        // Filter by status
         if (!string.IsNullOrEmpty(param.Status)) querySet = querySet.Where(a => a.Status == param.Status);
 
-        // Apply category filter
+        // Filter by category
         if (param.CategoryId != 0) querySet = querySet.Where(a => a.CategoryId == param.CategoryId);
 
-        // Apply keyword filter
+        // Filter by keywords
         if (!string.IsNullOrEmpty(param.Search)) querySet = querySet.Where(a => a.Title.Contains(param.Search));
 
-        // Apply sorting
+        // Sort
         if (!string.IsNullOrEmpty(param.SortBy))
         {
+            // Ascending or descending
             var isAscending = !param.SortBy.StartsWith("-");
             var orderByProperty = param.SortBy.Trim('-');
+
             querySet = querySet.OrderByPropertyName(orderByProperty, isAscending);
         }
 
@@ -134,7 +149,7 @@ public class PostService
     }
 
     /// <summary>
-    ///     Convert Post object to PostViewModel object
+    ///     Convert a Post object to a PostViewModel object
     /// </summary>
     /// <param name="post"></param>
     /// <returns></returns>
@@ -146,7 +161,7 @@ public class PostService
             Title = post.Title,
             Summary = post.Summary,
             Content = post.Content,
-            // TODO Research backend rendering of Markdown
+            // TODO: Research backend markdown rendering
             ContentHtml = Markdown.ToHtml(post.Content),
             Path = post.Path,
             Url = _generator.GetUriByAction(
@@ -170,7 +185,7 @@ public class PostService
     }
 
     /// <summary>
-    ///     Initialize the resource directory for blog posts
+    ///     Initialize the resource directory for the blog post
     /// </summary>
     /// <param name="post"></param>
     /// <returns></returns>
@@ -185,18 +200,13 @@ public class PostService
     }
 
     /// <summary>
-    ///     <para>Convert Markdown image links</para>
-    ///     <list type="number">
-    ///         <listheader>Function</listheader>
-    ///         <item>Support adding or removing URL prefixes from Markdown image links</item>
-    ///         <item>If Markdown contains external image URLs, download them locally and replace the URLs</item>
-    ///     </list>
+    ///     Convert image links in markdown content
+    ///     <para>Supports adding or removing URL prefixes in markdown image URLs</para>
     /// </summary>
     /// <param name="post"></param>
     /// <param name="isAddPrefix">Whether to add the full URL prefix of the site</param>
-    /// <param name="isDownloadExternalUrl">Whether to download images with external URLs</param>
     /// <returns></returns>
-    private string MdImageLinkConvert(Post post, bool isAddPrefix = true, bool isDownloadExternalUrl = false)
+    private string MdImageLinkConvert(Post post, bool isAddPrefix = true)
     {
         if (post.Content == null) return string.Empty;
         var document = Markdown.Parse(post.Content);
@@ -211,33 +221,62 @@ public class PostService
                 var imgUrl = linkInline.Url;
                 if (imgUrl == null) continue;
 
-                // Already has Host prefix, skip
+                // Skip if the URL already has the host prefix
                 if (isAddPrefix && imgUrl.StartsWith(Host)) continue;
 
-                // Set full link
+                // Set the full URL
                 if (isAddPrefix)
                 {
                     if (imgUrl.StartsWith("http")) continue;
                     linkInline.Url = $"{Host}/media/blog/{post.Id}/{imgUrl}";
                 }
-                // Set relative link
+                // Set the relative URL
                 else
                 {
-                    if (!isDownloadExternalUrl)
-                    {
-                        linkInline.Url = Path.GetFileName(imgUrl);
-                        continue;
-                    }
-
-                    // Download image
-                    var savePath = Path.Combine(_environment.WebRootPath);
-                    // TODO: Complete image download logic
-                    // var fileName= await _commonService.DownloadFileAsync(imgUrl, savePath);
+                    linkInline.Url = Path.GetFileName(imgUrl);
                 }
             }
         }
 
         using var writer = new StringWriter();
+        var render = new NormalizeRenderer(writer);
+        render.Render(document);
+        return writer.ToString();
+    }
+
+    /// <summary>
+    ///     Download external images in markdown content
+    ///     <para>If the markdown content contains external image URLs, download them locally and replace the URLs</para>
+    /// </summary>
+    /// <param name="post"></param>
+    /// <returns></returns>
+    private async Task<string> MdExternalUrlDownloadAsync(Post post)
+    {
+        if (post.Content == null) return string.Empty;
+
+        // Initialize the directory first
+        InitPostMediaDir(post);
+
+        var document = Markdown.Parse(post.Content);
+        foreach (var node in document.AsEnumerable())
+        {
+            if (node is not ParagraphBlock { Inline: not null } paragraphBlock) continue;
+            foreach (var inline in paragraphBlock.Inline)
+            {
+                if (inline is not LinkInline { IsImage: true } linkInline) continue;
+
+                var imgUrl = linkInline.Url;
+                if (imgUrl == null) continue;
+
+                // Download the image
+                _logger.LogDebug("Post: {Title}, downloading image: {Url}", post.Title, imgUrl);
+                var savePath = Path.Combine(_environment.WebRootPath, "media", "blog", post.Id!);
+                var fileName = await _commonService.DownloadFileAsync(imgUrl, savePath);
+                linkInline.Url = fileName;
+            }
+        }
+
+        await using var writer = new StringWriter();
         var render = new NormalizeRenderer(writer);
         render.Render(document);
         return writer.ToString();
