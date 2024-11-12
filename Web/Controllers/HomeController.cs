@@ -27,6 +27,11 @@ public class HomeController : Controller
 
     public IActionResult Index()
     {
+        if (Request.QueryString.HasValue)
+        {
+            return BadRequest();
+        }
+
         return View(new HomeViewModel
         {
             RandomPhoto = _photoService.GetRandomPhoto(),
@@ -64,7 +69,7 @@ public class HomeController : Controller
         conf["is_init"] = "true";
 
         // Create user
-        // todo Store password in plain text for now, will change to MD5 encryption later
+        // TODO: Store password in plain text for now, will change to MD5 encryption later
         userRepo.Insert(new User
         {
             Id = Guid.NewGuid().ToString(),
