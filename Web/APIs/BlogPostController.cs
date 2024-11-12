@@ -73,6 +73,7 @@ public class BlogPostController : ControllerBase
         post.CreationTime = DateTime.Now;
         post.LastUpdateTime = DateTime.Now;
 
+        // TODO: Optimize the redundant code here
         var categories = new List<Category> { category };
         var parent = category.Parent;
         while (parent != null)

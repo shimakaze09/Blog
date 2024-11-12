@@ -1,7 +1,9 @@
 using System.IO.Compression;
 using System.Text;
+using Contrib.Utils;
 using Data.Models;
 using FreeSql;
+using Share;
 using Web.ViewModels.Blog;
 
 namespace Web.Services;
@@ -9,6 +11,7 @@ namespace Web.Services;
 public class BlogService
 {
     private readonly IBaseRepository<Category> _categoryRepo;
+    private readonly IWebHostEnvironment _environment;
     private readonly IBaseRepository<FeaturedCategory> _fCategoryRepo;
     private readonly IBaseRepository<FeaturedPhoto> _fPhotoRepo;
     private readonly IBaseRepository<FeaturedPost> _fPostRepo;
@@ -20,7 +23,7 @@ public class BlogService
         IBaseRepository<Post> postRepo,
         IBaseRepository<Category> categoryRepo, IBaseRepository<Photo> photoRepo,
         IBaseRepository<FeaturedCategory> fCategoryRepo,
-        IBaseRepository<FeaturedPhoto> fPhotoRepo)
+        IBaseRepository<FeaturedPhoto> fPhotoRepo, IWebHostEnvironment environment)
     {
         _topPostRepo = topPostRepo;
         _fPostRepo = fPostRepo;
@@ -29,6 +32,7 @@ public class BlogService
         _photoRepo = photoRepo;
         _fCategoryRepo = fCategoryRepo;
         _fPhotoRepo = fPhotoRepo;
+        _environment = environment;
     }
 
     /// <summary>
@@ -54,10 +58,10 @@ public class BlogService
     }
 
     /// <summary>
-    ///     Get recommended blog rows, each row contains at most two blogs
+    ///     Get featured blog rows, with a maximum of two blogs per row
     /// </summary>
     /// <returns></returns>
-    [Obsolete("No longer needed to separate into rows, use GetFeaturedPosts() directly")]
+    [Obsolete("No need to separate into rows, just use GetFeaturedPosts()")]
     public List<List<Post>> GetFeaturedPostRows()
     {
         var data = new List<List<Post>>();
@@ -90,10 +94,10 @@ public class BlogService
     }
 
     /// <summary>
-    ///     Set a blog as featured
+    ///     Set top blog post
     /// </summary>
     /// <param name="post"></param>
-    /// <returns>Return TopPost object and the number of deleted original featured blog rows</returns>
+    /// <returns>Returns <see cref="TopPost" /> object and the number of rows deleted for the original top blog post</returns>
     public (TopPost, int) SetTopPost(Post post)
     {
         var rows = _topPostRepo.Select.ToDelete().ExecuteAffrows();
@@ -103,9 +107,9 @@ public class BlogService
     }
 
     /// <summary>
-    ///     Get list of article statuses
+    ///     Get the list of post statuses
     /// </summary>
-    /// <returns>A list of nullable string values representing article statuses</returns>
+    /// <returns></returns>
     public List<string?> GetStatusList()
     {
         return _postRepo.Select.GroupBy(a => a.Status)
@@ -113,12 +117,10 @@ public class BlogService
     }
 
     /// <summary>
-    ///     Uploads a blog post.
-    ///     This method only completes the extraction part; the import part is yet to be implemented.
+    ///     Upload blog post
+    ///     todo This function is initially completed, but there is too much redundant code, needs optimization
     /// </summary>
-    /// <param name="dto">The data transfer object containing the post details.</param>
-    /// <param name="file">The file to be uploaded.</param>
-    /// <returns>A task that represents the asynchronous operation. The task result contains the uploaded post.</returns>
+    /// <returns></returns>
     public async Task<Post> Upload(PostCreationDto dto, IFormFile file)
     {
         var tempFile = Path.GetTempFileName();
@@ -128,10 +130,64 @@ public class BlogService
         }
 
         var extractPath = Path.Combine(Path.GetTempPath(), "StarBlog", Guid.NewGuid().ToString());
-        // Use GBK encoding to extract the file to prevent garbled Chinese filenames
+        // Use GBK encoding to extract, to prevent Chinese file name garbling
         // Reference: https://www.cnblogs.com/liguix/p/11883248.html
         Encoding.RegisterProvider(CodePagesEncodingProvider.Instance);
         ZipFile.ExtractToDirectory(tempFile, extractPath, Encoding.GetEncoding("GBK"));
-        throw new NotImplementedException();
+
+        var dir = new DirectoryInfo(extractPath);
+        var files = dir.GetFiles("*.md");
+        var mdFile = files.First();
+
+        using var reader = mdFile.OpenText();
+        var content = await reader.ReadToEndAsync();
+        var post = new Post
+        {
+            Id = GuidUtils.GuidTo16String(),
+            Status = "Published",
+            Title = dto.Title ?? $"{DateTime.Now.ToLongDateString()} Article",
+            IsPublish = true,
+            Content = content,
+            Path = "",
+            CreationTime = DateTime.Now,
+            LastUpdateTime = DateTime.Now,
+            CategoryId = dto.CategoryId
+        };
+
+        // Handle multi-level categories
+        var category = await _categoryRepo.Where(a => a.Id == dto.CategoryId).FirstAsync();
+        if (category == null)
+        {
+            post.Categories = "0";
+        }
+        else
+        {
+            var categories = new List<Category> { category };
+            var parent = category.Parent;
+            while (parent != null)
+            {
+                categories.Add(parent);
+                parent = parent.Parent;
+            }
+
+            categories.Reverse();
+            post.Categories = string.Join(",", categories.Select(a => a.Id));
+        }
+
+        var assetsPath = Path.Combine(_environment.WebRootPath, "media", "blog");
+        var processor = new PostProcessor(extractPath, assetsPath, post);
+
+        // Process article title and status
+        processor.InflateStatusTitle();
+
+        // Process article content
+        // When importing articles, import images within the article and perform relative path replacement for images
+        post.Content = processor.MarkdownParse();
+        post.Summary = processor.GetSummary(200);
+
+        // Save to database
+        post = await _postRepo.InsertAsync(post);
+
+        return post;
     }
 }
