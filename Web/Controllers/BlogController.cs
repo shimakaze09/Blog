@@ -3,7 +3,7 @@ using Data.Models;
 using FreeSql;
 using Microsoft.AspNetCore.Mvc;
 using Web.Services;
-using Web.ViewModels;
+using Web.ViewModels.Blog;
 using Web.ViewModels.QueryFilters;
 
 namespace Web.Controllers;

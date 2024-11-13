@@ -1,4 +1,7 @@
+using System.Text.Encodings.Web;
+using System.Text.Json;
 using Data.Models;
+using Share.MarkdownExtensions;
 
 namespace Web.ViewModels;
 
@@ -15,4 +18,15 @@ public class PostViewModel
     public DateTime? LastUpdateTime { get; set; }
     public Category Category { get; set; }
     public List<Category> Categories { get; set; }
+    public List<TocNode>? TocNodes { get; set; }
+
+    public string TocNodesJson => JsonSerializer.Serialize(
+        TocNodes,
+        new JsonSerializerOptions
+        {
+            Encoder = JavaScriptEncoder.UnsafeRelaxedJsonEscaping,
+            PropertyNameCaseInsensitive = false,
+            PropertyNamingPolicy = JsonNamingPolicy.CamelCase
+        }
+    );
 }

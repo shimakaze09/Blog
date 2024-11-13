@@ -4,7 +4,7 @@ using Data.Models;
 using Web.ViewModels.Categories;
 using X.PagedList;
 
-namespace Web.ViewModels;
+namespace Web.ViewModels.Blog;
 
 public class BlogListViewModel
 {

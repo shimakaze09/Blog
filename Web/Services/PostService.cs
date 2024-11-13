@@ -6,6 +6,7 @@ using Markdig;
 using Markdig.Renderers.Normalize;
 using Markdig.Syntax;
 using Markdig.Syntax.Inlines;
+using Share.MarkdownExtensions;
 using Web.ViewModels;
 using Web.ViewModels.QueryFilters;
 using X.PagedList;
@@ -42,11 +43,11 @@ public class PostService
         _logger = logger;
     }
 
-    public string Host => _conf["host"];
+    private string Host => _conf["host"];
 
     public Post? GetById(string id)
     {
-        // When retrieving the post, parse the image URLs in the markdown content and add the full URL to return to the frontend
+        // When retrieving the post, parse the image URLs in the markdown content and add the full URL before returning to the frontend
         var post = _postRepo.Where(a => a.Id == id).Include(a => a.Category).First();
         if (post != null) post.Content = MdImageLinkConvert(post);
 
@@ -60,22 +61,23 @@ public class PostService
 
     public async Task<Post> InsertOrUpdateAsync(Post post)
     {
-        // If it is a new post, save it to the database first
-        if (await _postRepo.Where(a => a.Id == post.Id).CountAsync() == 0) post = await _postRepo.InsertAsync(post);
+        var postId = post.Id;
+        // If it's a new post, save it to the database first
+        if (await _postRepo.Where(a => a.Id == postId).CountAsync() == 0) post = await _postRepo.InsertAsync(post);
 
-        // Check for external images in the post and download them for replacement
+        // Check for external images in the post content, download and replace them
         // TODO: Move the external image download to an asynchronous task to avoid slowing down the post save process
         post.Content = await MdExternalUrlDownloadAsync(post);
-        // When modifying the post, replace the image URLs in the markdown content with relative paths before saving
+        // When updating the post, replace the image URLs in the markdown content with relative paths before saving
         post.Content = MdImageLinkConvert(post, false);
 
-        // Update the post content after processing
+        // Update the post content again after processing
         await _postRepo.UpdateAsync(post);
         return post;
     }
 
     /// <summary>
-    ///     Upload an image for a specified post
+    ///     Upload an image for a specific post
     /// </summary>
     /// <param name="post"></param>
     /// <param name="file"></param>
@@ -85,14 +87,14 @@ public class PostService
         InitPostMediaDir(post);
 
         var filename = WebUtility.UrlEncode(file.FileName);
-        var fileRelativePath = Path.Combine("media", "blog", post.Id!, filename);
+        var fileRelativePath = Path.Combine("media", "blog", post.Id, filename);
         var savePath = Path.Combine(_environment.WebRootPath, fileRelativePath);
         if (File.Exists(savePath))
         {
-            // Handle duplicate file names during upload
+            // Handle duplicate file names
             var newFilename =
                 $"{Path.GetFileNameWithoutExtension(filename)}-{GuidUtils.GuidTo16String()}.{Path.GetExtension(filename)}";
-            fileRelativePath = Path.Combine("media", "blog", post.Id!, newFilename);
+            fileRelativePath = Path.Combine("media", "blog", post.Id, newFilename);
             savePath = Path.Combine(_environment.WebRootPath, fileRelativePath);
         }
 
@@ -105,7 +107,7 @@ public class PostService
     }
 
     /// <summary>
-    ///     Get the image resources for a specified post
+    ///     Get the images for a specific post
     /// </summary>
     /// <param name="post"></param>
     /// <returns></returns>
@@ -123,7 +125,7 @@ public class PostService
     {
         var querySet = _postRepo.Select;
 
-        // Filter by publication status
+        // Filter by published status
         if (param.OnlyPublished) querySet = _postRepo.Select.Where(a => a.IsPublish);
 
         // Filter by status
@@ -132,13 +134,13 @@ public class PostService
         // Filter by category
         if (param.CategoryId != 0) querySet = querySet.Where(a => a.CategoryId == param.CategoryId);
 
-        // Filter by keyword
+        // Filter by keywords
         if (!string.IsNullOrEmpty(param.Search)) querySet = querySet.Where(a => a.Title.Contains(param.Search));
 
         // Sort
         if (!string.IsNullOrEmpty(param.SortBy))
         {
-            // Determine if sorting is ascending
+            // Determine if ascending order
             var isAscending = !param.SortBy.StartsWith("-");
             var orderByProperty = param.SortBy.Trim('-');
 
@@ -152,13 +154,13 @@ public class PostService
     /// <summary>
     ///     Convert a Post object to a PostViewModel object
     /// </summary>
-    public PostViewModel GetPostViewModel(Post post, bool md2html = true)
+    public PostViewModel GetPostViewModel(Post post, bool md2Html = true)
     {
-        var vm = new PostViewModel
+        var model = new PostViewModel
         {
             Id = post.Id,
             Title = post.Title,
-            Summary = post.Summary ?? "(No description)",
+            Summary = post.Summary ?? "(No summary)",
             Content = post.Content ?? "(No content)",
             Path = post.Path ?? string.Empty,
             Url = _generator.GetUriByAction(
@@ -169,27 +171,29 @@ public class PostService
             CreationTime = post.CreationTime,
             LastUpdateTime = post.LastUpdateTime,
             Category = post.Category,
-            Categories = new List<Category>()
+            Categories = new List<Category>(),
+            TocNodes = post.ExtractToc()
         };
 
-        if (md2html)
+        if (md2Html)
         {
-            // TODO: Research backend rendering of Markdown
-            // Some reference materials for this part:
-            // - About frontend rendering of Markdown styles: https://blog.csdn.net/sprintline/article/details/122849907
+            // TODO: Research backend rendering of Markdown (Note: Although there are more and better front-end rendering tools, backend rendering avoids a disjointed experience)
+            // Some reference materials:
+            // - About front-end rendering of Markdown styles: https://blog.csdn.net/sprintline/article/details/122849907
             // - https://github.com/showdownjs/showdown
-
-            var pipeline = new MarkdownPipelineBuilder().UseAdvancedExtensions().Build();
-            vm.ContentHtml = Markdown.ToHtml(vm.Content, pipeline);
+            var pipeline = new MarkdownPipelineBuilder()
+                .UseAdvancedExtensions()
+                .Build();
+            model.ContentHtml = Markdown.ToHtml(model.Content, pipeline);
         }
 
         foreach (var itemId in post.Categories.Split(",").Select(int.Parse))
         {
             var item = _categoryRepo.Where(a => a.Id == itemId).First();
-            if (item != null) vm.Categories.Add(item);
+            if (item != null) model.Categories.Add(item);
         }
 
-        return vm;
+        return model;
     }
 
     /// <summary>
@@ -209,10 +213,10 @@ public class PostService
 
     /// <summary>
     ///     Convert image links in Markdown content
-    ///     <para>Supports adding or removing URL prefixes for images in Markdown</para>
+    ///     <para>Supports adding or removing URL prefixes in Markdown image URLs</para>
     /// </summary>
     /// <param name="post"></param>
-    /// <param name="isAddPrefix">Whether to add the full URL prefix of the site</param>
+    /// <param name="isAddPrefix">Whether to add the full URL prefix of this site</param>
     /// <returns></returns>
     private string MdImageLinkConvert(Post post, bool isAddPrefix = true)
     {
@@ -276,7 +280,7 @@ public class PostService
                 var imgUrl = linkInline.Url;
                 // Skip empty URLs
                 if (imgUrl == null) continue;
-                // Skip images with the site's address
+                // Skip images with the Host prefix
                 if (imgUrl.StartsWith(Host)) continue;
 
                 // Download the image

@@ -20,7 +20,6 @@
 }
 
 @section head {
-    <link rel="stylesheet" href="~/lib/editormd/css/editormd.preview.css">
     <style>
         .post-content {
             padding: 0;
@@ -29,17 +28,7 @@
     </style>
 }
 
-<div class="btn-group-vertical position-fixed bottom-0 end-0 me-3 mb-3" role="group"
-     aria-label="Bottom right corner tools" style="z-index: 11">
-    <button type="button" class="btn btn-success" id="liveToastBtn">
-        <i class="fa-brands fa-github"></i>
-        <span>Github</span>
-    </button>
-    <a class="btn btn-primary" href="#" role="button">
-        <i class="fa-solid fa-arrow-up"></i>
-        <span>Back to top</span>
-    </a>
-</div>
+@await Html.PartialAsync("Widgets/BackToTop", new BackToTopViewModel { IsShowText = false })
 
 <div class="container">
     <div class="row">
@@ -93,8 +82,8 @@
                     </div>
                 </div>
             </header>
-            <div id="post-markdown-content" class="post-content">
-                <textarea id="append-test" style="display:none;">@Model.Content</textarea>
+            <div class="post-content">
+                @Html.Raw(Model.ContentHtml)
             </div>
 
             <div class="my-3 text-center">
@@ -129,18 +118,17 @@
 </div>
 
 @section bottom {
-    <script src="~/lib/jquery/dist/jquery.min.js"></script>
-    @* <script src="~/lib/editormd/examples/js/jquery.min.js"></script> *@
-    <script src="~/js/bootstrap-treeview.js"></script>
-    <script src="~/lib/editormd/lib/marked.min.js"></script>
-    <script src="~/lib/editormd/lib/prettify.min.js"></script>
-
-    <script src="~/lib/editormd/lib/raphael.min.js"></script>
-    <script src="~/lib/editormd/lib/underscore.min.js"></script>
-    <script src="~/lib/editormd/lib/sequence-diagram.min.js"></script>
-    <script src="~/lib/editormd/lib/flowchart.min.js"></script>
-    <script src="~/lib/editormd/lib/jquery.flowchart.min.js"></script>
-
-    <script src="~/lib/editormd/editormd.js"></script>
+    <environment include="Development">
+        <script src="~/lib/jquery/dist/jquery.js"></script>
+    </environment>
+    <environment exclude="Development">
+        <script src="~/lib/jquery/dist/jquery.min.js"></script>
+    </environment>
+    <script src="~/lib/bootstrap5-treeview/dist/bootstrap-treeview.min.js"></script>
     <script src="~/js/blog-post.js"></script>
+    <script>
+        const nodes = '@Html.Raw(Model.TocNodesJson)'
+        console.log(JSON.parse(nodes))
+        initTreeView(nodes);
+    </script>
 }

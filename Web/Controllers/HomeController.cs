@@ -1,7 +1,7 @@
-using FreeSql;
-using Microsoft.AspNetCore.Mvc;
 using Contrib.SiteMessage;
 using Data.Models;
+using FreeSql;
+using Microsoft.AspNetCore.Mvc;
 using Web.Services;
 using Web.ViewModels;
 
@@ -10,10 +10,10 @@ namespace Web.Controllers;
 public class HomeController : Controller
 {
     private readonly BlogService _blogService;
-    private readonly PhotoService _photoService;
     private readonly CategoryService _categoryService;
     private readonly LinkService _linkService;
     private readonly Messages _messages;
+    private readonly PhotoService _photoService;
 
     public HomeController(BlogService blogService, PhotoService photoService, CategoryService categoryService,
         LinkService linkService, Messages messages)
@@ -27,10 +27,7 @@ public class HomeController : Controller
 
     public IActionResult Index()
     {
-        if (Request.QueryString.HasValue)
-        {
-            return BadRequest();
-        }
+        if (Request.QueryString.HasValue) return BadRequest();
 
         return View(new HomeViewModel
         {
