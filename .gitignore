@@ -742,3 +742,7 @@ obj/
 
 # ignore static files
 /Web/wwwroot/media/**
+
+# ignore lock files
+**/*.lock
+**/package-lock.json
