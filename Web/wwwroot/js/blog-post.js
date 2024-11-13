@@ -26,55 +26,21 @@ class TocNode {
 
 // jQuery document ready function
 $(function () {
-    // Initialize editormd with options
-    let editorMdView = editormd.markdownToHTML("test-editormd-view", {
-        htmlDecode: true,
-        tocm: true,
-        tocContainer: "#custom-toc-container",
-        emoji: true,
-        taskList: true,
-        tex: true,
-        flowChart: true,
-        sequenceDiagram: true,
-    });
-
-    // Get the Table of Contents object
-    let toc = editorMdView.markdownToC;
-
-    // Log the Table of Contents to console
-    console.log(toc);
-
-    // Function to convert TOC to tree structure
-    function getNodes(index = 0) {
-        let nodes = [];
-
-        for (let i = index; i < toc.length - 1; i++) {
-            let item = toc[i];
-            let nextItem = toc[i + 1];
-            let node = new TocNode(item.text, `#${item.text}`, null, null);
-
-            if (item.level === nextItem.level) {
-                nodes.push(node);
-            }
-            if (item.level < nextItem.level) {
-                node.nodes = getNodes(i + 1);
-                nodes.push(node);
-                i += node.nodes.length;
-                continue;
-            }
-            if (item.level > nextItem.level) {
-                nodes.push(node);
-                i++;
-                break;
-            }
-        }
-
-        return nodes;
-    }
-
-    // Convert TOC to tree structure and log result
-    let nodeList = getNodes();
-    console.log(nodeList);
+    // let editorMdView = editormd.markdownToHTML("test-editormd-view", {
+    //     // htmlDecode: "style,script,iframe",  // you can filter tags decode
+    //     htmlDecode: true,
+    //     //toc             : false,
+    //     tocm: true,    // Using [TOCM]
+    //     tocContainer: "#custom-toc-container", // Custom ToC container layer
+    //     //gfm             : false,
+    //     //tocDropdown     : true,
+    //     // markdownSourceCode : true, // Whether to retain the Markdown source code, i.e., whether to delete the Textarea tag that saves the source code
+    //     emoji: true,
+    //     taskList: true,
+    //     tex: true,  // Not parsed by default
+    //     flowChart: true,  // Not parsed by default
+    //     sequenceDiagram: true,  // Not parsed by default
+    // });
 });
 
 /**

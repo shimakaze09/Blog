@@ -146,6 +146,7 @@ public class BlogService
             Id = GuidUtils.GuidTo16String(),
             Status = "Published",
             Title = dto.Title ?? $"{DateTime.Now.ToLongDateString()} Article",
+            Summary = dto.Summary,
             IsPublish = true,
             Content = content,
             Path = "",
@@ -183,7 +184,7 @@ public class BlogService
         // Process article content
         // When importing articles, import images within the article and perform relative path replacement for images
         post.Content = processor.MarkdownParse();
-        post.Summary = processor.GetSummary(200);
+        if (string.IsNullOrEmpty(post.Summary)) post.Summary = processor.GetSummary(200);
 
         // Save to database
         post = await _postRepo.InsertAsync(post);
