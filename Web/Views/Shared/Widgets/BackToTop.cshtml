@@ -1,0 +1,36 @@
+﻿@model BackToTopViewModel
+
+<div class="position-fixed top-0 end-0 p-3" style="z-index: 11">
+    <div id="liveToast" class="toast" role="alert" aria-live="assertive" aria-atomic="true">
+        <div class="toast-header">
+            <img src="~/images/codelab.png" class="rounded me-2" alt="..." style="width: 20px;height: 20px;">
+            <strong class="me-auto">CodeLab</strong>
+            <button type="button" class="btn-close" data-bs-dismiss="toast" aria-label="Close"></button>
+        </div>
+        <div class="toast-body">
+            <div class="card border-0">
+                <div class="card-body">
+                    <h6 class="card-title">A platform for technical exploration and knowledge sharing</h6>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="btn-group-vertical position-fixed bottom-0 end-0 me-3 mb-3" role="group" aria-label="Bottom right corner tools" style="z-index: 11">
+    <button type="button" class="btn btn-success" id="liveToastBtn">
+        <i class="fa-brands fa-github"></i>
+        
+        @if (Model.IsShowText)
+        {
+            <span>Github</span>
+        }
+    </button>
+    <a class="btn btn-primary" href="#" role="button">
+        <i class="fa-solid fa-arrow-up"></i>
+        @if (Model.IsShowText)
+        {
+            <span>Back to top</span>
+        }
+    </a>
+</div>
