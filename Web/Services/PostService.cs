@@ -64,7 +64,7 @@ public class PostService
         if (await _postRepo.Where(a => a.Id == post.Id).CountAsync() == 0) post = await _postRepo.InsertAsync(post);
 
         // Check for external images in the post and download them for replacement
-        // todo Move the external image download to an asynchronous task to avoid slowing down the post save process
+        // TODO: Move the external image download to an asynchronous task to avoid slowing down the post save process
         post.Content = await MdExternalUrlDownloadAsync(post);
         // When modifying the post, replace the image URLs in the markdown content with relative paths before saving
         post.Content = MdImageLinkConvert(post, false);
