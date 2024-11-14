@@ -746,3 +746,6 @@ obj/
 # ignore lock files
 **/*.lock
 **/package-lock.json
+
+#ignore cache files
+**/is-cache/**

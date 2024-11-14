@@ -1,5 +1,6 @@
 using Contrib.SiteMessage;
 using Data.Extensions;
+using SixLabors.ImageSharp.Web.DependencyInjection;
 using Web.Extensions;
 using Web.Filters;
 using Web.Middlewares;
@@ -36,6 +37,7 @@ builder.Services.AddAuth(builder.Configuration);
 builder.Services.AddHttpContextAccessor();
 // Register IHttpClientFactory, reference: https://docs.microsoft.com/zh-cn/dotnet/core/extensions/http-client
 builder.Services.AddHttpClient();
+builder.Services.AddImageSharp();
 
 // Register custom services
 builder.Services.AddScoped<BlogService>();
@@ -61,6 +63,7 @@ if (!app.Environment.IsDevelopment())
     app.UseHsts();
 }
 
+app.UseImageSharp();
 // app.UseHttpsRedirection();
 app.UseStaticFiles(new StaticFileOptions
 {
