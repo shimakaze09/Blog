@@ -36,6 +36,30 @@ public class PhotographyController : Controller
         return View(photo);
     }
 
+    public async Task<IActionResult> Next(string id)
+    {
+        var item = await _photoService.GetNext(id);
+        if (item == null)
+        {
+            _messages.Warning("No more images left!");
+            return RedirectToAction(nameof(Photo), new { id });
+        }
+
+        return RedirectToAction(nameof(Photo), new { id = item.Id });
+    }
+
+    public async Task<IActionResult> Previous(string id)
+    {
+        var item = await _photoService.GetPrevious(id);
+        if (item == null)
+        {
+            _messages.Warning("没有上一张图片了~");
+            return RedirectToAction(nameof(Photo), new { id });
+        }
+
+        return RedirectToAction(nameof(Photo), new { id = item.Id });
+    }
+
     public IActionResult RandomPhoto()
     {
         var item = _photoService.GetRandomPhoto();

@@ -43,6 +43,13 @@ public class PhotoController : ControllerBase
             : new ApiResponse<Photo> { Data = photo };
     }
 
+    [HttpGet("{id}/Thumb")]
+    public async Task<IActionResult> GetThumb(string id, [FromQuery] int width = 300)
+    {
+        var data = await _photoService.GetThumb(id, width);
+        return new FileContentResult(data, "image/jpeg");
+    }
+
     [Authorize]
     [HttpPost]
     public ApiResponse<Photo> Add([FromForm] PhotoCreationDto dto, IFormFile file)
