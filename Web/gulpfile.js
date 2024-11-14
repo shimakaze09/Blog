@@ -53,6 +53,8 @@ const customLibs = [
     {name: "editormd/plugins", dist: "./node_modules/editor.md/plugins/*.*"},
     {name: "editormd/examples/js", dist: "./node_modules/editor.md/examples/js/*.js"},
     {name: 'font-awesome', dist: './node_modules/@fortawesome/fontawesome-free/**/*.*'},
+    {name: 'highlight.js', dist: './node_modules/highlight.js/**/*.*'},
+    {name: 'github-markdown-css', dist: './node_modules/github-markdown-css/*.css'},
 ]
 
 // Tasks for cleaning compressed files
