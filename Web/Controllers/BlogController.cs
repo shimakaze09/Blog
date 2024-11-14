@@ -15,17 +15,20 @@ public class BlogController : Controller
     private readonly Messages _messages;
     private readonly IBaseRepository<Post> _postRepo;
     private readonly PostService _postService;
+    private readonly ConfigService _configService;
 
     public BlogController(IBaseRepository<Post> postRepo, IBaseRepository<Category> categoryRepo,
         PostService postService,
         Messages messages,
-        CategoryService categoryService)
+        CategoryService categoryService,
+        ConfigService configService)
     {
         _postRepo = postRepo;
         _categoryRepo = categoryRepo;
         _postService = postService;
         _messages = messages;
         _categoryService = categoryService;
+        _configService = configService;
     }
 
     public IActionResult List(int categoryId = 0, int page = 1, int pageSize = 5)
@@ -80,14 +83,21 @@ public class BlogController : Controller
             return RedirectToAction(nameof(List));
         }
 
-        return View(_postService.GetPostViewModel(post));
+        var viewName = "Post.FrontendRender";
+        if (_configService["default_render"] == "backend")
+        {
+            viewName = "Post.BackendRender";
+        }
+
+        return View(viewName, _postService.GetPostViewModel(post));
     }
 
     public IActionResult RandomPost()
     {
         var posts = _postRepo.Where(a => a.IsPublish).ToList();
         var rndPost = posts[new Random().Next(posts.Count)];
-        _messages.Info($"Randomly recommended article <b>{rndPost.Title}</b> for you!");
+        _messages.Info($"Randomly recommended article <b>{rndPost.Title}</b> for you!" +
+                       $"<span class='ps-3'><a href=\"{Url.Action(nameof(RandomPost))}\">Try again</a></span>");
         return RedirectToAction(nameof(Post), new { id = rndPost.Id });
     }
 

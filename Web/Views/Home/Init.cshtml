@@ -17,14 +17,14 @@
                 <h5 class="card-title">Create Admin Account</h5>
                 <h6 class="card-subtitle mb-3 text-muted">Used for logging into the admin backend</h6>
                 <div class="mb-3">
-                    <label asp-for="Username" class="form-label">Username</label>
+                    <label asp-for="Username" class="form-label"></label>
                     <input asp-for="Username" class="form-control" aria-describedby="usernameHelp">
-                    <div id="usernameHelp" class="form-text">Set a username for the administrator</div>
+                    <div class="form-text">Set a username for the administrator</div>
                 </div>
                 <div class="mb-3">
-                    <label asp-for="Password" class="form-label">Password</label>
+                    <label asp-for="Password" class="form-label"></label>
                     <input asp-for="Password" class="form-control" aria-describedby="passwordHelp">
-                    <div id="passwordHelp" class="form-text">A password is required to log in</div>
+                    <div class="form-text">A password is required to log in</div>
                 </div>
             </div>
 
@@ -32,9 +32,21 @@
                 <h5 class="card-title">System Configuration</h5>
                 <h6 class="card-subtitle mb-3 text-muted">Some initial configuration settings</h6>
                 <div class="mb-3">
-                    <label asp-for="Host" class="form-label">Host</label>
+                    <label asp-for="Host" class="form-label"></label>
                     <input asp-for="Host" class="form-control" aria-describedby="hostHelp">
-                    <div id="hostHelp" class="form-text">Set the link prefix. This can be modified later in the admin backend.</div>
+                    <div class="form-text">Set the link prefix. This can be modified later in the admin backend.</div>
+                </div>
+                <div class="mb-3">
+                    <label asp-for="DefaultRender" class="form-label"></label>
+                    <select asp-for="DefaultRender" class="form-select">
+                        <option value="frontend" selected>Front-end rendering</option>
+                        <option value="backend">Back-end rendering (Alpha)</option>
+                    </select>
+                    <span asp-validation-for="DefaultRender" class="form-text text-danger"></span>
+                    <div class="form-text">
+                        Set the rendering method for blog posts. Front-end rendering uses Editor.md, while back-end rendering provides better consistency.<br>
+                        This setting can be modified in the admin backend after configuration.
+                    </div>
                 </div>
             </div>
 
