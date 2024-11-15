@@ -1,4 +1,4 @@
-using Contrib.SiteMessage;
+﻿using Contrib.SiteMessage;
 using Microsoft.AspNetCore.Mvc;
 using Web.Services;
 using Web.ViewModels;
@@ -16,20 +16,20 @@ public class PhotographyController : Controller
         _messages = messages;
     }
 
-    public IActionResult Index(int page = 1, int pageSize = 10)
+    public async Task<IActionResult> Index(int page = 1, int pageSize = 10)
     {
         return View(new PhotographyViewModel
         {
-            Photos = _photoService.GetPagedList(page, pageSize)
+            Photos = await _photoService.GetPagedList(page, pageSize)
         });
     }
 
-    public IActionResult Photo(string id)
+    public async Task<IActionResult> Photo(string id)
     {
-        var photo = _photoService.GetById(id);
+        var photo = await _photoService.GetById(id);
         if (photo == null)
         {
-            _messages.Error($"Photo {id} not exists.");
+            _messages.Error($"Photo {id} does not exist!");
             return RedirectToAction(nameof(Index));
         }
 
@@ -41,7 +41,7 @@ public class PhotographyController : Controller
         var item = await _photoService.GetNext(id);
         if (item == null)
         {
-            _messages.Warning("No more images left!");
+            _messages.Warning("No next photo available~");
             return RedirectToAction(nameof(Photo), new { id });
         }
 
@@ -53,17 +53,23 @@ public class PhotographyController : Controller
         var item = await _photoService.GetPrevious(id);
         if (item == null)
         {
-            _messages.Warning("没有上一张图片了~");
+            _messages.Warning("No previous photo available~");
             return RedirectToAction(nameof(Photo), new { id });
         }
 
         return RedirectToAction(nameof(Photo), new { id = item.Id });
     }
 
-    public IActionResult RandomPhoto()
+    public async Task<IActionResult> RandomPhoto()
     {
-        var item = _photoService.GetRandomPhoto();
-        _messages.Info($"Randomly recommended a photo <b>{item?.Title}</b> to you!");
+        var item = await _photoService.GetRandomPhoto();
+        if (item == null)
+        {
+            _messages.Error("No photos available, please upload some first!");
+            return RedirectToAction("Index", "Home");
+        }
+
+        _messages.Info($"Randomly recommended the photo <b>{item.Title}</b> to you~");
         return RedirectToAction(nameof(Photo), new { id = item.Id });
     }
 }

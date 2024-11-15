@@ -16,7 +16,8 @@ public class HomeController : Controller
     private readonly PhotoService _photoService;
 
     public HomeController(BlogService blogService, PhotoService photoService, CategoryService categoryService,
-        LinkService linkService, Messages messages)
+        LinkService linkService,
+        Messages messages)
     {
         _blogService = blogService;
         _photoService = photoService;
@@ -31,12 +32,12 @@ public class HomeController : Controller
 
         return View(new HomeViewModel
         {
-            RandomPhoto = _photoService.GetRandomPhoto(),
+            RandomPhoto = await _photoService.GetRandomPhoto(),
             TopPost = await _blogService.GetTopOnePost(),
             FeaturedPosts = await _blogService.GetFeaturedPosts(),
-            FeaturedPhotos = _photoService.GetFeaturedPhotos(),
+            FeaturedPhotos = await _photoService.GetFeaturedPhotos(),
             FeaturedCategories = await _categoryService.GetFeaturedCategories(),
-            Links = _linkService.GetAll()
+            Links = await _linkService.GetAll()
         });
     }
 
@@ -45,7 +46,7 @@ public class HomeController : Controller
     {
         if (conf["is_init"] == "true")
         {
-            _messages.Error("Initialization is complete!");
+            _messages.Error("Initialization already completed!");
             return RedirectToAction(nameof(Index));
         }
 
@@ -68,7 +69,7 @@ public class HomeController : Controller
         conf["is_init"] = "true";
 
         // Create user
-        // TODO: Store password in plain text for now, will change to MD5 encryption later
+        // TODO: Temporarily storing plain text password, should be changed to MD5 encryption later
         userRepo.Insert(new User
         {
             Id = Guid.NewGuid().ToString(),

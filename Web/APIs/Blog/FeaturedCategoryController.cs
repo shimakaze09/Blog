@@ -33,7 +33,8 @@ public class FeaturedCategoryController : ControllerBase
 
     [AllowAnonymous]
     [HttpGet("{id:int}")]
-    public async Task<ApiResponse<FeaturedCategory>> Get(int id) {
+    public async Task<ApiResponse<FeaturedCategory>> Get(int id)
+    {
         var item = await _categoryService.GetFeaturedCategoryById(id);
         return item == null
             ? ApiResponse.NotFound($"Recommended category record {id} does not exist")
@@ -41,10 +42,12 @@ public class FeaturedCategoryController : ControllerBase
     }
 
     [HttpPost]
-    public async Task<ApiResponse<FeaturedCategory>> Add(FeaturedCategoryCreationDto2 dto2) {
+    public async Task<ApiResponse<FeaturedCategory>> Add(FeaturedCategoryCreationDto2 dto2)
+    {
         var category = await _categoryService.GetById(dto2.CategoryId);
         if (category == null) return ApiResponse.NotFound($"Category {dto2.CategoryId} does not exist");
-        var item = await _categoryService.AddOrUpdateFeaturedCategory(category, new FeaturedCategoryCreationDto {
+        var item = await _categoryService.AddOrUpdateFeaturedCategory(category, new FeaturedCategoryCreationDto
+        {
             Name = dto2.Name,
             Description = dto2.Description,
             IconCssClass = dto2.IconCssClass

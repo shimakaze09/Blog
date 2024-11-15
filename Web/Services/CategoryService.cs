@@ -30,7 +30,7 @@ public class CategoryService
         var categoryList = await _cRepo.Select
             .IncludeMany(a => a.Posts.Select(p => new Post { Id = p.Id }))
             .ToListAsync();
-        return GetNodes(categoryList, 0);
+        return GetNodes(categoryList);
     }
 
     /// <summary>
@@ -124,15 +124,18 @@ public class CategoryService
         return item;
     }
 
-    public async Task<int> DeleteFeaturedCategory(Category category) {
+    public async Task<int> DeleteFeaturedCategory(Category category)
+    {
         return await _fcRepo.Where(a => a.CategoryId == category.Id).ToDelete().ExecuteAffrowsAsync();
     }
 
-    public async Task<int> DeleteFeaturedCategoryById(int id) {
+    public async Task<int> DeleteFeaturedCategoryById(int id)
+    {
         return await _fcRepo.DeleteAsync(a => a.Id == id);
     }
 
-    public async Task<int> SetVisibility(Category category, bool isVisible) {
+    public async Task<int> SetVisibility(Category category, bool isVisible)
+    {
         category.Visible = isVisible;
         return await _cRepo.UpdateAsync(category);
     }

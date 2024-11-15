@@ -24,26 +24,26 @@ public class PhotoService
         _featuredPhotoRepo = featuredPhotoRepo;
     }
 
-    public List<Photo> GetAll()
+    public async Task<List<Photo>> GetAll()
     {
-        return _photoRepo.Select.ToList();
+        return await _photoRepo.Select.ToListAsync();
     }
 
-    public IPagedList<Photo> GetPagedList(int page = 1, int pageSize = 10)
+    public async Task<IPagedList<Photo>> GetPagedList(int page = 1, int pageSize = 10)
     {
-        return _photoRepo.Select.OrderByDescending(a => a.CreateTime)
-            .ToList().ToPagedList(page, pageSize);
+        return (await _photoRepo.Select.OrderByDescending(a => a.CreateTime)
+            .ToListAsync()).ToPagedList(page, pageSize);
     }
 
-    public List<Photo> GetFeaturedPhotos()
+    public async Task<List<Photo>> GetFeaturedPhotos()
     {
-        return _featuredPhotoRepo.Select
-            .Include(a => a.Photo).ToList(a => a.Photo);
+        return await _featuredPhotoRepo.Select
+            .Include(a => a.Photo).ToListAsync(a => a.Photo);
     }
 
-    public Photo? GetById(string id)
+    public async Task<Photo?> GetById(string id)
     {
-        return _photoRepo.Where(a => a.Id == id).First();
+        return await _photoRepo.Where(a => a.Id == id).FirstAsync();
     }
 
     public async Task<Photo?> GetNext(string id)
@@ -57,10 +57,22 @@ public class PhotoService
         return next;
     }
 
+    public async Task<Photo?> GetPrevious(string id)
+    {
+        var photo = await _photoRepo.Where(a => a.Id == id).FirstAsync();
+        if (photo == null) return null;
+        var next = await _photoRepo
+            .Where(a => a.CreateTime > photo.CreateTime && a.Id != id)
+            .OrderBy(a => a.CreateTime)
+            .FirstAsync();
+        return next;
+    }
+
     /// <summary>
-    ///     Generates a Progressive JPEG thumbnail (using MagickImage)
+    ///     Generate Progressive JPEG thumbnail (using MagickImage)
     /// </summary>
-    /// <param name="width">Set to 0 to avoid resizing</param>
+    /// <param name="id"></param>
+    /// <param name="width">Set to 0 to not resize</param>
     public async Task<byte[]> GetThumb(string id, int width = 0)
     {
         var photo = await _photoRepo.Where(a => a.Id == id).FirstAsync();
@@ -73,18 +85,7 @@ public class PhotoService
         }
     }
 
-    public async Task<Photo?> GetPrevious(string id)
-    {
-        var photo = await _photoRepo.Where(a => a.Id == id).FirstAsync();
-        if (photo == null) return null;
-        var next = await _photoRepo
-            .Where(a => a.CreateTime > photo.CreateTime && a.Id != id)
-            .OrderBy(a => a.CreateTime)
-            .FirstAsync();
-        return next;
-    }
-
-    public Photo Add(PhotoCreationDto dto, IFormFile photoFile)
+    public async Task<Photo> Add(PhotoCreationDto dto, IFormFile photoFile)
     {
         var photoId = GuidUtils.GuidTo16String();
         var photo = new Photo
@@ -100,81 +101,95 @@ public class PhotoService
 
         const int maxWidth = 2000;
         const int maxHeight = 2000;
-        using (var image = Image.Load(photoFile.OpenReadStream()))
+        using (var image = await Image.LoadAsync(photoFile.OpenReadStream()))
         {
             if (image.Width > maxWidth)
                 image.Mutate(a => a.Resize(maxWidth, 0));
             if (image.Height > maxHeight)
                 image.Mutate(a => a.Resize(0, maxHeight));
-            image.Save(savePath);
+            await image.SaveAsync(savePath);
         }
 
-        using (var fs = new FileStream(savePath, FileMode.Create))
+        await using (var fs = new FileStream(savePath, FileMode.Create))
         {
-            photoFile.CopyTo(fs);
+            await photoFile.CopyToAsync(fs);
         }
 
-        photo = BuildPhotoData(photo);
+        photo = await BuildPhotoData(photo);
 
-        return _photoRepo.Insert(photo);
+        return await _photoRepo.InsertAsync(photo);
     }
 
     /// <summary>
-    ///     Gets a random photo
+    ///     Get a random photo
     /// </summary>
-    /// <returns>A Photo object</returns>
-    public Photo? GetRandomPhoto()
+    /// <returns></returns>
+    public async Task<Photo?> GetRandomPhoto()
     {
-        var items = GetAll();
-        return items.Count == 0 ? null : items[new Random().Next(items.Count)];
+        var count = await _photoRepo.Select.CountAsync();
+        if (count == 0) return null;
+
+        return await _photoRepo.Select.Take(1).Offset(new Random().Next((int)count)).FirstAsync();
     }
 
     /// <summary>
-    ///     Adds a featured photo
+    ///     Add a featured photo
     /// </summary>
-    /// <param name="photo">The photo to add as featured</param>
-    /// <returns>The added FeaturedPhoto object</returns>
-    public FeaturedPhoto AddFeaturedPhoto(Photo photo)
+    /// <param name="photo"></param>
+    /// <returns></returns>
+    public async Task<FeaturedPhoto> AddFeaturedPhoto(Photo photo)
     {
-        var item = _featuredPhotoRepo.Where(a => a.PhotoId == photo.Id).First();
+        var item = await _featuredPhotoRepo.Where(a => a.PhotoId == photo.Id).FirstAsync();
         if (item != null) return item;
         item = new FeaturedPhoto { PhotoId = photo.Id };
-        _featuredPhotoRepo.Insert(item);
+        await _featuredPhotoRepo.InsertAsync(item);
         return item;
     }
 
     /// <summary>
-    ///     Deletes a featured photo
+    ///     Delete a featured photo
     /// </summary>
-    /// <param name="photo">The photo to delete from features</param>
-    /// <returns>Number of affected rows (0 if not found)</returns>
-    public int DeleteFeaturedPhoto(Photo photo)
+    /// <param name="photo"></param>
+    /// <returns></returns>
+    public async Task<int> DeleteFeaturedPhoto(Photo photo)
     {
-        var item = _featuredPhotoRepo.Where(a => a.PhotoId == photo.Id).First();
-        return item == null ? 0 : _featuredPhotoRepo.Delete(item);
+        var item = await _featuredPhotoRepo.Where(a => a.PhotoId == photo.Id).FirstAsync();
+        return item == null ? 0 : await _featuredPhotoRepo.DeleteAsync(item);
     }
 
     /// <summary>
-    ///     Deletes a photo
-    ///     <para>Deletes the photo file and database record</para>
+    ///     Delete a photo
+    ///     <para>Delete the photo file and database record</para>
     /// </summary>
-    /// <param name="id">The ID of the photo to delete</param>
-    /// <returns>The number of affected rows (-1 if not found)</returns>
-    public int DeleteById(string id)
+    /// <param name="id"></param>
+    /// <returns></returns>
+    public async Task<int> DeleteById(string id)
     {
-        var photo = _photoRepo.Where(a => a.Id == id).First();
+        var photo = await _photoRepo.Where(a => a.Id == id).FirstAsync();
         if (photo == null) return -1;
 
         var filePath = GetPhotoFilePath(photo);
         if (File.Exists(filePath)) File.Delete(filePath);
-        return _photoRepo.Delete(a => a.Id == id);
+        return await _photoRepo.DeleteAsync(a => a.Id == id);
     }
 
     /// <summary>
-    ///     Batch Import Photos
+    ///     Rebuild photo library data (rescan the size and other data of each photo)
+    /// </summary>
+    public async Task<int> ReBuildData()
+    {
+        var photos = await GetAll();
+        var photosUpdate = new List<Photo>();
+        foreach (var photo in photos) photosUpdate.Add(await BuildPhotoData(photo));
+
+        return await _photoRepo.UpdateAsync(photosUpdate);
+    }
+
+    /// <summary>
+    ///     Batch import photos
     /// </summary>
     /// <returns></returns>
-    public List<Photo> BatchImport()
+    public async Task<List<Photo>> BatchImport()
     {
         var result = new List<Photo>();
         var importPath = Path.Combine(_environment.WebRootPath, "assets", "photography");
@@ -192,9 +207,12 @@ public class PhotoService
                 FilePath = Path.Combine("photography", $"{photoId}.jpg")
             };
             var savePath = GetPhotoFilePath(photo);
+            var saveDir = Path.GetDirectoryName(savePath);
+            if (!string.IsNullOrWhiteSpace(saveDir) && !Directory.Exists(saveDir)) Directory.CreateDirectory(saveDir);
+
             file.CopyTo(savePath, true);
-            photo = BuildPhotoData(photo);
-            _photoRepo.Insert(photo);
+            photo = await BuildPhotoData(photo);
+            await _photoRepo.InsertAsync(photo);
             result.Add(photo);
         }
 
@@ -202,34 +220,24 @@ public class PhotoService
     }
 
     /// <summary>
-    ///     Gets the physical storage path for a photo
+    ///     Get the physical storage path of the photo
     /// </summary>
-    /// <param name="photo">The photo whose path to retrieve</param>
-    /// <returns>The full file path of the photo</returns>
+    /// <param name="photo"></param>
+    /// <returns></returns>
     private string GetPhotoFilePath(Photo photo)
     {
         return Path.Combine(_environment.WebRootPath, "media", photo.FilePath);
     }
 
-
     /// <summary>
-    ///     Rebuild image library data (rescan each image's size etc.)
-    /// </summary>
-    public int ReBuildData()
-    {
-        var photos = GetAll();
-        return photos.Sum(photo => _photoRepo.Update(BuildPhotoData(photo)));
-    }
-
-    /// <summary>
-    ///     Rebuild image data (scan image size etc.)
+    ///     Rebuild photo data (scan the size and other data of the photo)
     /// </summary>
     /// <param name="photo"></param>
     /// <returns></returns>
-    private Photo BuildPhotoData(Photo photo)
+    private async Task<Photo> BuildPhotoData(Photo photo)
     {
         var savePath = GetPhotoFilePath(photo);
-        var imgInfo = Image.Identify(savePath);
+        var imgInfo = await Image.IdentifyAsync(savePath);
         photo.Width = imgInfo.Width;
         photo.Height = imgInfo.Height;
 

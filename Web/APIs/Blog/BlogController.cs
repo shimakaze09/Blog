@@ -27,7 +27,8 @@ public class BlogController : ControllerBase
     /// </summary>
     /// <returns></returns>
     [HttpGet("top")]
-    public async Task<Post?> GetTopOnePost() {
+    public async Task<Post?> GetTopOnePost()
+    {
         return await _blogService.GetTopOnePost();
     }
 
@@ -36,7 +37,8 @@ public class BlogController : ControllerBase
     /// </summary>
     /// <returns></returns>
     [HttpGet("featured")]
-    public async Task<List<Post>> GetFeaturedPosts() {
+    public async Task<List<Post>> GetFeaturedPosts()
+    {
         return await _blogService.GetFeaturedPosts();
     }
 
@@ -45,7 +47,8 @@ public class BlogController : ControllerBase
     /// </summary>
     /// <returns></returns>
     [HttpGet("[action]")]
-    public async Task<BlogOverview> Overview() {
+    public async Task<BlogOverview> Overview()
+    {
         return await _blogService.Overview();
     }
 
@@ -54,7 +57,8 @@ public class BlogController : ControllerBase
     /// </summary>
     /// <returns></returns>
     [HttpGet("[action]")]
-    public async Task<List<string?>> GetStatusList() {
+    public async Task<List<string?>> GetStatusList()
+    {
         return await _blogService.GetStatusList();
     }
 

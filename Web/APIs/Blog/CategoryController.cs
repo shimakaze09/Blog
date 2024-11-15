@@ -106,7 +106,8 @@ public class CategoryController : ControllerBase
     /// <param name="id">The ID of the category</param>
     /// <returns>An API response object</returns>
     [HttpPost("{id:int}/[action]")]
-    public async Task<ApiResponse> SetVisible(int id) {
+    public async Task<ApiResponse> SetVisible(int id)
+    {
         var item = await _cService.GetById(id);
         if (item == null) return ApiResponse.NotFound($"Category {id} does not exist");
         var rows = _cService.SetVisibility(item, true);
@@ -119,7 +120,8 @@ public class CategoryController : ControllerBase
     /// <param name="id">The ID of the category</param>
     /// <returns>An API response object</returns>
     [HttpPost("{id:int}/[action]")]
-    public async Task<ApiResponse> SetInvisible(int id) {
+    public async Task<ApiResponse> SetInvisible(int id)
+    {
         var item = await _cService.GetById(id);
         if (item == null) return ApiResponse.NotFound($"Category {id} does not exist");
         var rows = _cService.SetVisibility(item, false);

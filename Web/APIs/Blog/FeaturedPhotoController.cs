@@ -6,14 +6,14 @@ using Microsoft.AspNetCore.Mvc;
 using Web.Extensions;
 using Web.Services;
 
-namespace Web.APIs.Blog;
+namespace Web.Apis.Blog;
 
 /// <summary>
-///     Featured Photos
+///     Featured Photo
 /// </summary>
 [Authorize]
 [ApiController]
-[Route("api/[controller]")]
+[Route("Api/[controller]")]
 [ApiExplorerSettings(GroupName = ApiGroups.Blog)]
 public class FeaturedPhotoController : ControllerBase
 {
@@ -28,37 +28,38 @@ public class FeaturedPhotoController : ControllerBase
 
     [AllowAnonymous]
     [HttpGet]
-    public ApiResponse<List<FeaturedPhoto>> GetList()
+    public async Task<List<FeaturedPhoto>> GetList()
     {
-        return new ApiResponse<List<FeaturedPhoto>>(_fpRepo.Select
-            .Include(a => a.Photo).ToList());
+        return await _fpRepo.Select
+            .Include(a => a.Photo)
+            .ToListAsync();
     }
 
     [AllowAnonymous]
     [HttpGet("{id:int}")]
-    public ApiResponse<FeaturedPhoto> Get(int id)
+    public async Task<ApiResponse<FeaturedPhoto>> Get(int id)
     {
-        var item = _fpRepo.Where(a => a.Id == id).First();
+        var item = await _fpRepo.Where(a => a.Id == id).FirstAsync();
         return item == null
-            ? ApiResponse.NotFound($"Recommended Photo record {id} does not exist")
+            ? ApiResponse.NotFound($"Featured photo record {id} does not exist")
             : new ApiResponse<FeaturedPhoto>(item);
     }
 
     [HttpPost]
-    public ApiResponse<FeaturedPhoto> Add(string photoId)
+    public async Task<ApiResponse<FeaturedPhoto>> Add(string photoId)
     {
-        var photo = _photoService.GetById(photoId);
+        var photo = await _photoService.GetById(photoId);
         return photo == null
             ? ApiResponse.NotFound($"Photo {photoId} does not exist")
-            : new ApiResponse<FeaturedPhoto>(_photoService.AddFeaturedPhoto(photo));
+            : new ApiResponse<FeaturedPhoto>(await _photoService.AddFeaturedPhoto(photo));
     }
 
     [HttpDelete("{id:int}")]
-    public ApiResponse Delete(int id)
+    public async Task<ApiResponse> Delete(int id)
     {
-        var item = _fpRepo.Where(a => a.Id == id).First();
-        if (item == null) return ApiResponse.NotFound($"Recommended Photo record {id} does not exist");
-        var rows = _fpRepo.Delete(item);
+        var item = await _fpRepo.Where(a => a.Id == id).FirstAsync();
+        if (item == null) return ApiResponse.NotFound($"Featured photo record {id} does not exist");
+        var rows = await _fpRepo.DeleteAsync(item);
         return ApiResponse.Ok($"Deleted {rows} rows.");
     }
 }
