@@ -1,12 +1,12 @@
 using Contrib.Utils;
 using Data.Models;
 using FreeSql;
+using ImageMagick;
 using SixLabors.ImageSharp;
 using SixLabors.ImageSharp.Processing;
 using Web.ViewModels.Photography;
 using X.PagedList;
 using X.PagedList.Extensions;
-using ImageMagick;
 
 namespace Web.Services;
 
@@ -58,7 +58,7 @@ public class PhotoService
     }
 
     /// <summary>
-    /// Generates a Progressive JPEG thumbnail (using MagickImage)
+    ///     Generates a Progressive JPEG thumbnail (using MagickImage)
     /// </summary>
     /// <param name="width">Set to 0 to avoid resizing</param>
     public async Task<byte[]> GetThumb(string id, int width = 0)
@@ -67,10 +67,7 @@ public class PhotoService
         using (var image = new MagickImage(GetPhotoFilePath(photo)))
         {
             image.Format = MagickFormat.Pjpeg;
-            if (width != 0)
-            {
-                image.Resize((uint)width, 0);
-            }
+            if (width != 0) image.Resize((uint)width, 0);
 
             return image.ToByteArray();
         }

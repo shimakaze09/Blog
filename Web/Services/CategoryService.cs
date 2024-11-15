@@ -25,6 +25,9 @@ public class CategoryService
         _generator = generator;
     }
 
+    /// <summary>
+    ///     Generate article category tree
+    /// </summary>
     public List<CategoryNode>? GetNodes(int parentId = 0)
     {
         var categories = _cRepo.Select
@@ -127,5 +130,24 @@ public class CategoryService
     {
         category.Visible = isVisible;
         return _cRepo.Update(category);
+    }
+
+    /// <summary>
+    ///     Retrieves the hierarchical structure of a specified category.
+    ///     <para>Format: 1,3,5,7,9</para>
+    /// </summary>
+    public string GetCategoryBreadcrumb(Category item)
+    {
+        var categories = new List<Category> { item };
+        var parent = item.Parent;
+
+        while (parent != null)
+        {
+            categories.Add(parent);
+            parent = parent.Parent;
+        }
+
+        categories.Reverse();
+        return string.Join(",", categories.Select(a => a.Id));
     }
 }

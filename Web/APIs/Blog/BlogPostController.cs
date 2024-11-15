@@ -72,18 +72,10 @@ public class BlogPostController : ControllerBase
         post.Id = GuidUtils.GuidTo16String();
         post.CreationTime = DateTime.Now;
         post.LastUpdateTime = DateTime.Now;
+        post.IsPublish = true;
 
-        // TODO: Optimize the redundant code here
-        var categories = new List<Category> { category };
-        var parent = category.Parent;
-        while (parent != null)
-        {
-            categories.Add(parent);
-            parent = parent.Parent;
-        }
-
-        categories.Reverse();
-        post.Categories = string.Join(",", categories.Select(a => a.Id));
+        // Get the category hierarchy
+        post.Categories = categoryService.GetCategoryBreadcrumb(category);
 
         return new ApiResponse<Post>(await _postService.InsertOrUpdateAsync(post));
     }

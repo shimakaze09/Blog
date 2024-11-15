@@ -4,7 +4,7 @@ using Web.Services;
 namespace Web.Apis.Common;
 
 /// <summary>
-/// Integration of some DataAcq interfaces
+///     Integration of some DataAcq interfaces
 /// </summary>
 [ApiController]
 [Route("Api/[controller]/[action]")]

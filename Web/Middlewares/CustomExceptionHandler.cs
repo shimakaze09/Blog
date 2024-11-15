@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Diagnostics;
+﻿using System.Net.Mime;
+using Microsoft.AspNetCore.Diagnostics;
 
 namespace Web.Middlewares;
 
@@ -11,19 +12,14 @@ public static class CustomExceptionHandler
             exceptionHandlerApp.Run(async context =>
             {
                 context.Response.StatusCode = StatusCodes.Status500InternalServerError;
-                context.Response.ContentType = System.Net.Mime.MediaTypeNames.Text.Plain;
+                context.Response.ContentType = MediaTypeNames.Text.Plain;
                 await context.Response.WriteAsync("An exception was thrown.");
                 var exceptionHandlerPathFeature =
                     context.Features.Get<IExceptionHandlerPathFeature>();
                 if (exceptionHandlerPathFeature?.Error is FileNotFoundException)
-                {
                     await context.Response.WriteAsync(" The file was not found.");
-                }
 
-                if (exceptionHandlerPathFeature?.Path == "/")
-                {
-                    await context.Response.WriteAsync(" Page: Home.");
-                }
+                if (exceptionHandlerPathFeature?.Path == "/") await context.Response.WriteAsync(" Page: Home.");
             });
         });
     }

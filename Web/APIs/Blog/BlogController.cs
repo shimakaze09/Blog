@@ -36,7 +36,7 @@ public class BlogController : ControllerBase
     /// </summary>
     /// <returns></returns>
     [HttpGet("featured")]
-    public ApiResponse<List<Post>> GetFeaturedPostRows()
+    public ApiResponse<List<Post>> GetFeaturedPosts()
     {
         return new ApiResponse<List<Post>>(_blogService.GetFeaturedPosts());
     }

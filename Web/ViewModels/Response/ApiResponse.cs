@@ -4,7 +4,7 @@ using Microsoft.AspNetCore.Mvc.ModelBinding;
 namespace Web.ViewModels.Response;
 
 /// <summary>
-/// Represents a generic API response.
+///     Represents a generic API response.
 /// </summary>
 /// <typeparam name="T">The type of the data.</typeparam>
 public class ApiResponse<T> : IApiResponse<T>
@@ -19,27 +19,27 @@ public class ApiResponse<T> : IApiResponse<T>
     }
 
     /// <summary>
-    /// Gets or sets the status code of the response.
+    ///     Gets or sets the status code of the response.
     /// </summary>
     public int StatusCode { get; set; } = 200;
 
     /// <summary>
-    /// Gets or sets a value indicating whether the response is successful.
+    ///     Gets or sets a value indicating whether the response is successful.
     /// </summary>
     public bool Successful { get; set; } = true;
 
     /// <summary>
-    /// Gets or sets the message of the response.
+    ///     Gets or sets the message of the response.
     /// </summary>
     public string? Message { get; set; }
 
     /// <summary>
-    /// Gets or sets the data of the response.
+    ///     Gets or sets the data of the response.
     /// </summary>
     public T? Data { get; set; }
 
     /// <summary>
-    /// Implicitly converts an <see cref="ApiResponse"/> to an <see cref="ApiResponse{T}"/>.
+    ///     Implicitly converts an <see cref="ApiResponse" /> to an <see cref="ApiResponse{T}" />.
     /// </summary>
     /// <param name="apiResponse">The API response.</param>
     /// <returns>The converted API response.</returns>
@@ -55,36 +55,10 @@ public class ApiResponse<T> : IApiResponse<T>
 }
 
 /// <summary>
-/// Represents a non-generic API response.
+///     Represents a non-generic API response.
 /// </summary>
 public class ApiResponse : IApiResponse, IApiErrorResponse
 {
-    /// <summary>
-    /// Gets or sets the status code of the response.
-    /// </summary>
-    public int StatusCode { get; set; } = 200;
-
-    /// <summary>
-    /// Gets or sets a value indicating whether the response is successful.
-    /// </summary>
-    public bool Successful { get; set; } = true;
-
-    /// <summary>
-    /// Gets or sets the message of the response.
-    /// </summary>
-    public string? Message { get; set; }
-
-    /// <summary>
-    /// Gets or sets the data of the response.
-    /// </summary>
-    public object? Data { get; set; }
-
-    /// <summary>
-    /// Gets or sets the serializable error data.
-    /// <para>Used to store model validation error information.</para>
-    /// </summary>
-    public SerializableError? ErrorData { get; set; }
-
     public ApiResponse()
     {
     }
@@ -95,7 +69,33 @@ public class ApiResponse : IApiResponse, IApiErrorResponse
     }
 
     /// <summary>
-    /// Creates a response indicating no content.
+    ///     Gets or sets the data of the response.
+    /// </summary>
+    public object? Data { get; set; }
+
+    /// <summary>
+    ///     Gets or sets the serializable error data.
+    ///     <para>Used to store model validation error information.</para>
+    /// </summary>
+    public SerializableError? ErrorData { get; set; }
+
+    /// <summary>
+    ///     Gets or sets the status code of the response.
+    /// </summary>
+    public int StatusCode { get; set; } = 200;
+
+    /// <summary>
+    ///     Gets or sets a value indicating whether the response is successful.
+    /// </summary>
+    public bool Successful { get; set; } = true;
+
+    /// <summary>
+    ///     Gets or sets the message of the response.
+    /// </summary>
+    public string? Message { get; set; }
+
+    /// <summary>
+    ///     Creates a response indicating no content.
     /// </summary>
     /// <param name="message">The message.</param>
     /// <returns>The API response.</returns>
@@ -110,7 +110,7 @@ public class ApiResponse : IApiResponse, IApiErrorResponse
     }
 
     /// <summary>
-    /// Creates a response indicating success.
+    ///     Creates a response indicating success.
     /// </summary>
     /// <param name="message">The message.</param>
     /// <returns>The API response.</returns>
@@ -125,7 +125,7 @@ public class ApiResponse : IApiResponse, IApiErrorResponse
     }
 
     /// <summary>
-    /// Creates a response indicating success with data.
+    ///     Creates a response indicating success with data.
     /// </summary>
     /// <param name="data">The data.</param>
     /// <param name="message">The message.</param>
@@ -142,7 +142,7 @@ public class ApiResponse : IApiResponse, IApiErrorResponse
     }
 
     /// <summary>
-    /// Creates a response indicating unauthorized access.
+    ///     Creates a response indicating unauthorized access.
     /// </summary>
     /// <param name="message">The message.</param>
     /// <returns>The API response.</returns>
@@ -157,7 +157,7 @@ public class ApiResponse : IApiResponse, IApiErrorResponse
     }
 
     /// <summary>
-    /// Creates a response indicating resource not found.
+    ///     Creates a response indicating resource not found.
     /// </summary>
     /// <param name="message">The message.</param>
     /// <returns>The API response.</returns>
@@ -172,7 +172,7 @@ public class ApiResponse : IApiResponse, IApiErrorResponse
     }
 
     /// <summary>
-    /// Creates a response indicating a bad request.
+    ///     Creates a response indicating a bad request.
     /// </summary>
     /// <param name="message">The message.</param>
     /// <returns>The API response.</returns>
@@ -187,7 +187,7 @@ public class ApiResponse : IApiResponse, IApiErrorResponse
     }
 
     /// <summary>
-    /// Creates a response indicating a bad request with model state errors.
+    ///     Creates a response indicating a bad request with model state errors.
     /// </summary>
     /// <param name="modelState">The model state dictionary.</param>
     /// <param name="message">The message.</param>
@@ -204,7 +204,7 @@ public class ApiResponse : IApiResponse, IApiErrorResponse
     }
 
     /// <summary>
-    /// Creates a response indicating an internal server error.
+    ///     Creates a response indicating an internal server error.
     /// </summary>
     /// <param name="message">The message.</param>
     /// <param name="exception">The exception.</param>
@@ -213,13 +213,11 @@ public class ApiResponse : IApiResponse, IApiErrorResponse
     {
         object? data = null;
         if (exception != null)
-        {
             data = new
             {
                 exception.Message,
                 exception.Data
             };
-        }
 
         return new ApiResponse
         {

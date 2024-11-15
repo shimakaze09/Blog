@@ -1,7 +1,7 @@
 ﻿using AutoMapper;
+using Data.Models;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using Data.Models;
 using Web.Services;
 using Web.ViewModels.Links;
 using Web.ViewModels.Response;
@@ -9,7 +9,7 @@ using Web.ViewModels.Response;
 namespace Web.Apis.Links;
 
 /// <summary>
-/// Friend links
+///     Friend links
 /// </summary>
 [Authorize]
 [ApiController]
@@ -17,8 +17,8 @@ namespace Web.Apis.Links;
 [ApiExplorerSettings(GroupName = "blog")]
 public class LinkController : ControllerBase
 {
-    private readonly LinkService _service;
     private readonly IMapper _mapper;
+    private readonly LinkService _service;
 
     public LinkController(LinkService service, IMapper mapper)
     {

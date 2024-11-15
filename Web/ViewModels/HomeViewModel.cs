@@ -15,7 +15,7 @@ public class HomeViewModel
     public bool ChartVisible { get; set; } = true;
 
     /// <summary>
-    /// Whether to display random images
+    ///     Whether to display random images
     /// </summary>
     public bool RandomPhotoVisible { get; set; } = false;
 
@@ -45,12 +45,12 @@ public class HomeViewModel
     public List<Link> Links { get; set; } = new();
 
     /// <summary>
-    /// Poem
+    ///     Poem
     /// </summary>
     public string OnePoem { get; set; }
 
     /// <summary>
-    /// Hitokoto
+    ///     Hitokoto
     /// </summary>
     public string Hitokoto { get; set; }
 }

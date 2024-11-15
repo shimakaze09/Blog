@@ -35,7 +35,7 @@ public class LinkService
     }
 
     /// <summary>
-    /// Checks if an ID exists
+    ///     Checks if an ID exists
     /// </summary>
     public bool HasId(int id)
     {

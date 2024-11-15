@@ -31,7 +31,8 @@ public class PostService
         IHttpContextAccessor accessor,
         LinkGenerator generator,
         ConfigService conf,
-        CommonService commonService, ILogger<PostService> logger)
+        CommonService commonService,
+        ILogger<PostService> logger)
     {
         _postRepo = postRepo;
         _categoryRepo = categoryRepo;

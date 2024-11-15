@@ -15,10 +15,7 @@ var mvcBuilder = builder.Services.AddControllersWithViews(
 );
 
 // Enable Razor page dynamic compilation in development mode
-if (builder.Environment.IsDevelopment())
-{
-    mvcBuilder.AddRazorRuntimeCompilation();
-}
+if (builder.Environment.IsDevelopment()) mvcBuilder.AddRazorRuntimeCompilation();
 
 builder.Services.AddAutoMapper(typeof(Program));
 builder.Services.AddFreeSql(builder.Configuration);
@@ -112,7 +109,7 @@ app.UseReDoc(options =>
 });
 
 app.MapControllerRoute(
-    name: "default",
-    pattern: "{controller=Home}/{action=Index}/{id?}");
+    "default",
+    "{controller=Home}/{action=Index}/{id?}");
 
 app.Run();

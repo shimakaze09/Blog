@@ -4,7 +4,7 @@ using Microsoft.Extensions.FileProviders;
 namespace Web.Apis;
 
 /// <summary>
-/// Used to test the functionality of DataWrapper
+///     Used to test the functionality of DataWrapper
 /// </summary>
 [ApiController]
 [Route("api/[controller]/[action]")]

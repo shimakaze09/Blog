@@ -919,7 +919,7 @@
                 this.setExpandedState(parentNode, true, options);
                 parentNode = this.getParent(parentNode);
             }
-            ;
+
         }, this));
 
         this.render();
