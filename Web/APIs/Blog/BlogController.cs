@@ -1,5 +1,6 @@
 using CodeLab.Share.ViewModels.Response;
 using Data.Models;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Web.Extensions;
 using Web.Services;
@@ -66,6 +67,7 @@ public class BlogController : ControllerBase
     ///     Uploads a blog post compressed file and imports it.
     /// </summary>
     /// <returns>A task that represents the asynchronous operation. The task result contains the uploaded post.</returns>
+    [Authorize]
     [HttpPost("[action]")]
     public async Task<ApiResponse<Post>> Upload([FromForm] PostCreationDto dto, IFormFile file,
         [FromServices] CategoryService categoryService)

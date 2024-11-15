@@ -18,16 +18,16 @@ public static class ConfigureAuth
             })
             .AddJwtBearer(options =>
             {
-                var secSettings = configuration.GetSection(nameof(SecuritySettings)).Get<SecuritySettings>();
+                var authSetting = configuration.GetSection(nameof(Auth)).Get<Auth>();
                 options.TokenValidationParameters = new TokenValidationParameters
                 {
                     ValidateAudience = true,
                     ValidateLifetime = true,
                     ValidateIssuer = true,
                     ValidateIssuerSigningKey = true,
-                    ValidIssuer = secSettings.Token.Issuer,
-                    ValidAudience = secSettings.Token.Audience,
-                    IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(secSettings.Token.Key)),
+                    ValidIssuer = authSetting.Jwt.Issuer,
+                    ValidAudience = authSetting.Jwt.Audience,
+                    IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(authSetting.Jwt.Key)),
                     ClockSkew = TimeSpan.Zero
                 };
             });

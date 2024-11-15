@@ -10,7 +10,7 @@ public class FreeSqlFactory
     {
         return new FreeSqlBuilder()
             .UseConnectionString(dataType, connectionString)
-            .UseNameConvert(NameConvertType.PascalCaseToUnderscoreWithLower)
+            // .UseNameConvert(NameConvertType.PascalCaseToUnderscoreWithLower)
             .UseAutoSyncStructure(true) // Automatically synchronize entity structure to the database
             .UseMonitorCommand(cmd => Trace.WriteLine(cmd.CommandText))
             .Build(); // Please be sure to define it as a Singleton
