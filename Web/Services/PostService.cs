@@ -1,12 +1,12 @@
 using System.Net;
-using Contrib.Utils;
 using Data.Models;
 using FreeSql;
 using Markdig;
 using Markdig.Renderers.Normalize;
 using Markdig.Syntax;
 using Markdig.Syntax.Inlines;
-using Share.MarkdownExtensions;
+using Share.Extensions.Markdown;
+using Share.Utils;
 using Web.ViewModels;
 using Web.ViewModels.QueryFilters;
 using X.PagedList;

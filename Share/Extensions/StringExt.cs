@@ -1,4 +1,4 @@
-namespace Contrib.Extensions;
+namespace Share.Extensions;
 
 public static class StringExt
 {

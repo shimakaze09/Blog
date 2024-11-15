@@ -1,11 +1,11 @@
 ﻿using System.Text.RegularExpressions;
-using Contrib.Extensions;
-using Contrib.Utils;
 using Data.Models;
 using Markdig;
 using Markdig.Renderers.Normalize;
 using Markdig.Syntax;
 using Markdig.Syntax.Inlines;
+using Share.Extensions;
+using Share.Utils;
 
 namespace Share;
 

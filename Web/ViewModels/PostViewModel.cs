@@ -1,7 +1,8 @@
 using System.Text.Encodings.Web;
 using System.Text.Json;
 using Data.Models;
-using Share.MarkdownExtensions;
+using Share.Extensions;
+using Share.Extensions.Markdown;
 
 namespace Web.ViewModels;
 

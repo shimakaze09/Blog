@@ -1,11 +1,10 @@
 ﻿using System.Text.RegularExpressions;
-using Markdig;
-using Markdig.Syntax;
 using Data.Models;
+using Markdig.Syntax;
 
-namespace Share.MarkdownExtensions;
+namespace Share.Extensions.Markdown;
 
-class Heading
+internal class Heading
 {
     public int Id { get; set; }
     public int Pid { get; set; } = -1;
@@ -77,7 +76,7 @@ public static class ToC
     public static List<TocNode>? ExtractToc(this Post post)
     {
         if (post.Content == null) return null;
-        var doc = Markdown.Parse(post.Content);
+        var doc = Markdig.Markdown.Parse(post.Content);
         return doc.ExtractToc();
     }
 }

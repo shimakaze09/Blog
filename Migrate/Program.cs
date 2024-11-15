@@ -1,9 +1,9 @@
 ﻿// See https://aka.ms/new-console-template for more information
 
-using Contrib.Utils;
 using Data;
 using Data.Models;
 using Share;
+using Share.Utils;
 
 const string importDir = @"E:\blog\";
 

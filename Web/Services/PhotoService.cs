@@ -1,7 +1,7 @@
-using Contrib.Utils;
 using Data.Models;
 using FreeSql;
 using ImageMagick;
+using Share.Utils;
 using SixLabors.ImageSharp;
 using SixLabors.ImageSharp.Processing;
 using Web.ViewModels.Photography;

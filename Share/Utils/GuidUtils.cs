@@ -1,4 +1,4 @@
-namespace Contrib.Utils;
+namespace Share.Utils;
 
 public static class GuidUtils
 {
@@ -26,7 +26,6 @@ public static class GuidUtils
 
     /// <summary>
     ///     Get a unique 19-digit sequence based on the GUID
-    ///     ///
     /// </summary>
     /// <returns></returns>
     public static long GuidToLongID()

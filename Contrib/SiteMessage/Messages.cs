@@ -1,9 +1,8 @@
 namespace Contrib.SiteMessage;
 
 /// <summary>
-/// TODO: Needs to be upgraded, switch to using session to differentiate messages.
+///     TODO: Needs to be upgraded, switch to using session to differentiate messages.
 /// </summary>
-
 public class Messages
 {
     private Queue<Message> MessagesQueue { get; } = new();
