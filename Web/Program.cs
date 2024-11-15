@@ -83,8 +83,7 @@ app.UseStaticFiles(new StaticFileOptions
     ServeUnknownFileTypes = true
 });
 
-app.UseMiddleware<VisitRecordMiddleware>();
-
+// app.UseMiddleware<VisitRecordMiddleware>();
 app.UseRobotsTxt();
 app.UseRouting();
 app.UseCors();

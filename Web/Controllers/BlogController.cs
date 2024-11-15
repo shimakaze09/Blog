@@ -34,8 +34,8 @@ public class BlogController : Controller
     public async Task<IActionResult> List(int categoryId = 0, int page = 1, int pageSize = 5)
     {
         var currentCategory = categoryId == 0
-            ? new Category {Id = 0, Name = "All", Posts = _postRepo.Select.ToList()}
-            : await _categoryService.GetById(categoryId);
+            ? new Category { Id = 0, Name = "All" }
+            : await _categoryRepo.Where(a => a.Id == categoryId).FirstAsync();
 
         if (currentCategory == null)
         {
@@ -54,7 +54,7 @@ public class BlogController : Controller
             CurrentCategory = currentCategory,
             CurrentCategoryId = categoryId,
             CategoryNodes = await _categoryService.GetNodes(),
-            Posts = _postService.GetPagedList(new PostQueryParameters
+            Posts = await _postService.GetPagedList(new PostQueryParameters
             {
                 CategoryId = categoryId,
                 Page = page,
@@ -64,9 +64,9 @@ public class BlogController : Controller
         });
     }
 
-    public IActionResult Post(string id)
+    public async Task<IActionResult> Post(string id)
     {
-        var post = _postService.GetById(id);
+        var post = await _postService.GetById(id);
 
         if (post == null)
         {

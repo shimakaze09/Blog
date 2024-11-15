@@ -46,18 +46,18 @@ public class PostService
 
     private string Host => _conf["host"];
 
-    public Post? GetById(string id)
+    public async Task<Post?> GetById(string id)
     {
         // When retrieving the post, parse the image URLs in the markdown content and add the full URL before returning to the frontend
-        var post = _postRepo.Where(a => a.Id == id).Include(a => a.Category).First();
+        var post = await _postRepo.Where(a => a.Id == id).Include(a => a.Category).FirstAsync();
         if (post != null) post.Content = MdImageLinkConvert(post);
 
         return post;
     }
 
-    public int Delete(string id)
+    public async Task<int> Delete(string id)
     {
-        return _postRepo.Delete(a => a.Id == id);
+        return await _postRepo.DeleteAsync(a => a.Id == id);
     }
 
     public async Task<Post> InsertOrUpdateAsync(Post post)
@@ -83,7 +83,7 @@ public class PostService
     /// <param name="post"></param>
     /// <param name="file"></param>
     /// <returns></returns>
-    public string UploadImage(Post post, IFormFile file)
+    public async Task<string> UploadImage(Post post, IFormFile file)
     {
         InitPostMediaDir(post);
 
@@ -99,9 +99,9 @@ public class PostService
             savePath = Path.Combine(_environment.WebRootPath, fileRelativePath);
         }
 
-        using (var fs = new FileStream(savePath, FileMode.Create))
+        await using (var fs = new FileStream(savePath, FileMode.Create))
         {
-            file.CopyTo(fs);
+            await file.CopyToAsync(fs);
         }
 
         return Path.Combine(Host, fileRelativePath);
@@ -122,7 +122,7 @@ public class PostService
         return data;
     }
 
-    public IPagedList<Post> GetPagedList(PostQueryParameters param)
+    public async Task<IPagedList<Post>> GetPagedList(PostQueryParameters param)
     {
         var querySet = _postRepo.Select;
 
@@ -148,7 +148,7 @@ public class PostService
             querySet = querySet.OrderByPropertyName(orderByProperty, isAscending);
         }
 
-        return querySet.Include(a => a.Category).ToList()
+        return (await querySet.Include(a => a.Category).ToListAsync())
             .ToPagedList(param.Page, param.PageSize);
     }
 
