@@ -29,9 +29,9 @@ public class AuthController : ControllerBase
     /// <param name="loginUser">The login user object</param>
     /// <returns>The login response</returns>
     [ProducesResponseType(typeof(ApiResponse<LoginToken>), StatusCodes.Status200OK)]
-    public ApiResponse Login(LoginUser loginUser)
+    public async Task<ApiResponse> Login(LoginUser loginUser)
     {
-        var user = _authService.GetUserByName(loginUser.Username);
+        var user = await _authService.GetUserByName(loginUser.Username);
         if (user == null) return ApiResponse.Unauthorized("Username or password incorrect");
         if (loginUser.Password != user.Password) return ApiResponse.Unauthorized("Username or password incorrect");
         return ApiResponse.Ok(_authService.GenerateLoginToken(user));

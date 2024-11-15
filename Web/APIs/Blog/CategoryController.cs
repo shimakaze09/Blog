@@ -27,23 +27,23 @@ public class CategoryController : ControllerBase
 
     [AllowAnonymous]
     [HttpGet("Nodes")]
-    public ApiResponse<List<CategoryNode>> GetNodes()
+    public async Task<List<CategoryNode>?> GetNodes()
     {
-        return new ApiResponse<List<CategoryNode>>(_cService.GetNodes());
+        return await _cService.GetNodes();
     }
 
     [AllowAnonymous]
     [HttpGet("All")]
-    public ApiResponse<List<Category>> GetAll()
+    public async Task<List<Category>> GetAll()
     {
-        return new ApiResponse<List<Category>>(_cService.GetAll());
+        return await _cService.GetAll();
     }
 
     [AllowAnonymous]
     [HttpGet]
-    public ApiResponsePaged<Category> GetList(int page = 1, int pageSize = 10)
+    public async Task<ApiResponsePaged<Category>> GetList(int page = 1, int pageSize = 10)
     {
-        var paged = _cService.GetPagedList(page, pageSize);
+        var paged = await _cService.GetPagedList(page, pageSize);
         return new ApiResponsePaged<Category>
         {
             Pagination = paged.ToPaginationMetadata(),
@@ -53,9 +53,9 @@ public class CategoryController : ControllerBase
 
     [AllowAnonymous]
     [HttpGet("{id:int}")]
-    public IApiResponse Get(int id)
+    public async Task<IApiResponse> Get(int id)
     {
-        var item = _cService.GetById(id);
+        var item = await _cService.GetById(id);
         return item == null ? ApiResponse.NotFound() : new ApiResponse<Category> { Data = item };
     }
 
@@ -65,9 +65,9 @@ public class CategoryController : ControllerBase
     /// <returns></returns>
     [AllowAnonymous]
     [HttpGet("[action]")]
-    public ApiResponse<List<object>> WordCloud()
+    public async Task<List<object>> WordCloud()
     {
-        return new ApiResponse<List<object>>(_cService.GetWordCloud());
+        return await _cService.GetWordCloud();
     }
 
     /// <summary>
@@ -78,12 +78,12 @@ public class CategoryController : ControllerBase
     /// <param name="dto">Featured information <see cref="FeaturedCategoryCreationDto" /></param>
     /// <returns></returns>
     [HttpPost("{id:int}/[action]")]
-    public ApiResponse<FeaturedCategory> SetFeatured(int id, [FromBody] FeaturedCategoryCreationDto dto)
+    public async Task<ApiResponse<FeaturedCategory>> SetFeatured(int id, [FromBody] FeaturedCategoryCreationDto dto)
     {
-        var item = _cService.GetById(id);
+        var item = await _cService.GetById(id);
         return item == null
             ? ApiResponse.NotFound($"Category {id} does not exist")
-            : new ApiResponse<FeaturedCategory>(_cService.AddOrUpdateFeaturedCategory(item, dto));
+            : new ApiResponse<FeaturedCategory>(await _cService.AddOrUpdateFeaturedCategory(item, dto));
     }
 
     /// <summary>
@@ -92,9 +92,9 @@ public class CategoryController : ControllerBase
     /// <param name="id"></param>
     /// <returns></returns>
     [HttpPost("{id:int}/[action]")]
-    public ApiResponse CancelFeatured(int id)
+    public async Task<ApiResponse> CancelFeatured(int id)
     {
-        var item = _cService.GetById(id);
+        var item = await _cService.GetById(id);
         if (item == null) return ApiResponse.NotFound($"Category {id} does not exist");
         var rows = _cService.DeleteFeaturedCategory(item);
         return ApiResponse.Ok($"Deleted {rows} rows.");
@@ -106,9 +106,8 @@ public class CategoryController : ControllerBase
     /// <param name="id">The ID of the category</param>
     /// <returns>An API response object</returns>
     [HttpPost("{id:int}/[action]")]
-    public ApiResponse SetVisible(int id)
-    {
-        var item = _cService.GetById(id);
+    public async Task<ApiResponse> SetVisible(int id) {
+        var item = await _cService.GetById(id);
         if (item == null) return ApiResponse.NotFound($"Category {id} does not exist");
         var rows = _cService.SetVisibility(item, true);
         return ApiResponse.Ok($"Affected {rows} row(s).");
@@ -120,9 +119,8 @@ public class CategoryController : ControllerBase
     /// <param name="id">The ID of the category</param>
     /// <returns>An API response object</returns>
     [HttpPost("{id:int}/[action]")]
-    public ApiResponse SetInvisible(int id)
-    {
-        var item = _cService.GetById(id);
+    public async Task<ApiResponse> SetInvisible(int id) {
+        var item = await _cService.GetById(id);
         if (item == null) return ApiResponse.NotFound($"Category {id} does not exist");
         var rows = _cService.SetVisibility(item, false);
         return ApiResponse.Ok($"Affected {rows} row(s).");

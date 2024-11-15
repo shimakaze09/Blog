@@ -25,14 +25,22 @@ public class CategoryService
         _generator = generator;
     }
 
+    public async Task<List<CategoryNode>?> GetNodes()
+    {
+        var categoryList = await _cRepo.Select
+            .IncludeMany(a => a.Posts.Select(p => new Post { Id = p.Id }))
+            .ToListAsync();
+        return GetNodes(categoryList, 0);
+    }
+
     /// <summary>
     ///     Generate article category tree
     /// </summary>
-    public List<CategoryNode>? GetNodes(int parentId = 0)
+    public List<CategoryNode>? GetNodes(List<Category> categoryList, int parentId = 0)
     {
-        var categories = _cRepo.Select
+        var categories = categoryList
             .Where(a => a.ParentId == parentId && a.Visible)
-            .IncludeMany(a => a.Posts).ToList();
+            .ToList();
 
         if (categories.Count == 0) return null;
 
@@ -46,54 +54,55 @@ public class CategoryService
                 new { categoryId = category.Id }
             ),
             tags = new List<string> { category.Posts.Count.ToString() },
-            nodes = GetNodes(category.Id)
+            nodes = GetNodes(categoryList, category.Id)
         }).ToList();
     }
 
-    public List<Category> GetAll()
+    public async Task<List<Category>> GetAll()
     {
-        return _cRepo.Select.ToList();
+        return await _cRepo.Select.ToListAsync();
     }
 
-    public IPagedList<Category> GetPagedList(int page = 1, int pageSize = 10)
+    public async Task<IPagedList<Category>> GetPagedList(int page = 1, int pageSize = 10)
     {
-        return _cRepo.Select.ToList().ToPagedList(page, pageSize);
+        return (await _cRepo.Select.ToListAsync()).ToPagedList(page, pageSize);
     }
 
-    public Category? GetById(int id)
+    public async Task<Category?> GetById(int id)
     {
-        return _cRepo.Where(a => a.Id == id)
-            .Include(a => a.Parent).First();
+        return await _cRepo.Where(a => a.Id == id)
+            .Include(a => a.Parent).FirstAsync();
     }
 
     /// <summary>
     ///     Generate category word cloud data
     /// </summary>
     /// <returns></returns>
-    public List<object> GetWordCloud()
+    public async Task<List<object>> GetWordCloud()
     {
-        var list = _cRepo.Select
+        var list = await _cRepo.Select
             .Where(a => a.Visible && a.ParentId == 0)
-            .IncludeMany(a => a.Posts).ToList();
-        var data = new List<object>();
-        foreach (var item in list) data.Add(new { name = item.Name, value = item.Posts.Count });
+            .IncludeMany(a => a.Posts).ToListAsync();
+
+        var data = list.Select(item => new { name = item.Name, value = item.Posts.Count }).ToList<object>();
+
         return data;
     }
 
-    public List<FeaturedCategory> GetFeaturedCategories()
+    public async Task<List<FeaturedCategory>> GetFeaturedCategories()
     {
-        return _fcRepo.Select.Include(a => a.Category).ToList();
+        return await _fcRepo.Select.Include(a => a.Category).ToListAsync();
     }
 
-    public FeaturedCategory? GetFeaturedCategoryById(int id)
+    public async Task<FeaturedCategory?> GetFeaturedCategoryById(int id)
     {
-        return _fcRepo.Where(a => a.Id == id)
-            .Include(a => a.Category).First();
+        return await _fcRepo.Where(a => a.Id == id)
+            .Include(a => a.Category).FirstAsync();
     }
 
-    public FeaturedCategory AddOrUpdateFeaturedCategory(Category category, FeaturedCategoryCreationDto dto)
+    public async Task<FeaturedCategory> AddOrUpdateFeaturedCategory(Category category, FeaturedCategoryCreationDto dto)
     {
-        var item = _fcRepo.Where(a => a.CategoryId == category.Id).First();
+        var item = await _fcRepo.Where(a => a.CategoryId == category.Id).FirstAsync();
         if (item == null)
         {
             item = new FeaturedCategory
@@ -111,25 +120,21 @@ public class CategoryService
             item.IconCssClass = dto.IconCssClass;
         }
 
-        _fcRepo.InsertOrUpdate(item);
+        await _fcRepo.InsertOrUpdateAsync(item);
         return item;
     }
 
-    public int DeleteFeaturedCategory(Category category)
-    {
-        var item = _fcRepo.Where(a => a.CategoryId == category.Id).First();
-        return item == null ? 0 : _fcRepo.Delete(item);
+    public async Task<int> DeleteFeaturedCategory(Category category) {
+        return await _fcRepo.Where(a => a.CategoryId == category.Id).ToDelete().ExecuteAffrowsAsync();
     }
 
-    public int DeleteFeaturedCategoryById(int id)
-    {
-        return _fcRepo.Delete(a => a.Id == id);
+    public async Task<int> DeleteFeaturedCategoryById(int id) {
+        return await _fcRepo.DeleteAsync(a => a.Id == id);
     }
 
-    public int SetVisibility(Category category, bool isVisible)
-    {
+    public async Task<int> SetVisibility(Category category, bool isVisible) {
         category.Visible = isVisible;
-        return _cRepo.Update(category);
+        return await _cRepo.UpdateAsync(category);
     }
 
     /// <summary>

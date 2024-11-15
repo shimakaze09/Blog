@@ -45,14 +45,14 @@ public class AuthService
         };
     }
 
-    public User? GetUserById(string userId)
+    public async Task<User?> GetUserById(string userId)
     {
-        return _userRepo.Where(a => a.Id == userId).ToOne();
+        return await _userRepo.Where(a => a.Id == userId).FirstAsync();
     }
 
-    public User? GetUserByName(string name)
+    public async Task<User?> GetUserByName(string name)
     {
-        return _userRepo.Where(a => a.Name == name).ToOne();
+        return await _userRepo.Where(a => a.Name == name).FirstAsync();
     }
 
     public User? GetUser(ClaimsPrincipal userClaim)
