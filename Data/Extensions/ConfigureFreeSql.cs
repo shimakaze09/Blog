@@ -8,10 +8,8 @@ public static class ConfigureFreeSql
 {
     public static void AddFreeSql(this IServiceCollection services, IConfiguration configuration)
     {
-        var freeSql = new FreeSqlBuilder()
-            .UseConnectionString(DataType.Sqlite, configuration.GetConnectionString("SQLite"))
-            .UseAutoSyncStructure(true)
-            .Build();
+        // var freeSql = FreeSqlFactory.Create(configuration.GetConnectionString("SQLite"));
+        var freeSql = FreeSqlFactory.CreateMySql(configuration.GetConnectionString("MySql"));
 
         services.AddSingleton(freeSql);
 
