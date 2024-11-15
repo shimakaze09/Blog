@@ -12,7 +12,12 @@ public class HomeViewModel
     /// <summary>
     ///     Whether to display Chart
     /// </summary>
-    public bool ChartVisible { get; set; } = false;
+    public bool ChartVisible { get; set; } = true;
+
+    /// <summary>
+    /// Whether to display random images
+    /// </summary>
+    public bool RandomPhotoVisible { get; set; } = false;
 
     /// <summary>
     ///     Featured blog posts
