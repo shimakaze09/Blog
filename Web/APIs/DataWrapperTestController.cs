@@ -1,5 +1,6 @@
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.FileProviders;
+using Web.Extensions;
 
 namespace Web.Apis;
 
@@ -8,7 +9,7 @@ namespace Web.Apis;
 /// </summary>
 [ApiController]
 [Route("api/[controller]/[action]")]
-[ApiExplorerSettings(GroupName = "test")]
+[ApiExplorerSettings(GroupName = ApiGroups.Test)]
 public class DataWrapperTestController : ControllerBase
 {
     private readonly IFileProvider _fileProvider;

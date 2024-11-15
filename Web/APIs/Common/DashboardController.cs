@@ -1,13 +1,14 @@
 using CodeLab.Share.ViewModels.Response;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Web.Extensions;
 
 namespace Web.APIs.Common;
 
 [Authorize]
 [ApiController]
 [Route("api/[controller]")]
-[ApiExplorerSettings(GroupName = "common")]
+[ApiExplorerSettings(GroupName = ApiGroups.Common)]
 public class DashboardController : ControllerBase
 {
     [HttpGet("[action]")]

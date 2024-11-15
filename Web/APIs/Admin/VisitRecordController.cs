@@ -2,6 +2,7 @@ using CodeLab.Share.ViewModels.Response;
 using Data.Models;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Web.Extensions;
 using Web.Services;
 using Web.ViewModels.QueryFilters;
 
@@ -13,7 +14,7 @@ namespace Web.APIs.Admin;
 [Authorize]
 [ApiController]
 [Route("api/[controller]")]
-[ApiExplorerSettings(GroupName = "admin")]
+[ApiExplorerSettings(GroupName = ApiGroups.Admin)]
 public class VisitRecordController : ControllerBase
 {
     private readonly VisitRecordService _service;

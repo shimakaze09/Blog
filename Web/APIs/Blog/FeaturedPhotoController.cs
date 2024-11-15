@@ -3,6 +3,7 @@ using Data.Models;
 using FreeSql;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Web.Extensions;
 using Web.Services;
 
 namespace Web.APIs.Blog;
@@ -13,7 +14,7 @@ namespace Web.APIs.Blog;
 [Authorize]
 [ApiController]
 [Route("api/[controller]")]
-[ApiExplorerSettings(GroupName = "blog")]
+[ApiExplorerSettings(GroupName = ApiGroups.Blog)]
 public class FeaturedPhotoController : ControllerBase
 {
     private readonly IBaseRepository<FeaturedPhoto> _fpRepo;

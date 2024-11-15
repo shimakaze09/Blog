@@ -3,6 +3,7 @@ using CodeLab.Share.ViewModels.Response;
 using Data.Models;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Web.Extensions;
 using Web.Services;
 using Web.ViewModels.Links;
 
@@ -14,7 +15,7 @@ namespace Web.Apis.Links;
 [Authorize]
 [ApiController]
 [Route("Api/[controller]")]
-[ApiExplorerSettings(GroupName = "blog")]
+[ApiExplorerSettings(GroupName = ApiGroups.Blog)]
 public class LinkController : ControllerBase
 {
     private readonly IMapper _mapper;

@@ -2,6 +2,7 @@ using CodeLab.Share.ViewModels.Response;
 using Data.Models;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Web.Extensions;
 using Web.Services;
 using Web.ViewModels.Auth;
 
@@ -12,7 +13,7 @@ namespace Web.Apis;
 /// </summary>
 [ApiController]
 [Route("api/[controller]")]
-[ApiExplorerSettings(GroupName = "auth")]
+[ApiExplorerSettings(GroupName = ApiGroups.Auth)]
 public class AuthController : ControllerBase
 {
     private readonly AuthService _authService;

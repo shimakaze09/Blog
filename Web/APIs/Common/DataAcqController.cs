@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNetCore.Mvc;
+using Web.Extensions;
 using Web.Services;
 
 namespace Web.Apis.Common;
@@ -8,7 +9,7 @@ namespace Web.Apis.Common;
 /// </summary>
 [ApiController]
 [Route("Api/[controller]/[action]")]
-[ApiExplorerSettings(GroupName = "common")]
+[ApiExplorerSettings(GroupName = ApiGroups.Common)]
 public class DataAcqController : ControllerBase
 {
     private readonly CrawlService _crawlService;

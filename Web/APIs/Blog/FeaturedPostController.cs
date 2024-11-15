@@ -2,6 +2,7 @@ using CodeLab.Share.ViewModels.Response;
 using Data.Models;
 using FreeSql;
 using Microsoft.AspNetCore.Mvc;
+using Web.Extensions;
 
 namespace Web.APIs.Blog;
 
@@ -10,7 +11,7 @@ namespace Web.APIs.Blog;
 /// </summary>
 [ApiController]
 [Route("api/[controller]")]
-[ApiExplorerSettings(GroupName = "blog")]
+[ApiExplorerSettings(GroupName = ApiGroups.Blog)]
 public class FeaturedPostController : ControllerBase
 {
     private readonly IBaseRepository<FeaturedPost> _featuredPostRepo;

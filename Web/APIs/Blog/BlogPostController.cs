@@ -5,6 +5,7 @@ using Data.Models;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Share.Utils;
+using Web.Extensions;
 using Web.Services;
 using Web.ViewModels.Blog;
 using Web.ViewModels.QueryFilters;
@@ -17,7 +18,7 @@ namespace Web.APIs.Blog;
 [Authorize]
 [ApiController]
 [Route("api/[controller]")]
-[ApiExplorerSettings(GroupName = "blog")]
+[ApiExplorerSettings(GroupName = ApiGroups.Blog)]
 public class BlogPostController : ControllerBase
 {
     private readonly BlogService _blogService;

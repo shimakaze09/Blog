@@ -1,6 +1,7 @@
 ﻿using CodeLab.Share.ViewModels.Response;
 using Data.Models;
 using Microsoft.AspNetCore.Mvc;
+using Web.Extensions;
 using Web.Services;
 
 namespace Web.APIs.Admin;
@@ -10,7 +11,7 @@ namespace Web.APIs.Admin;
 /// </summary>
 [ApiController]
 [Route("Api/[controller]")]
-[ApiExplorerSettings(GroupName = "admin")]
+[ApiExplorerSettings(GroupName = ApiGroups.Admin)]
 public class ConfigController : ControllerBase
 {
     private readonly ConfigService _service;

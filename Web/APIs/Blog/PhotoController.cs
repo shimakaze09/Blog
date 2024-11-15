@@ -3,6 +3,7 @@ using CodeLab.Share.ViewModels.Response;
 using Data.Models;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Web.Extensions;
 using Web.Services;
 using Web.ViewModels.Photography;
 
@@ -13,6 +14,7 @@ namespace Web.APIs.Blog;
 /// </summary>
 [ApiController]
 [Route("api/[controller]")]
+[ApiExplorerSettings(GroupName = ApiGroups.Blog)]
 public class PhotoController : ControllerBase
 {
     private readonly PhotoService _photoService;

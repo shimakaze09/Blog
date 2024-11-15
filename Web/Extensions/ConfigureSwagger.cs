@@ -1,48 +1,35 @@
 using Microsoft.OpenApi.Models;
 using Swashbuckle.AspNetCore.Filters;
+using Swashbuckle.AspNetCore.SwaggerUI;
+using Web.Models;
 
 namespace Web.Extensions;
 
+public static class ApiGroups
+{
+    public const string Admin = "admin";
+    public const string Auth = "auth";
+    public const string Common = "common";
+    public const string Blog = "blog";
+    public const string Test = "test";
+}
+
 public static class ConfigureSwagger
 {
+    public static readonly List<SwaggerGroup> Groups = new()
+    {
+        new SwaggerGroup(ApiGroups.Admin, "Admin APIs", "Administrator-related interfaces"),
+        new SwaggerGroup(ApiGroups.Auth, "Auth APIs", "Authentication interfaces"),
+        new SwaggerGroup(ApiGroups.Common, "Common APIs", "General public interfaces"),
+        new SwaggerGroup(ApiGroups.Blog, "Blog APIs", "Blog management interfaces"),
+        new SwaggerGroup(ApiGroups.Test, "Test APIs", "Test interfaces")
+    };
+
     public static void AddSwagger(this IServiceCollection services)
     {
         services.AddSwaggerGen(options =>
         {
-            options.SwaggerDoc("admin", new OpenApiInfo
-            {
-                Version = "v1",
-                Title = "Admin APIs",
-                Description = "Administrator related interfaces"
-            });
-
-            options.SwaggerDoc("common", new OpenApiInfo
-            {
-                Version = "v1",
-                Title = "Common APIs",
-                Description = "General public interfaces"
-            });
-
-            options.SwaggerDoc("auth", new OpenApiInfo
-            {
-                Version = "v1",
-                Title = "Auth APIs",
-                Description = "Authorization interfaces"
-            });
-
-            options.SwaggerDoc("blog", new OpenApiInfo
-            {
-                Version = "v1",
-                Title = "Blog APIs",
-                Description = "Blog management interfaces"
-            });
-
-            options.SwaggerDoc("test", new OpenApiInfo
-            {
-                Version = "v1",
-                Title = "Test APIs",
-                Description = "Test interfaces"
-            });
+            Groups.ForEach(group => options.SwaggerDoc(group.Name, group.ToOpenApiInfo()));
 
             // Enable little green lock
             var security = new OpenApiSecurityScheme
@@ -61,6 +48,22 @@ public static class ConfigureSwagger
             // XML comments
             var filePath = Path.Combine(AppContext.BaseDirectory, $"{typeof(Program).Assembly.GetName().Name}.xml");
             options.IncludeXmlComments(filePath, true);
+        });
+    }
+
+    public static void UseSwaggerPkg(this IApplicationBuilder app)
+    {
+        app.UseSwagger();
+        app.UseSwaggerUI(opt =>
+        {
+            opt.RoutePrefix = "api-docs/swagger";
+            // Default expansion depth of models, set to -1 to completely hide models
+            opt.DefaultModelsExpandDepth(-1);
+            // Only expand marked API documents
+            opt.DocExpansion(DocExpansion.List);
+            opt.DocumentTitle = "StarBlog APIs";
+            // Grouping
+            Groups.ForEach(group => opt.SwaggerEndpoint($"/swagger/{group.Name}/swagger.json", group.Name));
         });
     }
 }

@@ -1,6 +1,7 @@
 using CodeLab.Share.ViewModels.Response;
 using Data.Models;
 using Microsoft.AspNetCore.Mvc;
+using Web.Extensions;
 using Web.Services;
 using Web.ViewModels.Blog;
 
@@ -11,7 +12,7 @@ namespace Web.APIs.Blog;
 /// </summary>
 [ApiController]
 [Route("api/[controller]")]
-[ApiExplorerSettings(GroupName = "blog")]
+[ApiExplorerSettings(GroupName = ApiGroups.Blog)]
 public class BlogController : ControllerBase
 {
     private readonly BlogService _blogService;

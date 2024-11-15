@@ -2,6 +2,7 @@ using CodeLab.Share.ViewModels.Response;
 using Data.Models;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Web.Extensions;
 using Web.Services;
 using Web.ViewModels.Categories;
 
@@ -13,7 +14,7 @@ namespace Web.APIs.Blog;
 [Authorize]
 [ApiController]
 [Route("api/[controller]")]
-[ApiExplorerSettings(GroupName = "blog")]
+[ApiExplorerSettings(GroupName = ApiGroups.Blog)]
 public class FeaturedCategoryController : ControllerBase
 {
     private readonly CategoryService _categoryService;

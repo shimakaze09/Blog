@@ -1,4 +1,5 @@
 using Microsoft.AspNetCore.Mvc;
+using Web.Extensions;
 using Web.Services;
 
 namespace Web.APIs.Common;
@@ -8,7 +9,7 @@ namespace Web.APIs.Common;
 /// </summary>
 [ApiController]
 [Route("api/[controller]")]
-[ApiExplorerSettings(GroupName = "common")]
+[ApiExplorerSettings(GroupName = ApiGroups.Common)]
 public class ThemeController : ControllerBase
 {
     private readonly ThemeService _themeService;
