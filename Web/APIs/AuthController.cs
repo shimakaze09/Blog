@@ -1,4 +1,5 @@
 using CodeLab.Share.ViewModels.Response;
+using Contrib.Security;
 using Data.Models;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -33,7 +34,7 @@ public class AuthController : ControllerBase
     {
         var user = await _authService.GetUserByName(loginUser.Username);
         if (user == null) return ApiResponse.Unauthorized("Username or password incorrect");
-        if (loginUser.Password != user.Password) return ApiResponse.Unauthorized("Username or password incorrect");
+        if (loginUser.Password.ToMd5String() != user.Password) return ApiResponse.Unauthorized("Username or password incorrect");
         return ApiResponse.Ok(_authService.GenerateLoginToken(user));
     }
 

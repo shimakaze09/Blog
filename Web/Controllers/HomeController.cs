@@ -1,3 +1,4 @@
+using Contrib.Security;
 using Contrib.SiteMessage;
 using Data.Models;
 using FreeSql;
@@ -75,12 +76,11 @@ public class HomeController : Controller
         conf["is_init"] = "true";
 
         // Create user
-        // TODO: Temporarily storing plain text password, should be changed to MD5 encryption later
         userRepo.Insert(new User
         {
             Id = Guid.NewGuid().ToString(),
             Name = vm.Username,
-            Password = vm.Password
+            Password = vm.Password.ToMd5String()
         });
 
         _messages.Success("Initialization completed!");
