@@ -9,7 +9,7 @@ using Web.ViewModels.Blog;
 using Web.ViewModels.QueryFilters;
 using Web.ViewModels.Response;
 
-namespace Web.Apis;
+namespace Web.APIs.Blog;
 
 /// <summary>
 ///     Blog Post Controller

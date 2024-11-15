@@ -3,6 +3,9 @@ using Microsoft.Extensions.FileProviders;
 
 namespace Web.Apis;
 
+/// <summary>
+/// Used to test the functionality of DataWrapper
+/// </summary>
 [ApiController]
 [Route("api/[controller]/[action]")]
 [ApiExplorerSettings(GroupName = "test")]
@@ -10,7 +13,6 @@ public class DataWrapperTestController : ControllerBase
 {
     private readonly IFileProvider _fileProvider;
 
-    // This controller is used to test DataWrapper functionality
     public DataWrapperTestController(IWebHostEnvironment env)
     {
         _fileProvider = env.WebRootFileProvider;

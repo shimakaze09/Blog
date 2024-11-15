@@ -2,7 +2,7 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Web.ViewModels.Response;
 
-namespace Web.Apis;
+namespace Web.APIs.Common;
 
 [Authorize]
 [ApiController]

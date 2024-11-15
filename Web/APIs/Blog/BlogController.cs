@@ -4,7 +4,7 @@ using Web.Services;
 using Web.ViewModels.Blog;
 using Web.ViewModels.Response;
 
-namespace Web.Apis;
+namespace Web.APIs.Blog;
 
 /// <summary>
 ///     Blog

@@ -1,7 +1,7 @@
 using Microsoft.AspNetCore.Mvc;
 using Web.Services;
 
-namespace Web.Apis;
+namespace Web.APIs.Common;
 
 /// <summary>
 ///     Page themes

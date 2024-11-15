@@ -5,7 +5,7 @@ using Web.Services;
 using Web.ViewModels.QueryFilters;
 using Web.ViewModels.Response;
 
-namespace Web.Apis;
+namespace Web.APIs.Admin;
 
 /// <summary>
 ///     Visit Record

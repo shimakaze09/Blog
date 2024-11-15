@@ -4,7 +4,7 @@ using SixLabors.ImageSharp.Advanced;
 using SixLabors.ImageSharp.Formats;
 using Web.Services;
 
-namespace Web.Apis;
+namespace Web.APIs.Common;
 
 /// <summary>
 ///     Image Library

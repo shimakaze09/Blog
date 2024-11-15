@@ -5,7 +5,7 @@ using Web.Services;
 using Web.ViewModels.Categories;
 using Web.ViewModels.Response;
 
-namespace Web.Apis;
+namespace Web.APIs.Blog;
 
 /// <summary>
 ///     Featured Categories
