@@ -1,0 +1,104 @@
+﻿@model Web.ViewModels.LinkExchange.LinkExchangeAddViewModel
+@{
+    ViewData["Title"] = "Apply for Link Exchange";
+}
+
+<div class="container px-4 py-3">
+    <h2 class="d-flex w-100 justify-content-between pb-2 mb-3 border-bottom">
+        <div>Apply for Link Exchange</div>
+        <div>Link Exchange</div>
+    </h2>
+
+    <div class="card px-1 py-3">
+        <form enctype="multipart/form-data" class="card-body row" asp-controller="LinkExchange" asp-action="Add"
+              method="post">
+            <div class="col-xl-6">
+                <div class="mb-4">
+                    <h4 class="card-title">Link Exchange Information</h4>
+                    <h6 class="card-subtitle mb-3 text-muted">Please enter your website information for further
+                        contact</h6>
+                </div>
+
+                <div class="mb-3">
+                    <label asp-for="Name" class="form-label"></label>
+                    <input asp-for="Name" class="form-control">
+                    <span asp-validation-for="Name" class="form-text text-danger"></span>
+                </div>
+                <div class="mb-3">
+                    <label asp-for="Description" class="form-label"></label>
+                    <input asp-for="Description" class="form-control">
+                    <span asp-validation-for="Description" class="form-text text-danger"></span>
+                </div>
+                <div class="mb-3">
+                    <label asp-for="Url" class="form-label"></label>
+                    <input asp-for="Url" class="form-control">
+                    <span asp-validation-for="Url" class="form-text text-danger"></span>
+                </div>
+                <div class="mb-3">
+                    <label asp-for="WebMaster" class="form-label"></label>
+                    <input asp-for="WebMaster" class="form-control">
+                    <span asp-validation-for="WebMaster" class="form-text text-danger"></span>
+                </div>
+                <div class="mb-3">
+                    <label asp-for="Email" class="form-label"></label>
+                    <input asp-for="Email" class="form-control">
+                    <span asp-validation-for="Email" class="form-text text-danger"></span>
+                </div>
+            </div>
+
+            <div class="col-xl-6">
+                <div class="ms-3 mb-4">
+                    <h4 class="card-title">Notes</h4>
+                    <h6 class="card-subtitle mb-3 text-muted">The following requirements must be met to apply for a link
+                        exchange</h6>
+                </div>
+
+                <ul class="list-group list-group-flush list-group-numbered">
+                    <li class="list-group-item d-flex justify-content-between align-items-start">
+                        <div class="ms-2 me-auto">
+                            <div class="fw-bold">Reciprocity</div>
+                            Please add our link to your website before applying for a link exchange
+                        </div>
+                    </li>
+                    <li class="list-group-item d-flex justify-content-between align-items-start">
+                        <div class="ms-2 me-auto">
+                            <div class="fw-bold">Content Category</div>
+                            Priority is given to original blogs or websites with similar content
+                        </div>
+                    </li>
+                    <li class="list-group-item d-flex justify-content-between align-items-start">
+                        <div class="ms-2 me-auto">
+                            <div class="fw-bold">SEO</div>
+                            Priority is given to websites that are indexed by Google with recent snapshots
+                        </div>
+                    </li>
+                    <li class="list-group-item d-flex justify-content-between align-items-start">
+                        <div class="ms-2 me-auto">
+                            <div class="fw-bold">Legality</div>
+                            Only legal websites without content that violates relevant national laws are accepted. Links
+                            to spam sites are not accepted
+                        </div>
+                    </li>
+                    <li class="list-group-item d-flex justify-content-between align-items-start">
+                        <div class="ms-2 me-auto">
+                            <div class="fw-bold">Timely Updates</div>
+                            Websites with little original content and infrequent updates are not accepted
+                        </div>
+                    </li>
+                    <li class="list-group-item d-flex justify-content-between align-items-start">
+                        <div class="ms-2 me-auto">
+                            <div class="fw-bold">Accessibility</div>
+                            If your website is inaccessible, the link exchange will be temporarily removed. Please
+                            contact the webmaster to restore it
+                        </div>
+                    </li>
+                </ul>
+            </div>
+
+            <div class="form-group">
+                <button type="submit" class="btn btn-outline-primary">Submit</button>
+                <button type="reset" class="btn btn-outline-warning">Reset</button>
+            </div>
+        </form>
+    </div>
+</div>

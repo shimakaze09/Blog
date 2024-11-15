@@ -9,8 +9,9 @@ public static class ApiGroups
 {
     public const string Admin = "admin";
     public const string Auth = "auth";
-    public const string Common = "common";
     public const string Blog = "blog";
+    public const string Common = "common";
+    public const string Link = "link";
     public const string Test = "test";
 }
 
@@ -20,8 +21,9 @@ public static class ConfigureSwagger
     {
         new SwaggerGroup(ApiGroups.Admin, "Admin APIs", "Administrator-related interfaces"),
         new SwaggerGroup(ApiGroups.Auth, "Auth APIs", "Authentication interfaces"),
-        new SwaggerGroup(ApiGroups.Common, "Common APIs", "General public interfaces"),
         new SwaggerGroup(ApiGroups.Blog, "Blog APIs", "Blog management interfaces"),
+        new SwaggerGroup(ApiGroups.Common, "Common APIs", "Common public interfaces"),
+        new SwaggerGroup(ApiGroups.Link, "Link APIs", "Friendly link interfaces"),
         new SwaggerGroup(ApiGroups.Test, "Test APIs", "Test interfaces")
     };
 

@@ -3,6 +3,9 @@ using FreeSql;
 
 namespace Web.Services;
 
+/// <summary>
+/// Link exchange application
+/// </summary>
 public class LinkExchangeService
 {
     private readonly LinkService _linkService;
@@ -13,6 +16,20 @@ public class LinkExchangeService
         _repo = repo;
         _linkService = linkService;
     }
+
+    //// <summary>
+    /// Check if the ID exists
+    /// </summary>
+    public async Task<bool> HasId(int id)
+    {
+        return await _repo.Where(a => a.Id == id).AnyAsync();
+    }
+
+    public async Task<bool> HasUrl(string url)
+    {
+        return await _repo.Where(a => a.Url.Contains(url)).AnyAsync();
+    }
+
 
     public async Task<List<LinkExchange>> GetAll()
     {
@@ -29,12 +46,13 @@ public class LinkExchangeService
         return await _repo.InsertOrUpdateAsync(item);
     }
 
-    public async Task<LinkExchange?> SetVerifyStatus(int id, bool status)
+    public async Task<LinkExchange?> SetVerifyStatus(int id, bool status, string? reason = null)
     {
         var item = await GetById(id);
         if (item == null) return null;
 
         item.Verified = status;
+        item.Reason = reason;
         await _repo.UpdateAsync(item);
 
         var link = await _linkService.GetByName(item.Name);

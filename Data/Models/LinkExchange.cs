@@ -42,6 +42,13 @@ public class LinkExchange
     public bool Verified { get; set; } = false;
 
     /// <summary>
+    /// Reason
+    /// <para>If validation fails, a reason may be provided.</para>
+    /// </summary>
+    public string? Reason { get; set; }
+
+
+    /// <summary>
     ///     Application Time
     /// </summary>
     public DateTime ApplyTime { get; set; } = DateTime.Now;

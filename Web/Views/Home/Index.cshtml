@@ -112,7 +112,10 @@
 </div>
 
 <div class="container px-4 py-3">
-    <h2 class="pb-2 border-bottom">Link Exchange</h2>
+    <div class="d-flex justify-content-between mb-2 border-bottom">
+        <h2>Friend Links</h2>
+        <a class="btn btn-link" asp-controller="LinkExchange" asp-action="Add">Apply for Link Exchange</a>
+    </div>
     @if (Model.Links.Any())
     {
         <div class="d-grid gap-2 d-md-block">

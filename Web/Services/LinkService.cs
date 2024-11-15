@@ -3,6 +3,9 @@ using FreeSql;
 
 namespace Web.Services;
 
+/// <summary>
+/// Friend Links
+/// </summary>
 public class LinkService
 {
     private readonly IBaseRepository<Link> _repo;
@@ -16,7 +19,6 @@ public class LinkService
     ///     Get all friend links
     /// </summary>
     /// <param name="onlyVisible">Only get displayed links</param>
-    /// <returns></returns>
     public async Task<List<Link>> GetAll(bool onlyVisible = true)
     {
         return onlyVisible
