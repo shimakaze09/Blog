@@ -77,7 +77,7 @@ public class ApiResponse : IApiResponse, IApiErrorResponse
     ///     Gets or sets the serializable error data.
     ///     <para>Used to store model validation error information.</para>
     /// </summary>
-    public SerializableError? ErrorData { get; set; }
+    public Dictionary<string, object>? ErrorData { get; set; }
 
     /// <summary>
     ///     Gets or sets the status code of the response.

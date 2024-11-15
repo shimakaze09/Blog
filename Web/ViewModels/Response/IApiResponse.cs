@@ -16,5 +16,5 @@ public interface IApiResponse<T> : IApiResponse
 
 public interface IApiErrorResponse
 {
-    public SerializableError ErrorData { get; set; }
+    public Dictionary<string, object> ErrorData { get; set; }
 }
