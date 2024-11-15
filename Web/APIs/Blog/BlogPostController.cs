@@ -95,7 +95,7 @@ public class BlogPostController : ControllerBase
         if (post == null) return ApiResponse.NotFound($"Blog {id} does not exist");
 
         // mapper.Map(source) gets a brand new object
-        // mapper.Map(source, dest) modifies the source object
+        // mapper.Map(source, dest) modifies the dest object
         post = _mapper.Map(dto, post);
         post.LastUpdateTime = DateTime.Now;
         return new ApiResponse<Post>(await _postService.InsertOrUpdateAsync(post));
