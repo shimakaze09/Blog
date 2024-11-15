@@ -1,5 +1,6 @@
 using Contrib.SiteMessage;
 using Data.Extensions;
+using Microsoft.AspNetCore.HttpOverrides;
 using SixLabors.ImageSharp.Web.DependencyInjection;
 using Web.Extensions;
 using Web.Filters;
@@ -62,6 +63,11 @@ if (!app.Environment.IsDevelopment())
     // The default HSTS value is 30 days. You may want to change this for production scenarios, see https://aka.ms/aspnetcore-hsts.
     app.UseHsts();
 }
+
+app.UseForwardedHeaders(new ForwardedHeadersOptions
+{
+    ForwardedHeaders = ForwardedHeaders.XForwardedFor | ForwardedHeaders.XForwardedProto
+});
 
 app.UseImageSharp();
 // app.UseHttpsRedirection();
