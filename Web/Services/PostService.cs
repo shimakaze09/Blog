@@ -155,7 +155,7 @@ public class PostService
     /// <summary>
     ///     Convert a Post object to a PostViewModel object
     /// </summary>
-    public PostViewModel GetPostViewModel(Post post, bool md2Html = true)
+    public async Task<PostViewModel> GetPostViewModel(Post post, bool md2Html = true)
     {
         var model = new PostViewModel
         {
@@ -188,10 +188,13 @@ public class PostService
             model.ContentHtml = Markdown.ToHtml(model.Content, pipeline);
         }
 
-        foreach (var itemId in post.Categories.Split(",").Select(int.Parse))
+        if (post.Categories != null)
         {
-            var item = _categoryRepo.Where(a => a.Id == itemId).First();
-            if (item != null) model.Categories.Add(item);
+            foreach (var itemId in post.Categories.Split(",").Select(int.Parse))
+            {
+                var item = await _categoryRepo.Where(a => a.Id == itemId).FirstAsync();
+                if (item != null) model.Categories.Add(item);
+            }
         }
 
         return model;

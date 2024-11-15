@@ -45,7 +45,7 @@ public class ConfigService
         if (item == null)
         {
             // Try to read initial configuration
-            var section = _conf.GetSection($"StarBlog:Initial:{key}");
+            var section = _conf.GetSection($"Blog:Initial:{key}");
             if (!section.Exists()) return null;
             item = new ConfigItem { Key = key, Value = section.Value, Description = "Initial" };
             item = AddOrUpdate(item);

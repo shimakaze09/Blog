@@ -83,7 +83,7 @@ public class BlogController : Controller
         var viewName = "Post.FrontendRender";
         if (_configService["default_render"] == "backend") viewName = "Post.BackendRender";
 
-        return View(viewName, _postService.GetPostViewModel(post));
+        return View(viewName, await _postService.GetPostViewModel(post));
     }
 
     public IActionResult RandomPost()

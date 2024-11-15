@@ -25,16 +25,16 @@ public class VisitRecordController : ControllerBase
     }
 
     [HttpGet]
-    public ApiResponsePaged<VisitRecord> GetList([FromQuery] VisitRecordQueryParameters param)
+    public async Task<ApiResponsePaged<VisitRecord>> GetList([FromQuery] VisitRecordQueryParameters param)
     {
-        var pagedList = _service.GetPagedList(param);
+        var pagedList = await _service.GetPagedList(param);
         return new ApiResponsePaged<VisitRecord>(pagedList);
     }
 
     [HttpGet("{id:int}")]
-    public ApiResponse<VisitRecord> GetById(int id)
+    public async Task<ApiResponse<VisitRecord>> GetById(int id)
     {
-        var item = _service.GetById(id);
+        var item = await _service.GetById(id);
         return item == null ? ApiResponse.NotFound() : new ApiResponse<VisitRecord>(item);
     }
 
@@ -43,9 +43,9 @@ public class VisitRecordController : ControllerBase
     /// </summary>
     /// <returns></returns>
     [HttpGet("All")]
-    public ApiResponse<List<VisitRecord>> GetAll()
+    public async Task<List<VisitRecord>> GetAll()
     {
-        return new ApiResponse<List<VisitRecord>>(_service.GetAll());
+        return await _service.GetAll();
     }
 
     /// <summary>
@@ -53,9 +53,9 @@ public class VisitRecordController : ControllerBase
     /// </summary>
     /// <returns></returns>
     [HttpGet("[action]")]
-    public ApiResponse Overview()
+    public async Task<ApiResponse> Overview()
     {
-        return ApiResponse.Ok(_service.Overview());
+        return ApiResponse.Ok(await _service.Overview());
     }
 
     /// <summary>
@@ -64,9 +64,9 @@ public class VisitRecordController : ControllerBase
     /// <param name="days">Number of days to view data, default is 7 days</param>
     /// <returns></returns>
     [HttpGet("[action]")]
-    public ApiResponse Trend(int days = 7)
+    public async Task<ApiResponse> Trend(int days = 7)
     {
-        return ApiResponse.Ok(_service.Trend(days));
+        return ApiResponse.Ok(await _service.Trend(days));
     }
 
 
@@ -75,9 +75,9 @@ public class VisitRecordController : ControllerBase
     /// </summary>
     /// <returns></returns>
     [HttpGet("[action]")]
-    public ApiResponse Stats(int year, int month, int day)
+    public async Task<ApiResponse> Stats(int year, int month, int day)
     {
         var date = new DateTime(year, month, day);
-        return ApiResponse.Ok(_service.Stats(date));
+        return ApiResponse.Ok(await _service.Stats(date));
     }
 }

@@ -61,7 +61,7 @@ public static class ConfigureSwagger
             opt.DefaultModelsExpandDepth(-1);
             // Only expand marked API documents
             opt.DocExpansion(DocExpansion.List);
-            opt.DocumentTitle = "StarBlog APIs";
+            opt.DocumentTitle = "Blog APIs";
             // Grouping
             Groups.ForEach(group => opt.SwaggerEndpoint($"/swagger/{group.Name}/swagger.json", group.Name));
         });
