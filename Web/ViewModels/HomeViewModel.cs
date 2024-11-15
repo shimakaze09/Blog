@@ -38,4 +38,14 @@ public class HomeViewModel
     ///     Friend links
     /// </summary>
     public List<Link> Links { get; set; } = new();
+
+    /// <summary>
+    /// Poem
+    /// </summary>
+    public string OnePoem { get; set; }
+
+    /// <summary>
+    /// Hitokoto
+    /// </summary>
+    public string Hitokoto { get; set; }
 }

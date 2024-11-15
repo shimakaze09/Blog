@@ -12,5 +12,5 @@ public class ColorfulButtonViewModel
 {
     public string Name { get; set; }
     public string Url { get; set; } = "#";
-    public string Target { get; set; } = "_self";
+    public string Target { get; set; } = LinkTarget.Blank;
 }
