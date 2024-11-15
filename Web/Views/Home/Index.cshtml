@@ -122,7 +122,7 @@
             @foreach (var link in Model.Links)
             {
                 @await Html.PartialAsync("Widgets/ColorfulButton",
-                    new ColorfulButtonViewModel { Name = link.Name, Url = link.Url })
+                    new ColorfulButtonViewModel { Name = link.Name, Url = link.Url, Tooltips = link.Description })
             }
         </div>
     }
