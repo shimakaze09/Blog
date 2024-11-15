@@ -1,6 +1,6 @@
+using CodeLab.Share.ViewModels.Response;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using Web.ViewModels.Response;
 
 namespace Web.APIs.Common;
 

@@ -1,7 +1,7 @@
-﻿using Data.Models;
+﻿using CodeLab.Share.ViewModels.Response;
+using Data.Models;
 using Microsoft.AspNetCore.Mvc;
 using Web.Services;
-using Web.ViewModels.Response;
 
 namespace Web.APIs.Admin;
 

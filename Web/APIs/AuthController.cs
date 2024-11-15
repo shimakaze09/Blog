@@ -1,9 +1,9 @@
+using CodeLab.Share.ViewModels.Response;
 using Data.Models;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Web.Services;
 using Web.ViewModels.Auth;
-using Web.ViewModels.Response;
 
 namespace Web.Apis;
 

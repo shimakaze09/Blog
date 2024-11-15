@@ -34,6 +34,7 @@
 
     <ItemGroup>
         <PackageReference Include="AutoMapper.Extensions.Microsoft.DependencyInjection" Version="12.0.1"/>
+        <PackageReference Include="CodeLab.Share" Version="1.4.1"/>
         <PackageReference Include="Magick.NET-Q8-x64" Version="14.1.0"/>
         <PackageReference Include="Markdig" Version="0.38.0"/>
         <PackageReference Include="Microsoft.AspNetCore.Authentication.JwtBearer" Version="8.0.10"/>
