@@ -1,6 +1,7 @@
 using CodeLab.Share.ViewModels.Response;
 using Data.Models;
 using FreeSql;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Web.Extensions;
 
@@ -9,6 +10,7 @@ namespace Web.APIs.Blog;
 /// <summary>
 ///     Featured Posts
 /// </summary>
+[Authorize]
 [ApiController]
 [Route("api/[controller]")]
 [ApiExplorerSettings(GroupName = ApiGroups.Blog)]
@@ -23,6 +25,7 @@ public class FeaturedPostController : ControllerBase
         _postRepo = postRepo;
     }
 
+    [AllowAnonymous]
     [HttpGet]
     public ApiResponse<List<FeaturedPost>> GetList()
     {
@@ -31,6 +34,7 @@ public class FeaturedPostController : ControllerBase
         );
     }
 
+    [AllowAnonymous]
     [HttpGet("{id:int}")]
     public ApiResponse<FeaturedPost> Get(int id)
     {

@@ -12,6 +12,7 @@ namespace Web.Apis.Blog;
 /// <summary>
 ///     Photography
 /// </summary>
+[Authorize]
 [ApiController]
 [Route("Api/[controller]")]
 [ApiExplorerSettings(GroupName = ApiGroups.Blog)]
@@ -24,6 +25,7 @@ public class PhotoController : ControllerBase
         _photoService = photoService;
     }
 
+    [AllowAnonymous]
     [HttpGet]
     public async Task<ApiResponsePaged<Photo>> GetList(int page = 1, int pageSize = 10)
     {
@@ -35,6 +37,7 @@ public class PhotoController : ControllerBase
         };
     }
 
+    [AllowAnonymous]
     [HttpGet("{id}")]
     public async Task<ApiResponse<Photo>> Get(string id)
     {
@@ -44,6 +47,7 @@ public class PhotoController : ControllerBase
             : new ApiResponse<Photo> { Data = photo };
     }
 
+    [AllowAnonymous]
     [HttpGet("{id}/Thumb")]
     public async Task<IActionResult> GetThumb(string id, [FromQuery] int width = 300)
     {
@@ -51,7 +55,6 @@ public class PhotoController : ControllerBase
         return new FileContentResult(data, "image/jpeg");
     }
 
-    [Authorize]
     [HttpPost]
     public async Task<ApiResponse<Photo>> Add([FromForm] PhotoCreationDto dto, IFormFile file)
     {
@@ -62,7 +65,6 @@ public class PhotoController : ControllerBase
             : new ApiResponse<Photo>(photo);
     }
 
-    [Authorize]
     [HttpDelete("{id}")]
     public async Task<ApiResponse> Delete(string id)
     {
@@ -77,8 +79,6 @@ public class PhotoController : ControllerBase
     /// <summary>
     ///     Set as featured photo
     /// </summary>
-    /// <param name="id"></param>
-    /// <returns></returns>
     [HttpPost("{id}/[action]")]
     public async Task<ApiResponse<FeaturedPhoto>> SetFeatured(string id)
     {
@@ -91,8 +91,6 @@ public class PhotoController : ControllerBase
     /// <summary>
     ///     Cancel featured
     /// </summary>
-    /// <param name="id"></param>
-    /// <returns></returns>
     [HttpPost("{id}/[action]")]
     public async Task<ApiResponse> CancelFeatured(string id)
     {
@@ -105,8 +103,6 @@ public class PhotoController : ControllerBase
     /// <summary>
     ///     Rebuild photo library data (rescan the size and other data of each photo)
     /// </summary>
-    /// <returns></returns>
-    [Authorize]
     [HttpPost("[action]")]
     public async Task<ApiResponse> ReBuildData()
     {
@@ -119,8 +115,6 @@ public class PhotoController : ControllerBase
     /// <summary>
     ///     Batch import photos
     /// </summary>
-    /// <returns></returns>
-    [Authorize]
     [HttpPost("[action]")]
     public async Task<ApiResponse<List<Photo>>> BatchImport()
     {

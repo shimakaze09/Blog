@@ -61,6 +61,12 @@ public class HomeController : Controller
     public IActionResult Init([FromServices] ConfigService conf, [FromServices] IBaseRepository<User> userRepo,
         InitViewModel vm)
     {
+        if (conf["is_init"] == "true")
+        {
+            _messages.Error("Initialization is complete!");
+            return RedirectToAction(nameof(Index));
+        }
+
         if (!ModelState.IsValid) return View();
 
         // Save configuration

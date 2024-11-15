@@ -1,5 +1,6 @@
 ﻿using CodeLab.Share.ViewModels.Response;
 using Data.Models;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Web.Extensions;
 using Web.Services;
@@ -9,6 +10,7 @@ namespace Web.APIs.Admin;
 /// <summary>
 ///     Configuration Center
 /// </summary>
+[Authorize]
 [ApiController]
 [Route("Api/[controller]")]
 [ApiExplorerSettings(GroupName = ApiGroups.Admin)]
