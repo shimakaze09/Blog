@@ -41,7 +41,10 @@ public class LinkExchangeController : Controller
         }
 
         var item = _mapper.Map<LinkExchange>(vm);
-        await _service.AddOrUpdate(item);
+        item = await _service.AddOrUpdate(item);
+
+        // Send email notification
+        await _service.SendEmailOnAdd(item);
 
         _messages.Info("Link exchange request submitted. Please check your email for updates.");
         return RedirectToAction("Index", "Home");
