@@ -189,13 +189,11 @@ public class PostService
         }
 
         if (post.Categories != null)
-        {
             foreach (var itemId in post.Categories.Split(",").Select(int.Parse))
             {
                 var item = await _categoryRepo.Where(a => a.Id == itemId).FirstAsync();
                 if (item != null) model.Categories.Add(item);
             }
-        }
 
         return model;
     }

@@ -32,8 +32,8 @@ public class AuthService
         var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_auth.Jwt.Key));
         var signCredential = new SigningCredentials(key, SecurityAlgorithms.HmacSha256);
         var jwtToken = new JwtSecurityToken(
-            issuer: _auth.Jwt.Issuer,
-            audience: _auth.Jwt.Audience,
+            _auth.Jwt.Issuer,
+            _auth.Jwt.Audience,
             claims,
             expires: DateTime.Now.AddDays(7),
             signingCredentials: signCredential);

@@ -4,7 +4,7 @@ using FreeSql;
 namespace Web.Services;
 
 /// <summary>
-/// Friend Links
+///     Friend Links
 /// </summary>
 public class LinkService
 {

@@ -1,7 +1,7 @@
 using Data.Models;
 using X.PagedList;
 
-namespace Web.ViewModels;
+namespace Web.ViewModels.Photography;
 
 public class PhotographyViewModel
 {

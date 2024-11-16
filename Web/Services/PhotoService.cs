@@ -94,26 +94,20 @@ public class PhotoService
             Title = dto.Title,
             CreateTime = DateTime.Now,
             Location = dto.Location,
-            FilePath = Path.Combine("photography", $"{photoId}.jpg")
+            FilePath = $"{photoId}.jpg"
         };
 
         var savePath = GetPhotoFilePath(photo);
 
-        const int maxWidth = 2000;
-        const int maxHeight = 2000;
-        using (var image = await Image.LoadAsync(photoFile.OpenReadStream()))
-        {
-            if (image.Width > maxWidth)
-                image.Mutate(a => a.Resize(maxWidth, 0));
-            if (image.Height > maxHeight)
-                image.Mutate(a => a.Resize(0, maxHeight));
-            await image.SaveAsync(savePath);
-        }
+        // If the image exceeds the size limit, it needs to be resized first
+        var resizeFlag = await ResizePhoto(photoFile.OpenReadStream(), savePath);
 
-        await using (var fs = new FileStream(savePath, FileMode.Create))
-        {
-            await photoFile.CopyToAsync(fs);
-        }
+        // If the size has not been adjusted, save the uploaded image directly
+        if (!resizeFlag)
+            await using (var fs = new FileStream(savePath, FileMode.Create))
+            {
+                await photoFile.CopyToAsync(fs);
+            }
 
         photo = await BuildPhotoData(photo);
 
@@ -123,7 +117,6 @@ public class PhotoService
     /// <summary>
     ///     Get a random photo
     /// </summary>
-    /// <returns></returns>
     public async Task<Photo?> GetRandomPhoto()
     {
         var count = await _photoRepo.Select.CountAsync();
@@ -135,8 +128,6 @@ public class PhotoService
     /// <summary>
     ///     Add a featured photo
     /// </summary>
-    /// <param name="photo"></param>
-    /// <returns></returns>
     public async Task<FeaturedPhoto> AddFeaturedPhoto(Photo photo)
     {
         var item = await _featuredPhotoRepo.Where(a => a.PhotoId == photo.Id).FirstAsync();
@@ -149,8 +140,6 @@ public class PhotoService
     /// <summary>
     ///     Delete a featured photo
     /// </summary>
-    /// <param name="photo"></param>
-    /// <returns></returns>
     public async Task<int> DeleteFeaturedPhoto(Photo photo)
     {
         var item = await _featuredPhotoRepo.Where(a => a.PhotoId == photo.Id).FirstAsync();
@@ -161,8 +150,6 @@ public class PhotoService
     ///     Delete a photo
     ///     <para>Delete the photo file and database record</para>
     /// </summary>
-    /// <param name="id"></param>
-    /// <returns></returns>
     public async Task<int> DeleteById(string id)
     {
         var photo = await _photoRepo.Where(a => a.Id == id).FirstAsync();
@@ -188,7 +175,6 @@ public class PhotoService
     /// <summary>
     ///     Batch import photos
     /// </summary>
-    /// <returns></returns>
     public async Task<List<Photo>> BatchImport()
     {
         var result = new List<Photo>();
@@ -204,13 +190,16 @@ public class PhotoService
                 Title = filename,
                 CreateTime = DateTime.Now,
                 Location = filename,
-                FilePath = Path.Combine("photography", $"{photoId}.jpg")
+                FilePath = $"{photoId}.jpg"
             };
             var savePath = GetPhotoFilePath(photo);
-            var saveDir = Path.GetDirectoryName(savePath);
-            if (!string.IsNullOrWhiteSpace(saveDir) && !Directory.Exists(saveDir)) Directory.CreateDirectory(saveDir);
 
-            file.CopyTo(savePath, true);
+            // If the image exceeds the size limit, it needs to be resized first
+            var resizeFlag = await ResizePhoto(new FileStream(file.FullName, FileMode.Open), savePath);
+
+            // If the size has not been adjusted, save the uploaded image directly
+            if (!resizeFlag) file.CopyTo(savePath, true);
+
             photo = await BuildPhotoData(photo);
             await _photoRepo.InsertAsync(photo);
             result.Add(photo);
@@ -220,20 +209,27 @@ public class PhotoService
     }
 
     /// <summary>
+    ///     Initialize the photo resource directory
+    /// </summary>
+    private string InitPhotoMediaDir()
+    {
+        var dir = Path.Combine(_environment.WebRootPath, "media", "photography");
+        if (!Directory.Exists(dir)) Directory.CreateDirectory(dir);
+
+        return dir;
+    }
+
+    /// <summary>
     ///     Get the physical storage path of the photo
     /// </summary>
-    /// <param name="photo"></param>
-    /// <returns></returns>
     private string GetPhotoFilePath(Photo photo)
     {
-        return Path.Combine(_environment.WebRootPath, "media", photo.FilePath);
+        return Path.Combine(InitPhotoMediaDir(), photo.FilePath);
     }
 
     /// <summary>
     ///     Rebuild photo data (scan the size and other data of the photo)
     /// </summary>
-    /// <param name="photo"></param>
-    /// <returns></returns>
     private async Task<Photo> BuildPhotoData(Photo photo)
     {
         var savePath = GetPhotoFilePath(photo);
@@ -242,5 +238,33 @@ public class PhotoService
         photo.Height = imgInfo.Height;
 
         return photo;
+    }
+
+    /// <summary>
+    ///     Resize the image according to the settings
+    /// </summary>
+    private static async Task<bool> ResizePhoto(Stream stream, string savePath)
+    {
+        const int maxWidth = 1500;
+        const int maxHeight = 1500;
+        var resizeFlag = false;
+
+        using var image = await Image.LoadAsync(stream);
+
+        if (image.Width > maxWidth)
+        {
+            resizeFlag = true;
+            image.Mutate(a => a.Resize(maxWidth, 0));
+        }
+
+        if (image.Height > maxHeight)
+        {
+            resizeFlag = true;
+            image.Mutate(a => a.Resize(0, maxHeight));
+        }
+
+        if (resizeFlag) await image.SaveAsync(savePath);
+
+        return resizeFlag;
     }
 }

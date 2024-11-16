@@ -4,7 +4,7 @@ using FreeSql;
 namespace Web.Services;
 
 /// <summary>
-/// Link exchange application
+///     Link exchange application
 /// </summary>
 public class LinkExchangeService
 {

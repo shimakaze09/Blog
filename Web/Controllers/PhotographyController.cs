@@ -1,7 +1,7 @@
 ﻿using Contrib.SiteMessage;
 using Microsoft.AspNetCore.Mvc;
 using Web.Services;
-using Web.ViewModels;
+using Web.ViewModels.Photography;
 
 namespace Web.Controllers;
 
