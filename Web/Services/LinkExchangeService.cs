@@ -11,9 +11,9 @@ namespace Web.Services;
 /// </summary>
 public class LinkExchangeService
 {
+    private readonly EmailAccountConfig _emailAccountConfig;
     private readonly LinkService _linkService;
     private readonly IBaseRepository<LinkExchange> _repo;
-    private readonly EmailAccountConfig _emailAccountConfig;
 
     public LinkExchangeService(IBaseRepository<LinkExchange> repo, LinkService linkService,
         IOptions<EmailAccountConfig> options)
@@ -24,7 +24,7 @@ public class LinkExchangeService
     }
 
     /// <summary>
-    /// Check if the ID exists
+    ///     Check if the ID exists
     /// </summary>
     public async Task<bool> HasId(int id)
     {
@@ -95,16 +95,16 @@ public class LinkExchangeService
         const string blogLink = "<a href=\"https://deali.cn\">Blog</a>";
         var sb = new StringBuilder();
         sb.AppendLine(
-            $"<p>Your link exchange application has been submitted and is being processed. Please keep an eye on email notifications.</p>");
-        sb.AppendLine($"<br>");
-        sb.AppendLine($"<p>Here is the information you submitted:</p>");
+            "<p>Your link exchange application has been submitted and is being processed. Please keep an eye on email notifications.</p>");
+        sb.AppendLine("<br>");
+        sb.AppendLine("<p>Here is the information you submitted:</p>");
         sb.AppendLine($"<p>Website Name: {item.Name}</p>");
         sb.AppendLine($"<p>Description: {item.Description}</p>");
         sb.AppendLine($"<p>URL: {item.Url}</p>");
         sb.AppendLine($"<p>Webmaster: {item.WebMaster}</p>");
-        sb.AppendLine($"<br>");
-        sb.AppendLine($"<br>");
-        sb.AppendLine($"<br>");
+        sb.AppendLine("<br>");
+        sb.AppendLine("<br>");
+        sb.AppendLine("<br>");
         sb.AppendLine($"<p>This message was automatically sent by {blogLink}. No reply is needed.</p>");
         await EmailUtils.SendEmailAsync(
             _emailAccountConfig,
@@ -120,17 +120,17 @@ public class LinkExchangeService
         const string blogLink = "<a href=\"https://deali.cn\">Blog</a>";
         var sb = new StringBuilder();
         sb.AppendLine(
-            $"<p>Hello, your link exchange application has been approved! Thank you for your support, and feel free to visit us.</p>");
-        sb.AppendLine($"<br>");
-        sb.AppendLine($"<p>Here is the information you submitted:</p>");
+            "<p>Hello, your link exchange application has been approved! Thank you for your support, and feel free to visit us.</p>");
+        sb.AppendLine("<br>");
+        sb.AppendLine("<p>Here is the information you submitted:</p>");
         sb.AppendLine($"<p>Website Name: {item.Name}</p>");
         sb.AppendLine($"<p>Description: {item.Description}</p>");
         sb.AppendLine($"<p>URL: {item.Url}</p>");
         sb.AppendLine($"<p>Webmaster: {item.WebMaster}</p>");
         sb.AppendLine($"<p>Additional Information: {item.Reason}</p>");
-        sb.AppendLine($"<br>");
-        sb.AppendLine($"<br>");
-        sb.AppendLine($"<br>");
+        sb.AppendLine("<br>");
+        sb.AppendLine("<br>");
+        sb.AppendLine("<br>");
         sb.AppendLine($"<p>This message was automatically sent by {blogLink}. No reply is needed.</p>");
         await EmailUtils.SendEmailAsync(
             _emailAccountConfig,
@@ -146,17 +146,17 @@ public class LinkExchangeService
         const string blogLink = "<a href=\"https://deali.cn\">Blog</a>";
         var sb = new StringBuilder();
         sb.AppendLine(
-            $"<p>We regret to inform you that your link exchange application was not approved. Please review the additional information and reapply. Thank you for your understanding and support.</p>");
-        sb.AppendLine($"<br>");
-        sb.AppendLine($"<p>Here is the information you submitted:</p>");
+            "<p>We regret to inform you that your link exchange application was not approved. Please review the additional information and reapply. Thank you for your understanding and support.</p>");
+        sb.AppendLine("<br>");
+        sb.AppendLine("<p>Here is the information you submitted:</p>");
         sb.AppendLine($"<p>Website Name: {item.Name}</p>");
         sb.AppendLine($"<p>Description: {item.Description}</p>");
         sb.AppendLine($"<p>URL: {item.Url}</p>");
         sb.AppendLine($"<p>Webmaster: {item.WebMaster}</p>");
         sb.AppendLine($"<p>Additional Information: {item.Reason}</p>");
-        sb.AppendLine($"<br>");
-        sb.AppendLine($"<br>");
-        sb.AppendLine($"<br>");
+        sb.AppendLine("<br>");
+        sb.AppendLine("<br>");
+        sb.AppendLine("<br>");
         sb.AppendLine($"<p>This message was automatically sent by {blogLink}. No reply is needed.</p>");
         await EmailUtils.SendEmailAsync(
             _emailAccountConfig,

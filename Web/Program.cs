@@ -5,7 +5,6 @@ using RobotsTxt;
 using SixLabors.ImageSharp.Web.DependencyInjection;
 using Web.Extensions;
 using Web.Filters;
-using Web.Middlewares;
 using Web.Services;
 
 var builder = WebApplication.CreateBuilder(args);

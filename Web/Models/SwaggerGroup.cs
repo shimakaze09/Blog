@@ -3,19 +3,11 @@
 namespace Web.Models;
 
 /// <summary>
-/// API Group
-/// <para>Group design reference: https://wangyou233.wang/archives/73</para>
+///     API Group
+///     <para>Group design reference: https://wangyou233.wang/archives/73</para>
 /// </summary>
 public class SwaggerGroup
 {
-    /// <summary>
-    /// Group name (also used as URL prefix)
-    /// </summary>
-    public string Name { get; set; }
-
-    public string? Title { get; set; }
-    public string? Description { get; set; }
-
     public SwaggerGroup(string name, string? title = null, string? description = null)
     {
         Name = name;
@@ -24,7 +16,15 @@ public class SwaggerGroup
     }
 
     /// <summary>
-    /// Generates <see cref="Microsoft.OpenApi.Models.OpenApiInfo"/>
+    ///     Group name (also used as URL prefix)
+    /// </summary>
+    public string Name { get; set; }
+
+    public string? Title { get; set; }
+    public string? Description { get; set; }
+
+    /// <summary>
+    ///     Generates <see cref="Microsoft.OpenApi.Models.OpenApiInfo" />
     /// </summary>
     public OpenApiInfo ToOpenApiInfo(string version = "1.0")
     {

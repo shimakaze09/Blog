@@ -131,8 +131,9 @@ public class BlogService
 
         var extractPath = Path.Combine(Path.GetTempPath(), "Blog", Guid.NewGuid().ToString());
 
+        // Use the specified encoding to decompress, to prevent garbled Chinese filenames
         Encoding.RegisterProvider(CodePagesEncodingProvider.Instance);
-        ZipFile.ExtractToDirectory(tempFile, extractPath);
+        ZipFile.ExtractToDirectory(tempFile, extractPath, Encoding.GetEncoding(dto.ZipEncoding));
 
         var dir = new DirectoryInfo(extractPath);
         var files = dir.GetFiles("*.md");

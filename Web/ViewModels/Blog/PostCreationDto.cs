@@ -21,4 +21,9 @@ public class PostCreationDto
     ///     Category ID
     /// </summary>
     public int CategoryId { get; set; }
+
+    /// <summary>
+    ///     ZIP encoding
+    /// </summary>
+    public string ZipEncoding { get; set; } = "utf-8";
 }
