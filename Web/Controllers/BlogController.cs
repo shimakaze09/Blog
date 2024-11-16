@@ -89,7 +89,7 @@ public class BlogController : Controller
     public IActionResult RandomPost()
     {
         var posts = _postRepo.Where(a => a.IsPublish).ToList();
-        var rndPost = posts[new Random().Next(posts.Count)];
+        var rndPost = posts[Random.Shared.Next(posts.Count)];
         _messages.Info($"Randomly recommended article <b>{rndPost.Title}</b> for you!" +
                        $"<span class='ps-3'><a href=\"{Url.Action(nameof(RandomPost))}\">Try again</a></span>");
         return RedirectToAction(nameof(Post), new { id = rndPost.Id });

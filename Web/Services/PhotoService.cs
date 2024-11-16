@@ -122,7 +122,7 @@ public class PhotoService
         var count = await _photoRepo.Select.CountAsync();
         if (count == 0) return null;
 
-        return await _photoRepo.Select.Take(1).Offset(new Random().Next((int)count)).FirstAsync();
+        return await _photoRepo.Select.Take(1).Offset(Random.Shared.Next((int)count)).FirstAsync();
     }
 
     /// <summary>
