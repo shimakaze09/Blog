@@ -1,7 +1,7 @@
 ﻿using AutoMapper;
-using Contrib.SiteMessage;
 using Data.Models;
 using Microsoft.AspNetCore.Mvc;
+using Web.Contrib.SiteMessage;
 using Web.Services;
 using Web.ViewModels.LinkExchange;
 
@@ -11,11 +11,11 @@ public class LinkExchangeController : Controller
 {
     private readonly ILogger<LinkExchangeController> _logger;
     private readonly IMapper _mapper;
-    private readonly Messages _messages;
+    private readonly MessageService _messages;
     private readonly LinkExchangeService _service;
 
     public LinkExchangeController(ILogger<LinkExchangeController> logger, LinkExchangeService service, IMapper mapper,
-        Messages messages)
+        MessageService messages)
     {
         _logger = logger;
         _service = service;

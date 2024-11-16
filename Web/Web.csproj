@@ -54,4 +54,8 @@
         <Folder Include="wwwroot\media\photography\"/>
     </ItemGroup>
 
+    <ItemGroup>
+        <Folder Include="Contrib\"/>
+    </ItemGroup>
+
 </Project>

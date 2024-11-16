@@ -1,7 +1,7 @@
-using Contrib.SiteMessage;
 using Data.Models;
 using FreeSql;
 using Microsoft.AspNetCore.Mvc;
+using Web.Contrib.SiteMessage;
 using Web.Services;
 using Web.ViewModels.Blog;
 using Web.ViewModels.QueryFilters;
@@ -13,13 +13,13 @@ public class BlogController : Controller
     private readonly IBaseRepository<Category> _categoryRepo;
     private readonly CategoryService _categoryService;
     private readonly ConfigService _configService;
-    private readonly Messages _messages;
+    private readonly MessageService _messages;
     private readonly IBaseRepository<Post> _postRepo;
     private readonly PostService _postService;
 
     public BlogController(IBaseRepository<Post> postRepo, IBaseRepository<Category> categoryRepo,
         PostService postService,
-        Messages messages,
+        MessageService messages,
         CategoryService categoryService,
         ConfigService configService)
     {

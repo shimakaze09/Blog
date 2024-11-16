@@ -1,8 +1,8 @@
-using Contrib.SiteMessage;
 using Data.Models;
 using FreeSql;
 using Microsoft.AspNetCore.Mvc;
 using Share.Extensions;
+using Web.Contrib.SiteMessage;
 using Web.Services;
 using Web.ViewModels;
 
@@ -13,12 +13,12 @@ public class HomeController : Controller
     private readonly BlogService _blogService;
     private readonly CategoryService _categoryService;
     private readonly LinkService _linkService;
-    private readonly Messages _messages;
+    private readonly MessageService _messages;
     private readonly PhotoService _photoService;
 
     public HomeController(BlogService blogService, PhotoService photoService, CategoryService categoryService,
         LinkService linkService,
-        Messages messages)
+        MessageService messages)
     {
         _blogService = blogService;
         _photoService = photoService;

@@ -1,9 +1,10 @@
-namespace Contrib.SiteMessage;
+namespace Web.Contrib.SiteMessage;
 
 public class Message
 {
     public string Tag { get; set; }
-    public string Content { get; set; }
+    public string? Title { get; set; }
+    public string? Content { get; set; }
 }
 
 public static class MessageTags
