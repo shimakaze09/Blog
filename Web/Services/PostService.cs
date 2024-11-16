@@ -177,13 +177,11 @@ public class PostService
         };
 
         if (post.Slug != null)
-        {
             model.Url = Host + _generator.GetPathByAction(
                 _accessor.HttpContext!,
                 "PostBySlug", "Blog",
                 new { post.Slug }
             );
-        }
 
         if (md2Html)
         {
