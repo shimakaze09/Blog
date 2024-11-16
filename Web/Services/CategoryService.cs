@@ -60,7 +60,7 @@ public class CategoryService
 
     public async Task<List<Category>> GetAll()
     {
-        return await _cRepo.Select.ToListAsync();
+        return await _cRepo.Select.OrderBy(a => a.ParentId).ToListAsync();
     }
 
     public async Task<IPagedList<Category>> GetPagedList(int page = 1, int pageSize = 10)
@@ -77,6 +77,11 @@ public class CategoryService
     public async Task<Category> AddOrUpdate(Category item)
     {
         return await _cRepo.InsertOrUpdateAsync(item);
+    }
+
+    public async Task<int> Delete(Category item)
+    {
+        return await _cRepo.DeleteAsync(item);
     }
 
     /// <summary>

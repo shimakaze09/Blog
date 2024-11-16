@@ -8,6 +8,7 @@ using Web.ViewModels.QueryFilters;
 
 namespace Web.Controllers;
 
+[ApiExplorerSettings(IgnoreApi = true)]
 public class BlogController : Controller
 {
     private readonly IBaseRepository<Category> _categoryRepo;
