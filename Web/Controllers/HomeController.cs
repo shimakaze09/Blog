@@ -1,8 +1,8 @@
-using Contrib.Security;
 using Contrib.SiteMessage;
 using Data.Models;
 using FreeSql;
 using Microsoft.AspNetCore.Mvc;
+using Share.Extensions;
 using Web.Services;
 using Web.ViewModels;
 
@@ -80,7 +80,7 @@ public class HomeController : Controller
         {
             Id = Guid.NewGuid().ToString(),
             Name = vm.Username,
-            Password = vm.Password.ToMd5String()
+            Password = vm.Password.ToSHA256()
         });
 
         _messages.Success("Initialization completed!");

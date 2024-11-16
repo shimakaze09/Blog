@@ -29,9 +29,9 @@ WalkDirectoryTree(new DirectoryInfo(importDir));
 
 // Overwrite database
 var destFile = Path.GetFullPath("../Web/app.db");
-if (File.Exists("app.db") && File.Exists(destFile))
+if (File.Exists("app.db"))
 {
-    Console.WriteLine($"覆盖数据库：{destFile}");
+    Console.WriteLine($"Copy db: {destFile}");
     File.Copy("app.db", destFile, true);
 }
 
@@ -125,13 +125,19 @@ void WalkDirectoryTree(DirectoryInfo root)
     // Now find all the subdirectories under this directory.
     subDirs = root.GetDirectories();
 
-    foreach (var dirInfo in subDirs)
+    if (subDirs != null)
     {
-        if (exclusionDirs.Contains(dirInfo.Name)) continue;
+        foreach (var dirInfo in subDirs)
+        {
+            if (exclusionDirs.Contains(dirInfo.Name))
+            {
+                continue;
+            }
 
-        if (dirInfo.Name.EndsWith(".assets")) continue;
+            if (dirInfo.Name.EndsWith(".assets")) continue;
 
-        // Recursive call for each subdirectory.
-        WalkDirectoryTree(dirInfo);
+            // Recursive call for each subdirectory.
+            WalkDirectoryTree(dirInfo);
+        }
     }
 }

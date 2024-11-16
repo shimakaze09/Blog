@@ -1,8 +1,8 @@
 ﻿using AutoMapper;
 using CodeLab.Share.ViewModels.Response;
+using Data.Models;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using Data.Models;
 using Web.Extensions;
 using Web.Services;
 using Web.ViewModels.LinkExchange;
@@ -10,7 +10,7 @@ using Web.ViewModels.LinkExchange;
 namespace Web.Apis.Links;
 
 /// <summary>
-/// Summary of Link Exchange functionality
+///     Summary of Link Exchange functionality
 /// </summary>
 [Authorize]
 [ApiController]
@@ -19,8 +19,8 @@ namespace Web.Apis.Links;
 public class LinkExchangeController : ControllerBase
 {
     private readonly ILogger<LinkExchangeController> _logger;
-    private readonly LinkExchangeService _service;
     private readonly IMapper _mapper;
+    private readonly LinkExchangeService _service;
 
     public LinkExchangeController(LinkExchangeService service, ILogger<LinkExchangeController> logger, IMapper mapper)
     {

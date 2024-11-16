@@ -1,3 +1,5 @@
+using Share.Utils;
+
 namespace Share.Extensions;
 
 public static class StringExt
@@ -7,5 +9,20 @@ public static class StringExt
         if (str.Length <= length) return str;
 
         return str[..length];
+    }
+
+    public static string ToSHA256(this string source)
+    {
+        return HashUtils.ComputeSHA256Hash(source);
+    }
+
+    public static string ToSHA384(this string source)
+    {
+        return HashUtils.ComputeSHA384Hash(source);
+    }
+
+    public static string ToSHA512(this string source)
+    {
+        return HashUtils.ComputeSHA512Hash(source);
     }
 }
