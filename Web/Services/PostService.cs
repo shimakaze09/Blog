@@ -176,6 +176,15 @@ public class PostService
             TocNodes = post.ExtractToc()
         };
 
+        if (post.Slug != null)
+        {
+            model.Url = Host + _generator.GetPathByAction(
+                _accessor.HttpContext!,
+                "PostBySlug", "Blog",
+                new { post.Slug }
+            );
+        }
+
         if (md2Html)
         {
             // TODO: Research backend rendering of Markdown (Note: Although there are more and better front-end rendering tools, backend rendering avoids a disjointed experience)

@@ -10,6 +10,12 @@ public class PostUpdateDto
     public string Title { get; set; }
 
     /// <summary>
+    /// Article link, can be accessed via the following format
+    /// <para> http://starblog.com/p/post-slug1 </para>
+    /// </summary>
+    public string? Slug { get; set; }
+
+    /// <summary>
     ///     Summary
     /// </summary>
     public string Summary { get; set; }

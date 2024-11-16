@@ -64,6 +64,13 @@ public class BlogController : Controller
         });
     }
 
+    [Route("/p/{slug}")]
+    public async Task<IActionResult> PostBySlug(string slug)
+    {
+        var p = await _postRepo.Where(a => a.Slug == slug).FirstAsync();
+        return await Post(p?.Id ?? "");
+    }
+
     public async Task<IActionResult> Post(string id)
     {
         var post = await _postService.GetById(id);

@@ -9,8 +9,18 @@
         <p class="card-text">
             @Model.Summary
         </p>
-        <a class="btn btn-outline-secondary stretched" asp-controller="Blog" asp-action="Post" asp-route-id="@Model.Id">
-            See more
-        </a>
+        @if (Model.Slug != null)
+        {
+            <a class="btn btn-outline-secondary stretched-link" href="/p/@Model.Slug">
+                See more
+            </a>
+        }
+        else
+        {
+            <a class="btn btn-outline-secondary stretched-link"
+               asp-controller="Blog" asp-action="Post" asp-route-id="@Model.Id">
+                See more
+            </a>
+        }
     </div>
 </div>
