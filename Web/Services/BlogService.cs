@@ -130,10 +130,9 @@ public class BlogService
         }
 
         var extractPath = Path.Combine(Path.GetTempPath(), "Blog", Guid.NewGuid().ToString());
-        // Use GBK encoding to extract, to prevent Chinese file name garbling
-        // Reference: https://www.cnblogs.com/liguix/p/11883248.html
+
         Encoding.RegisterProvider(CodePagesEncodingProvider.Instance);
-        ZipFile.ExtractToDirectory(tempFile, extractPath, Encoding.GetEncoding("GBK"));
+        ZipFile.ExtractToDirectory(tempFile, extractPath);
 
         var dir = new DirectoryInfo(extractPath);
         var files = dir.GetFiles("*.md");
