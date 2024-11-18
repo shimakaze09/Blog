@@ -165,8 +165,10 @@
             let res = await this.getAnonymousUser(this.form.email, value)
             console.log(res)
             if (res.successful) {
-                this.form.userName = res.data.anonymousUser.name
-                this.form.url = res.data.anonymousUser.url
+                if (res.data.anonymousUser) {
+                    this.form.userName = res.data.anonymousUser.name
+                    this.form.url = res.data.anonymousUser.url
+                }
                 this.form.emailOtp = res.data.newOtp
                 // Lock the email and verification code fields, no need to edit them
                 this.getEmailOtpDisabled = true
