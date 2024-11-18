@@ -4,6 +4,7 @@ using Data.Models;
 using Web.Extensions;
 using Web.Services;
 using Web.ViewModels.Comments;
+using Web.ViewModels.QueryFilters;
 
 namespace Web.Apis.Blog;
 
@@ -16,6 +17,16 @@ public class CommentController : ControllerBase
     public CommentController(CommentService commentService)
     {
         _commentService = commentService;
+    }
+
+    /// <summary>
+    /// Get paginated comments
+    /// </summary>
+    [HttpGet]
+    public async Task<ApiResponsePaged<Comment>> GetPagedList([FromQuery] CommentQueryParameters @params)
+    {
+        var (data, meta) = await _commentService.GetPagedList(@params);
+        return new ApiResponsePaged<Comment>(data, meta);
     }
 
     /// <summary>
