@@ -16,6 +16,7 @@ var mvcBuilder = builder.Services.AddControllersWithViews(
 // Enable Razor page dynamic compilation in development mode
 if (builder.Environment.IsDevelopment()) mvcBuilder.AddRazorRuntimeCompilation();
 
+builder.Services.AddMemoryCache();
 builder.Services.AddHttpContextAccessor();
 builder.Services.AddSession(options =>
 {
@@ -52,19 +53,21 @@ builder.Services.AddHttpClient();
 builder.Services.AddImageSharp();
 
 // Register custom services
+builder.Services.AddSingleton<CommonService>();
+builder.Services.AddSingleton<CrawlService>();
+builder.Services.AddSingleton<EmailService>();
+builder.Services.AddSingleton<MessageService>();
+builder.Services.AddSingleton<ThemeService>();
+builder.Services.AddSingleton<PicLibService>();
 builder.Services.AddScoped<BlogService>();
 builder.Services.AddScoped<CategoryService>();
+builder.Services.AddScoped<CommentService>();
 builder.Services.AddScoped<ConfigService>();
 builder.Services.AddScoped<LinkExchangeService>();
 builder.Services.AddScoped<LinkService>();
 builder.Services.AddScoped<PhotoService>();
 builder.Services.AddScoped<PostService>();
 builder.Services.AddScoped<VisitRecordService>();
-builder.Services.AddSingleton<CommonService>();
-builder.Services.AddSingleton<CrawlService>();
-builder.Services.AddSingleton<MessageService>();
-builder.Services.AddSingleton<ThemeService>();
-builder.Services.AddSingleton<PicLibService>();
 
 var app = builder.Build();
 

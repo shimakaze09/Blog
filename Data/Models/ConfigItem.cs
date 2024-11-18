@@ -3,7 +3,7 @@
 namespace Data.Models;
 
 /// <summary>
-/// Configure Item
+///     Configure Item
 /// </summary>
 [Table(Name = "config", OldName = "ConfigItem")]
 public class ConfigItem

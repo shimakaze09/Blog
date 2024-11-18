@@ -1,4 +1,4 @@
-﻿namespace StarBlog.Web.ViewModels.Categories;
+﻿namespace Web.ViewModels.Categories;
 
 public record CategoryCreationDto
 {

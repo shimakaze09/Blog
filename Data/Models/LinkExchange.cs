@@ -42,8 +42,8 @@ public class LinkExchange
     public bool Verified { get; set; } = false;
 
     /// <summary>
-    /// Reason
-    /// <para>If validation fails, a reason may be provided.</para>
+    ///     Reason
+    ///     <para>If validation fails, a reason may be provided.</para>
     /// </summary>
     public string? Reason { get; set; }
 

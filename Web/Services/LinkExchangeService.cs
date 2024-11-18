@@ -11,16 +11,15 @@ namespace Web.Services;
 /// </summary>
 public class LinkExchangeService
 {
-    private readonly EmailAccountConfig _emailAccountConfig;
+    private readonly EmailService _emailService;
     private readonly LinkService _linkService;
     private readonly IBaseRepository<LinkExchange> _repo;
 
-    public LinkExchangeService(IBaseRepository<LinkExchange> repo, LinkService linkService,
-        IOptions<EmailAccountConfig> options)
+    public LinkExchangeService(IBaseRepository<LinkExchange> repo, LinkService linkService, EmailService emailService)
     {
         _repo = repo;
         _linkService = linkService;
-        _emailAccountConfig = options.Value;
+        _emailService = emailService;
     }
 
     /// <summary>
@@ -90,80 +89,42 @@ public class LinkExchangeService
         return await _repo.DeleteAsync(a => a.Id == id);
     }
 
-    public async Task SendEmailOnAdd(LinkExchange item)
+    public async Task SendEmail(LinkExchange item, string subject, string message)
     {
-        const string blogLink = "<a href=\"https://deali.cn\">Blog</a>";
         var sb = new StringBuilder();
-        sb.AppendLine(
-            "<p>Your link exchange application has been submitted and is being processed. Please keep an eye on email notifications.</p>");
+        sb.AppendLine($"<p>{message}</p>");
         sb.AppendLine("<br>");
         sb.AppendLine("<p>Here is the information you submitted:</p>");
         sb.AppendLine($"<p>Website Name: {item.Name}</p>");
         sb.AppendLine($"<p>Description: {item.Description}</p>");
         sb.AppendLine($"<p>URL: {item.Url}</p>");
         sb.AppendLine($"<p>Webmaster: {item.WebMaster}</p>");
+        if (item.Reason != null) sb.AppendLine($"<p>Additional Information: {item.Reason}</p>");
         sb.AppendLine("<br>");
         sb.AppendLine("<br>");
-        sb.AppendLine("<br>");
-        sb.AppendLine($"<p>This message was automatically sent by {blogLink}. No reply is needed.</p>");
-        await EmailUtils.SendEmailAsync(
-            _emailAccountConfig,
-            "[Blog] Link Exchange Application Submitted",
+        await _emailService.SendEmailAsync(
+            $"[Blog]{subject}",
             sb.ToString(),
             item.WebMaster,
             item.Email
         );
+    }
+
+    public async Task SendEmailOnAdd(LinkExchange item)
+    {
+        await SendEmail(item, "Link exchange application submitted",
+            "The link exchange application has been submitted and is being processed. Please keep an eye on email notifications.");
     }
 
     public async Task SendEmailOnAccept(LinkExchange item)
     {
-        const string blogLink = "<a href=\"https://deali.cn\">Blog</a>";
-        var sb = new StringBuilder();
-        sb.AppendLine(
-            "<p>Hello, your link exchange application has been approved! Thank you for your support, and feel free to visit us.</p>");
-        sb.AppendLine("<br>");
-        sb.AppendLine("<p>Here is the information you submitted:</p>");
-        sb.AppendLine($"<p>Website Name: {item.Name}</p>");
-        sb.AppendLine($"<p>Description: {item.Description}</p>");
-        sb.AppendLine($"<p>URL: {item.Url}</p>");
-        sb.AppendLine($"<p>Webmaster: {item.WebMaster}</p>");
-        sb.AppendLine($"<p>Additional Information: {item.Reason}</p>");
-        sb.AppendLine("<br>");
-        sb.AppendLine("<br>");
-        sb.AppendLine("<br>");
-        sb.AppendLine($"<p>This message was automatically sent by {blogLink}. No reply is needed.</p>");
-        await EmailUtils.SendEmailAsync(
-            _emailAccountConfig,
-            "[Blog] Link Exchange Application Feedback",
-            sb.ToString(),
-            item.WebMaster,
-            item.Email
-        );
+        await SendEmail(item, "Link exchange application result feedback",
+            "Hello, the link exchange application has been approved! Thank you for your support, and welcome to visit each other.");
     }
 
     public async Task SendEmailOnReject(LinkExchange item)
     {
-        const string blogLink = "<a href=\"https://deali.cn\">Blog</a>";
-        var sb = new StringBuilder();
-        sb.AppendLine(
-            "<p>We regret to inform you that your link exchange application was not approved. Please review the additional information and reapply. Thank you for your understanding and support.</p>");
-        sb.AppendLine("<br>");
-        sb.AppendLine("<p>Here is the information you submitted:</p>");
-        sb.AppendLine($"<p>Website Name: {item.Name}</p>");
-        sb.AppendLine($"<p>Description: {item.Description}</p>");
-        sb.AppendLine($"<p>URL: {item.Url}</p>");
-        sb.AppendLine($"<p>Webmaster: {item.WebMaster}</p>");
-        sb.AppendLine($"<p>Additional Information: {item.Reason}</p>");
-        sb.AppendLine("<br>");
-        sb.AppendLine("<br>");
-        sb.AppendLine("<br>");
-        sb.AppendLine($"<p>This message was automatically sent by {blogLink}. No reply is needed.</p>");
-        await EmailUtils.SendEmailAsync(
-            _emailAccountConfig,
-            "[Blog] Link Exchange Application Feedback",
-            sb.ToString(),
-            item.WebMaster,
-            item.Email
-        );
+        await SendEmail(item, "Link exchange application result feedback",
+            "Sorry, the link exchange application was not approved! It is recommended that you check the supplementary information, make adjustments, and apply again. Thank you for your understanding and support.");
     }
 }

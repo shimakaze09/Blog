@@ -53,13 +53,9 @@ public static class ToC
                 item.Slug = Regex.Replace(text, @"[^a-zA-Z0-9\s]+", "")
                     .Trim().Replace(" ", "-").ToLower();
                 if (slugMap.ContainsKey(item.Slug))
-                {
                     item.Slug = $"{item.Slug}-{slugMap[item.Slug]++}";
-                }
                 else
-                {
                     slugMap[item.Slug] = 1;
-                }
             }
 
             for (var j = i; j >= 0; j--)

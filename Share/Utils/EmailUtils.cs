@@ -22,7 +22,7 @@ public static class EmailUtils
         string htmlBody,
         string toName,
         string toAddress,
-        string fromName = "StarBlog"
+        string fromName = "Blog"
     )
     {
         return await SendEmailAsync(config,

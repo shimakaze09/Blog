@@ -9,7 +9,7 @@ public class PostCreationDto
 
     /// <summary>
     ///     Article link, can be accessed via the following format
-    ///     <para> http://starblog.com/p/post-slug1 </para>
+    ///     <para> http://blog.com/p/post-slug1 </para>
     /// </summary>
     public string? Slug { get; set; }
 

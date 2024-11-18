@@ -126,18 +126,13 @@ void WalkDirectoryTree(DirectoryInfo root)
     subDirs = root.GetDirectories();
 
     if (subDirs != null)
-    {
         foreach (var dirInfo in subDirs)
         {
-            if (exclusionDirs.Contains(dirInfo.Name))
-            {
-                continue;
-            }
+            if (exclusionDirs.Contains(dirInfo.Name)) continue;
 
             if (dirInfo.Name.EndsWith(".assets")) continue;
 
             // Recursive call for each subdirectory.
             WalkDirectoryTree(dirInfo);
         }
-    }
 }
