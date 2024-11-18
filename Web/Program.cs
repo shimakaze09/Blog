@@ -2,6 +2,12 @@ using Data.Extensions;
 using Microsoft.AspNetCore.HttpOverrides;
 using RobotsTxt;
 using SixLabors.ImageSharp.Web.DependencyInjection;
+using Data.Extensions;
+using Web.Contrib.SiteMessage;
+using Web.Extensions;
+using Web.Filters;
+using Web.Middlewares;
+using Web.Services;
 using Web.Contrib.SiteMessage;
 using Web.Extensions;
 using Web.Filters;
@@ -36,6 +42,7 @@ builder.Services.AddCors(options =>
         policyBuilder.AllowAnyMethod();
         // policyBuilder.AllowAnyOrigin();
         policyBuilder.WithOrigins("http://localhost:8080");
+        policyBuilder.WithOrigins("https://deali.cn");
     });
 });
 builder.Services.AddStaticRobotsTxt(builder => builder
@@ -59,6 +66,7 @@ builder.Services.AddSingleton<EmailService>();
 builder.Services.AddSingleton<MessageService>();
 builder.Services.AddSingleton<ThemeService>();
 builder.Services.AddSingleton<PicLibService>();
+builder.Services.AddSingleton<TempFilterService>();
 builder.Services.AddScoped<BlogService>();
 builder.Services.AddScoped<CategoryService>();
 builder.Services.AddScoped<CommentService>();
@@ -103,7 +111,7 @@ app.UseSession();
 app.UseSwaggerPkg();
 
 app.MapControllerRoute(
-    "default",
-    "{controller=Home}/{action=Index}/{id?}");
+    name: "default",
+    pattern: "{controller=Home}/{action=Index}/{id?}");
 
 app.Run();

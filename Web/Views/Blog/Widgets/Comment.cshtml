@@ -17,9 +17,9 @@
             <div class="col-2">
                 <el-form-item prop="emailOtp">
                     <el-input type="text" v-model="form.emailOtp" placeholder="Code" autocomplete="off"
-                              clearable maxlength="4" @@change="handleEmailOtpChange" :disabled="emailOtpDisabled">
+                              maxlength="4" @@change="handleEmailOtpChange" :disabled="emailOtpDisabled">
                         <el-button type="text" class="pe-2" slot="suffix" @@click="handleGetEmailOtp"
-                                   :disabled="getEmailOtpDisabled">Get
+                                   :disabled="getEmailOtpDisabled">{{getEmailOtpText}}
                         </el-button>
                     </el-input>
                 </el-form-item>
@@ -32,9 +32,10 @@
             </div>
             <div class="col-4">
                 <el-form-item prop="url">
-                    <el-input type="text" v-model="form.url" placeholder="Website" :disabled="urlDisabled"
-                              v-loading="urlLoading">
-                        <template slot="prepend">http://</template>
+                    <el-input type="text" v-model="form.url" placeholder="Website" :disabled="urlDisabled" v-loading="urlLoading" @@blur="handleUrlBlur">
+                        <template slot="prepend">
+                            <i class="el-icon-ship"></i>
+                        </template>
                     </el-input>
                 </el-form-item>
             </div>

@@ -1,4 +1,6 @@
-﻿using CodeLab.Share.ViewModels.Response;
+﻿using System.Text.Json;
+using CodeLab.Share.Contrib.StopWords;
+using CodeLab.Share.ViewModels.Response;
 using Microsoft.AspNetCore.Mvc;
 using Data.Models;
 using Web.Extensions;
@@ -13,10 +15,12 @@ namespace Web.Apis.Blog;
 public class CommentController : ControllerBase
 {
     private readonly CommentService _commentService;
+    private readonly TempFilterService _filter;
 
-    public CommentController(CommentService commentService)
+    public CommentController(CommentService commentService, TempFilterService filter)
     {
         _commentService = commentService;
+        _filter = filter;
     }
 
     /// <summary>
@@ -71,11 +75,6 @@ public class CommentController : ControllerBase
     [HttpPost]
     public async Task<ApiResponse<Comment>> Add(CommentCreationDto dto)
     {
-        if (!CommentService.IsValidEmail(dto.Email))
-        {
-            return ApiResponse.BadRequest("The provided email address is invalid");
-        }
-
         if (!_commentService.VerifyOtp(dto.Email, dto.EmailOtp))
         {
             return ApiResponse.BadRequest("The verification code is invalid");
@@ -94,9 +93,31 @@ public class CommentController : ControllerBase
             UserAgent = Request.Headers.UserAgent,
             Content = dto.Content
         };
-        return new ApiResponse<Comment>(await _commentService.Add(comment))
+
+        string msg;
+        if (_filter.CheckBadWord(dto.Content))
         {
-            Message = "The comment has been submitted and will be displayed after approval"
+            comment.Visible = false;
+            msg =
+                "The moderator has detected inappropriate language in your comment. It will be displayed after approval.";
+        }
+        else
+        {
+            comment.Visible = true;
+            msg = "Your comment has been approved by the moderator. Thank you for participating in the discussion.";
+        }
+
+        comment = await _commentService.Add(comment);
+
+        return new ApiResponse<Comment>(comment)
+        {
+            Message = msg
         };
+    }
+
+    [HttpGet("[action]")]
+    public async Task<ApiResponse> CheckBadWord(string word)
+    {
+        return ApiResponse.Ok(_filter.CheckBadWord(word).ToString());
     }
 }

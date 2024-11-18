@@ -21,6 +21,8 @@
         submitDisabled: true,
         replyDisabled: true,
         replyComment: null,
+        getEmailOtpText: 'Get',
+        otpInterval: null,
         form: {
             parentId: '',
             postId: POST_ID,
@@ -30,7 +32,28 @@
             url: '',
             content: '',
         },
-        formRules: {},
+        formRules: {
+            userName: [
+                {required: true, message: 'Please enter a username', trigger: 'blur'},
+                {min: 2, max: 20, message: 'Length must be between 2 and 20 characters', trigger: 'blur'}
+            ],
+            email: [
+                {required: true, message: 'Please enter an email address', trigger: 'blur'},
+                {type: 'email', message: 'Invalid email format'}
+            ],
+            emailOtp: [
+                {required: true, message: 'Please enter the email verification code', trigger: 'change'},
+                {len: 4, message: 'Length must be 4 characters', trigger: 'change'}
+            ],
+            url: [
+                {type: 'url', message: 'Please enter a valid URL', trigger: 'blur'},
+            ],
+            content: [
+                {required: true, message: 'Please enter the comment content', trigger: 'blur'},
+                {min: 1, max: 300, message: 'Length must be between 1 and 300 characters', trigger: 'blur'},
+                // {whitespace: true, message: 'Comment content cannot be only whitespace', trigger: 'blur'},
+            ]
+        },
     },
     created: async function () {
         await this.getComments()
@@ -112,8 +135,26 @@
             this.getEmailOtpLoading = true
             let res = await this.getEmailOtp(this.form.email)
             this.getEmailOtpLoading = false
-            if (res.successful) this.$message.success(res.message)
-            else this.$message.error(res.message)
+            if (res.successful) {
+                this.$message.success(res.message)
+                // Sent successfully, show countdown
+                let countdown = 60 * 5
+                this.getEmailOtpText = `${countdown}s`
+                this.otpInterval = setInterval(() => {
+                    countdown--
+                    if (countdown > 0) {
+                        this.getEmailOtpText = `${countdown}s`
+                        this.getEmailOtpDisabled = true
+                    } else {
+                        countdown = 60 * 5
+                        this.getEmailOtpText = 'Get'
+                        if (this.otpInterval) clearInterval(this.otpInterval)
+                        this.getEmailOtpDisabled = false
+                    }
+                }, 1000)
+            } else {
+                this.$message.error(res.message)
+            }
         },
         async handleEmailOtpChange(value) {
             console.log('handleEmailOtpChange', value)
@@ -143,8 +184,14 @@
             this.userNameLoading = false
             this.urlLoading = false
         },
+        handleUrlBlur() {
+            if (!this.form.url.startsWith('http'))
+                this.form.url = `http://${this.form.url}`
+        },
         handleReset() {
             this.$refs.form.resetFields()
+            if (this.otpInterval) clearInterval(this.otpInterval)
+            this.getEmailOtpText = 'Get'
             this.emailDisabled = false
             this.emailOtpDisabled = false
             this.getEmailOtpDisabled = false
@@ -157,16 +204,20 @@
             this.replyComment = null
         },
         async handleSubmit() {
-            this.submitLoading = true
-            let res = await this.submitComment(this.form)
-            if (res.successful) {
-                this.$message.success(res.message)
-                let email = `${this.form.email}`
-                this.handleReset()
-                this.form.email = email
-            } else this.$message.error(res.message)
-            this.submitLoading = false
-            await this.getComments()
+            this.$refs.form.validate(async (valid) => {
+                if (valid) {
+                    this.submitLoading = true
+                    let res = await this.submitComment(this.form)
+                    if (res.successful) {
+                        this.$message.success(res.message)
+                        let email = `${this.form.email}`
+                        this.handleReset()
+                        this.form.email = email
+                    } else this.$message.error(res.message)
+                    this.submitLoading = false
+                    await this.getComments()
+                }
+            })
         },
         async handleSizeChange(value) {
             this.pageSize = value

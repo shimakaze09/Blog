@@ -37,10 +37,11 @@
         <PackageReference Include="CodeLab.Share" Version="1.4.1"/>
         <PackageReference Include="Magick.NET-Q8-x64" Version="14.1.0"/>
         <PackageReference Include="Markdig" Version="0.38.0"/>
-        <PackageReference Include="Microsoft.AspNetCore.Authentication.JwtBearer" Version="8.0.10"/>
-        <PackageReference Include="Microsoft.AspNetCore.Mvc.Razor.RuntimeCompilation" Version="8.0.10"/>
+        <PackageReference Include="Microsoft.AspNetCore.Authentication.JwtBearer" Version="8.0.11" />
+        <PackageReference Include="Microsoft.AspNetCore.Mvc.Razor.RuntimeCompilation" Version="8.0.11" />
         <PackageReference Include="Microsoft.CodeAnalysis.Common" Version="4.11.0"/>
         <PackageReference Include="Microsoft.CodeAnalysis.CSharp" Version="4.11.0"/>
+        <PackageReference Include="Microsoft.EntityFrameworkCore.Sqlite" Version="8.0.11" />
         <PackageReference Include="RobotsTxtCore" Version="3.0.0"/>
         <PackageReference Include="SixLabors.ImageSharp" Version="2.1.9"/>
         <PackageReference Include="SixLabors.ImageSharp.Web" Version="2.0.2"/>
