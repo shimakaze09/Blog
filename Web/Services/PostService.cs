@@ -80,24 +80,14 @@ public class PostService
     /// <summary>
     ///     Upload an image for a specific post
     /// </summary>
-    /// <param name="post"></param>
-    /// <param name="file"></param>
-    /// <returns></returns>
     public async Task<string> UploadImage(Post post, IFormFile file)
     {
         InitPostMediaDir(post);
 
-        var filename = WebUtility.UrlEncode(file.FileName);
+        // Directly generate a unique filename without retaining the original filename
+        var filename = GuidUtils.GuidTo16String() + Path.GetExtension(file.FileName);
         var fileRelativePath = Path.Combine("media", "blog", post.Id, filename);
         var savePath = Path.Combine(_environment.WebRootPath, fileRelativePath);
-        if (File.Exists(savePath))
-        {
-            // Handle duplicate file names
-            var newFilename =
-                $"{Path.GetFileNameWithoutExtension(filename)}-{GuidUtils.GuidTo16String()}.{Path.GetExtension(filename)}";
-            fileRelativePath = Path.Combine("media", "blog", post.Id, newFilename);
-            savePath = Path.Combine(_environment.WebRootPath, fileRelativePath);
-        }
 
         await using (var fs = new FileStream(savePath, FileMode.Create))
         {
@@ -110,8 +100,6 @@ public class PostService
     /// <summary>
     ///     Get the images for a specific post
     /// </summary>
-    /// <param name="post"></param>
-    /// <returns></returns>
     public List<string> GetImages(Post post)
     {
         var data = new List<string>();
@@ -191,6 +179,7 @@ public class PostService
             // - https://github.com/showdownjs/showdown
             var pipeline = new MarkdownPipelineBuilder()
                 .UseAdvancedExtensions()
+                .UseBootstrap5()
                 .Build();
             model.ContentHtml = Markdown.ToHtml(model.Content, pipeline);
         }
