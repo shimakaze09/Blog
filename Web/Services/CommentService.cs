@@ -142,14 +142,18 @@ public class CommentService
         return (true, otp);
     }
 
-    public bool VerifyOtp(string email, string otp)
+    /// <summary>
+    /// Verifies the one-time password
+    /// </summary>
+    /// <param name="clear">Whether to clear after successful verification</param>
+    public bool VerifyOtp(string email, string otp, bool clear = true)
     {
         var cacheKey = $"comment-otp-{email}";
         _memoryCache.TryGetValue<string>(cacheKey, out var value);
 
         if (otp != value) return false;
 
-        _memoryCache.Remove(cacheKey);
+        if (clear) _memoryCache.Remove(cacheKey);
         return true;
     }
 

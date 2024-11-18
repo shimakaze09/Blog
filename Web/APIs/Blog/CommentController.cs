@@ -41,16 +41,16 @@ public class CommentController : ControllerBase
     {
         if (!CommentService.IsValidEmail(email)) return ApiResponse.BadRequest("The provided email address is invalid");
 
-        var verified = _commentService.VerifyOtp(email, otp);
+        var verified = _commentService.VerifyOtp(email, otp, clear: false);
         if (!verified) return ApiResponse.BadRequest("The verification code is invalid");
 
         var anonymous = await _commentService.GetAnonymousUser(email);
-        var (_, newOtp) = await _commentService.GenerateOtp(email, true);
+        // var (_, newOtp) = await _commentService.GenerateOtp(email, true);
 
         return ApiResponse.Ok(new
         {
             AnonymousUser = anonymous,
-            NewOtp = newOtp
+            NewOtp = otp
         });
     }
 
