@@ -1,0 +1,54 @@
+﻿@using System.Text.RegularExpressions
+@using Microsoft.AspNetCore.Mvc.TagHelpers
+@model PostViewModel
+
+@{
+    var content = Model.Content;
+
+    // Remove Markdown formatting
+    content = Regex.Replace(content, @"#.*\n", "");
+    content = Regex.Replace(content, @"\[.*?\]\(.*?\)", "");
+    content = Regex.Replace(content, @"\*.*?\*\s?", "");
+    content = Regex.Replace(content, @"\`.*?\'", "");
+    content = Regex.Replace(content, @"\>.*?\n", "");
+
+    // Split into words and count
+    var wordCount = content.Split(new[] { ' ', '\t', '\r', '\n' }, StringSplitOptions.RemoveEmptyEntries).Length;
+}
+
+<header class="post-header py-3 mb-3">
+    <div class="post-title h3 font-weight-bold">@Model.Title</div>
+    <div class="border-bottom my-3"></div>
+    <div class="post-meta">
+        <div class="d-flex justify-content-between">
+            <div>
+                Published:
+                <span>@Model.CreationTime.ToShortDateString()</span>
+                <span>@Model.CreationTime.ToString("hh:mm")</span>
+            </div>
+            <div>
+                Updated:
+                @Model.LastUpdateTime?.ToShortDateString()
+                @Model.LastUpdateTime?.ToString("hh:mm")
+            </div>
+        </div>
+
+        <div class="d-flex justify-content-between">
+            <nav aria-label="breadcrumb">
+                <ol class="breadcrumb">
+                    <li class="breadcrumb-item active">Blog</li>
+                    @foreach (var category in Model.Categories)
+                    {
+                        <li class="breadcrumb-item">
+                            <a asp-controller="Blog" asp-action="List"
+                               asp-route-categoryId="@category.Id">
+                                @category.Name
+                            </a>
+                        </li>
+                    }
+                </ol>
+            </nav>
+            <div>Word count: @wordCount</div>
+        </div>
+    </div>
+</header>
