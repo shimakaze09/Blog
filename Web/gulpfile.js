@@ -31,6 +31,7 @@ paths.concatJsDist = paths.js + "app.min.js"; // Path after concatenating all JS
 
 // Paths for npm downloaded frontend component packages
 const libs = [
+    {name: "axios", dist: "./node_modules/axios/dist/**/*.*"},
     {name: "chart.js", dist: "./node_modules/chart.js/dist/**/*.*"},
     {name: "jquery", dist: "./node_modules/jquery/dist/**/*.*"},
     {name: "popper", dist: "./node_modules/popper.js/dist/**/*.*"},
@@ -44,6 +45,7 @@ const libs = [
 
 // Paths for npm downloaded frontend components, custom storage location
 const customLibs = [
+    {name: "dayjs", dist: "./node_modules/dayjs/**/*.*"},
     {name: "editormd", dist: "./node_modules/editor.md-ext/*.js"},
     {name: "editormd/css", dist: "./node_modules/editor.md-ext/css/*.*"},
     {name: "editormd/fonts", dist: "./node_modules/editor.md-ext/fonts/*.*"},
@@ -52,6 +54,9 @@ const customLibs = [
     {name: "editormd/lib", dist: "./node_modules/editor.md-ext/lib/*.*"},
     {name: "editormd/plugins", dist: "./node_modules/editor.md-ext/plugins/*.*"},
     {name: "editormd/examples/js", dist: "./node_modules/editor.md-ext/examples/js/*.js"},
+    {name: 'element-ui/lib', dist: './node_modules/element-ui/lib/index.js'},
+    {name: 'element-ui/lib/theme-chalk', dist: './node_modules/element-ui/lib/theme-chalk/index.css'},
+    {name: 'element-ui/lib/theme-chalk/fonts', dist: './node_modules/element-ui/lib/theme-chalk/fonts/*.*'},
     {name: 'font-awesome', dist: './node_modules/@fortawesome/fontawesome-free/**/*.*'},
     {name: 'highlight.js', dist: './node_modules/highlight.js/**/*.*'},
     {name: 'github-markdown-css', dist: './node_modules/github-markdown-css/*.css'},

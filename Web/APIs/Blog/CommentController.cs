@@ -30,6 +30,27 @@ public class CommentController : ControllerBase
     }
 
     /// <summary>
+    /// Get anonymous user information based on email and verification code
+    /// </summary>
+    [HttpGet("[action]")]
+    public async Task<ApiResponse> GetAnonymousUser(string email, string otp)
+    {
+        if (!CommentService.IsValidEmail(email)) return ApiResponse.BadRequest("The provided email address is invalid");
+
+        var verified = _commentService.VerifyOtp(email, otp);
+        if (!verified) return ApiResponse.BadRequest("The verification code is invalid");
+
+        var anonymous = await _commentService.GetAnonymousUser(email);
+        var (_, newOtp) = await _commentService.GenerateOtp(email, true);
+
+        return ApiResponse.Ok(new
+        {
+            AnonymousUser = anonymous,
+            NewOtp = newOtp
+        });
+    }
+
+    /// <summary>
     /// Get email verification code
     /// </summary>
     [HttpGet("[action]")]
@@ -40,7 +61,7 @@ public class CommentController : ControllerBase
             return ApiResponse.BadRequest("The provided email address is invalid");
         }
 
-        var result = await _commentService.GenerateOtp(email);
+        var (result, _) = await _commentService.GenerateOtp(email);
         return result
             ? ApiResponse.Ok("Email verification code sent successfully, valid for five minutes")
             : ApiResponse.BadRequest(
@@ -55,7 +76,7 @@ public class CommentController : ControllerBase
             return ApiResponse.BadRequest("The provided email address is invalid");
         }
 
-        if (!await _commentService.VerifyOtp(dto.Email, dto.EmailOtp))
+        if (!_commentService.VerifyOtp(dto.Email, dto.EmailOtp))
         {
             return ApiResponse.BadRequest("The verification code is invalid");
         }
@@ -67,6 +88,7 @@ public class CommentController : ControllerBase
 
         var comment = new Comment
         {
+            ParentId = dto.ParentId,
             PostId = dto.PostId,
             AnonymousUserId = anonymousUser.Id,
             UserAgent = Request.Headers.UserAgent,

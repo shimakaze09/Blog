@@ -28,8 +28,9 @@ public class EmailService
     /// <summary>
     /// Sends an email verification code
     /// <returns>Generates a random verification code</returns>
+    /// <param name="mock">Only generate the verification code, do not send the email</param>
     /// </summary>
-    public async Task<string> SendOtpMail(string email)
+    public async Task<string> SendOtpMail(string email, bool mock = false)
     {
         var otp = Random.Shared.NextInt64(1000, 9999).ToString();
 
@@ -37,12 +38,15 @@ public class EmailService
         sb.AppendLine($"<p>Welcome to Blog! Verification code: {otp}</p>");
         sb.AppendLine($"<p>If you did not perform any actions, please ignore this email.</p>");
 
-        await SendEmailAsync(
-            "[Blog] Email Verification Code",
-            sb.ToString(),
-            email,
-            email
-        );
+        if (!mock)
+        {
+            await SendEmailAsync(
+                "[Blog] Email Verification Code",
+                sb.ToString(),
+                email,
+                email
+            );
+        }
 
         return otp;
     }
