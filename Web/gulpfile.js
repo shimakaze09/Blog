@@ -9,7 +9,8 @@ const gulp = require("gulp"),
     cssmin = require("gulp-clean-css"),
     rename = require("gulp-rename"),
     uglify = require("gulp-uglify"),
-    changed = require("gulp-changed");
+    changed = require("gulp-changed"),
+    obfuscate = require('gulp-obfuscate');
 
 // Define paths for files in wwwroot directory
 const paths = {
