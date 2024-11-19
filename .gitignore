@@ -743,5 +743,8 @@ obj/
 # ignore static files
 /Web/wwwroot/media/**
 
-#ignore cache files
+# ignore cache files
 **/is-cache/**
+
+# ignore words.json
+**/words.json
