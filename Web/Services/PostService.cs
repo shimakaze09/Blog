@@ -173,15 +173,7 @@ public class PostService
 
         if (md2Html)
         {
-            // TODO: Research backend rendering of Markdown (Note: Although there are more and better front-end rendering tools, backend rendering avoids a disjointed experience)
-            // Some reference materials:
-            // - About front-end rendering of Markdown styles: https://blog.csdn.net/sprintline/article/details/122849907
-            // - https://github.com/showdownjs/showdown
-            var pipeline = new MarkdownPipelineBuilder()
-                .UseAdvancedExtensions()
-                .UseBootstrap5()
-                .Build();
-            model.ContentHtml = Markdown.ToHtml(model.Content, pipeline);
+            model.ContentHtml = GetContentHtml(post);
         }
 
         if (post.Categories != null)
@@ -192,6 +184,19 @@ public class PostService
             }
 
         return model;
+    }
+
+    public static string GetContentHtml(Post post)
+    {
+        // TODO: Research backend rendering of Markdown (PS: Although frontend rendering has more tools and better effects, backend rendering won't feel disjointed)
+        // Some reference materials for this part:
+        // - About frontend rendering Markdown styles: https://blog.csdn.net/sprintline/article/details/122849907
+        // - https://github.com/showdownjs/showdown
+        var pipeline = new MarkdownPipelineBuilder()
+            .UseAdvancedExtensions()
+            .UseBootstrap5()
+            .Build();
+        return Markdown.ToHtml(post.Content ?? "", pipeline);
     }
 
     /// <summary>
