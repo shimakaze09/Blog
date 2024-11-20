@@ -10,7 +10,12 @@
     <meta name="description" content="MyBlog;">
     <meta name="author" content="DealiAxy">
     <meta name="generator" content="MyBlog">
-    <title>MyBlog - @ViewData["Title"]</title>
+    @if (ViewData["Title"] != null) {
+        <title>@ViewData["Title"] - MyBlog</title>
+    }
+    else {
+        <title>MyBlog · John</title>
+    }
 
     <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.css">
     <link rel="stylesheet" href="~/lib/font-awesome/css/all.css">
