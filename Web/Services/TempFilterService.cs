@@ -10,8 +10,8 @@ public class TempFilterService
 
     public TempFilterService()
     {
-        var words = JsonSerializer.Deserialize<IEnumerable<Word>>(File.ReadAllText("words.json"));
-        _toolkit = new StopWordsToolkit(words!.Select(a => a.Value));
+        // var words = JsonSerializer.Deserialize<IEnumerable<Word>>(File.ReadAllText("words.json"));
+        // _toolkit = new StopWordsToolkit(words!.Select(a => a.Value));
     }
 
     public bool CheckBadWord(string word)

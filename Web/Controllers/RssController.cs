@@ -24,7 +24,7 @@ public class RssController : Controller
     [HttpGet]
     public IActionResult Index()
     {
-        var feedUrl = $"{_conf["Host"]}/feed";
+        var feedUrl = Path.Combine(_conf["host"], "feed");
         ViewBag.FeedUrl = feedUrl;
         return View();
     }
