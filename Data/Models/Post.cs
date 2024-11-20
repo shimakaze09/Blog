@@ -58,7 +58,7 @@ public class Post
     /// <summary>
     ///     Last Modified Time
     /// </summary>
-    public DateTime? LastUpdateTime { get; set; }
+    public DateTime LastUpdateTime { get; set; }
 
     /// <summary>
     ///     Category ID
