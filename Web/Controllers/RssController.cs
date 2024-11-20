@@ -9,21 +9,29 @@ using Web.Services;
 
 namespace Web.Controllers;
 
-[ApiController]
-[Route("feed")]
 [ApiExplorerSettings(IgnoreApi = true)]
-public class RssController : ControllerBase
+public class RssController : Controller
 {
     private readonly IBaseRepository<Post> _postRepo;
+    private readonly ConfigService _conf;
 
-    public RssController(IBaseRepository<Post> postRepo)
+    public RssController(IBaseRepository<Post> postRepo, ConfigService conf)
     {
         _postRepo = postRepo;
+        _conf = conf;
+    }
+
+    [HttpGet]
+    public IActionResult Index()
+    {
+        var feedUrl = $"{_conf["Host"]}/feed";
+        ViewBag.FeedUrl = feedUrl;
+        return View();
     }
 
     [ResponseCache(Duration = 1200)]
-    [HttpGet]
-    public async Task<IActionResult> Index()
+    [HttpGet("feed")]
+    public async Task<IActionResult> Feed()
     {
         var posts = await _postRepo.Where(a => a.IsPublish && a.CreationTime.Year == DateTime.Now.Year)
             .OrderByDescending(a => a.LastUpdateTime)
