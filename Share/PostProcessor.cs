@@ -1,4 +1,5 @@
 ﻿using System.Text.RegularExpressions;
+using System.Web;
 using Data.Models;
 using Markdig;
 using Markdig.Renderers.Normalize;
@@ -39,12 +40,13 @@ public class PostProcessor
             {
                 if (inline is not LinkInline { IsImage: true } linkInline) continue;
 
-                if (linkInline.Url == null) continue;
-                if (linkInline.Url.StartsWith("http")) continue;
+                var imgUrl = HttpUtility.UrlDecode(linkInline.Url);
+                if (imgUrl == null) continue;
+                if (imgUrl.StartsWith("http")) continue;
 
                 // Path processing
-                var imgPath = Path.Combine(_importPath, _post.Path, linkInline.Url);
-                var imgFilename = Path.GetFileName(linkInline.Url);
+                var imgPath = Path.Combine(_importPath, _post.Path ?? "", imgUrl);
+                var imgFilename = Path.GetFileName(imgUrl);
                 var destDir = Path.Combine(_assetsPath, _post.Id);
                 if (!Directory.Exists(destDir)) Directory.CreateDirectory(destDir);
                 var destPath = Path.Combine(destDir, imgFilename);
