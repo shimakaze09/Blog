@@ -117,16 +117,16 @@ public class PostService
         if (param.OnlyPublished) querySet = _postRepo.Select.Where(a => a.IsPublish);
 
         // Filter by status
-        if (!string.IsNullOrEmpty(param.Status)) querySet = querySet.Where(a => a.Status == param.Status);
+        if (!string.IsNullOrWhiteSpace(param.Status)) querySet = querySet.Where(a => a.Status == param.Status);
 
         // Filter by category
         if (param.CategoryId != 0) querySet = querySet.Where(a => a.CategoryId == param.CategoryId);
 
         // Filter by keywords
-        if (!string.IsNullOrEmpty(param.Search)) querySet = querySet.Where(a => a.Title.Contains(param.Search));
+        if (!string.IsNullOrWhiteSpace(param.Search)) querySet = querySet.Where(a => a.Title.Contains(param.Search));
 
         // Sort
-        if (!string.IsNullOrEmpty(param.SortBy))
+        if (!string.IsNullOrWhiteSpace(param.SortBy))
         {
             // Determine if ascending order
             var isAscending = !param.SortBy.StartsWith("-");
