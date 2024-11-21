@@ -6,10 +6,11 @@ using Web.Services;
 using Web.ViewModels.Comments;
 using Web.ViewModels.QueryFilters;
 
-namespace Web.Apis.Blog;
+namespace Web.APIs.Comments;
 
-[Route("Api/[controller]")]
 [ApiController]
+[Route("Api/[controller]")]
+[ApiExplorerSettings(GroupName = ApiGroups.Comment)]
 public class CommentController : ControllerBase
 {
     private readonly CommentService _commentService;

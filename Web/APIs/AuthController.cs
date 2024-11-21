@@ -29,6 +29,9 @@ public class AuthController : ControllerBase
     /// </summary>
     /// <param name="loginUser">The login user object</param>
     /// <returns>The login response</returns>
+    [HttpPost]
+    [Route("")]
+    [Route("[action]")]
     [ProducesResponseType(typeof(ApiResponse<LoginToken>), StatusCodes.Status200OK)]
     public async Task<ApiResponse> Login(LoginUser loginUser)
     {
@@ -46,10 +49,12 @@ public class AuthController : ControllerBase
     /// <returns></returns>
     [Authorize]
     [HttpGet]
+    [Route("")]
+    [Route("[action]")]
     public ApiResponse<User> GetUser()
     {
         var user = _authService.GetUser(User);
-        if (user == null) return ApiResponse.NotFound("找不到用户资料");
+       if (user == null) return ApiResponse.NotFound("User information not found");
         return new ApiResponse<User>(user);
     }
 }
