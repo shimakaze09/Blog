@@ -16,11 +16,13 @@ namespace Web.APIs.Blog;
 [ApiExplorerSettings(GroupName = ApiGroups.Blog)]
 public class BlogController : ControllerBase
 {
+    private readonly ILogger<BlogController> _logger;
     private readonly BlogService _blogService;
 
-    public BlogController(BlogService blogService)
+    public BlogController(BlogService blogService, ILogger<BlogController> logger)
     {
         _blogService = blogService;
+        _logger = logger;
     }
 
     /// <summary>
@@ -78,7 +80,7 @@ public class BlogController : ControllerBase
     {
         if (!file.FileName.EndsWith(".zip")) return ApiResponse.BadRequest("Only zip files are allowed.");
 
-        var category = categoryService.GetById(dto.CategoryId);
+        var category = await categoryService.GetById(dto.CategoryId);
         if (category == null) return ApiResponse.BadRequest($"Category {dto.CategoryId} does not exist!");
         try
         {
@@ -86,6 +88,7 @@ public class BlogController : ControllerBase
         }
         catch (Exception ex)
         {
+            _logger.LogError(ex, "Decompression error: {message}", ex.Message);
             return ApiResponse.Error($"Error extracting file: {ex.Message}");
         }
     }
