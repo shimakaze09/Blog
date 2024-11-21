@@ -12,11 +12,10 @@ namespace Web.Services;
 
 public class AuthService
 {
-    private readonly Auth _auth;
-    private readonly IBaseRepository<User> _userRepo;
-
     private const string ClaimUserId = "user_id";
     private const string ClaimUserName = "user_name";
+    private readonly Auth _auth;
+    private readonly IBaseRepository<User> _userRepo;
 
     public AuthService(IOptions<Auth> options, IBaseRepository<User> userRepo)
     {

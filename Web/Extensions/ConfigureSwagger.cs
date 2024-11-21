@@ -13,6 +13,7 @@ public static class ApiGroups
     public const string Comment = "comment";
     public const string Common = "common";
     public const string Link = "link";
+    public const string Photo = "photo";
     public const string Test = "test";
 }
 
@@ -26,6 +27,7 @@ public static class ConfigureSwagger
         new SwaggerGroup(ApiGroups.Comment, "Comment APIs", "Comment interfaces"),
         new SwaggerGroup(ApiGroups.Common, "Common APIs", "Common public interfaces"),
         new SwaggerGroup(ApiGroups.Link, "Link APIs", "Friendly link interfaces"),
+        new SwaggerGroup(ApiGroups.Photo, "Photo APIs", "Image Management APIs"),
         new SwaggerGroup(ApiGroups.Test, "Test APIs", "Test interfaces")
     };
 

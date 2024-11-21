@@ -7,7 +7,7 @@ using Web.Extensions;
 using Web.Services;
 using Web.ViewModels.Photography;
 
-namespace Web.Apis.Blog;
+namespace Web.APIs.Photography;
 
 /// <summary>
 ///     Photography
@@ -15,7 +15,7 @@ namespace Web.Apis.Blog;
 [Authorize]
 [ApiController]
 [Route("Api/[controller]")]
-[ApiExplorerSettings(GroupName = ApiGroups.Blog)]
+[ApiExplorerSettings(GroupName = ApiGroups.Photo)]
 public class PhotoController : ControllerBase
 {
     private readonly PhotoService _photoService;
@@ -47,6 +47,9 @@ public class PhotoController : ControllerBase
             : new ApiResponse<Photo> { Data = photo };
     }
 
+    /// <summary>
+    ///     Gets a thumbnail image of the specified width
+    /// </summary>
     [AllowAnonymous]
     [HttpGet("{id}/Thumb")]
     public async Task<IActionResult> GetThumb(string id, [FromQuery] int width = 300)
@@ -63,6 +66,16 @@ public class PhotoController : ControllerBase
         return !ModelState.IsValid
             ? ApiResponse.BadRequest(ModelState)
             : new ApiResponse<Photo>(photo);
+    }
+
+    [HttpPut("{id}")]
+    public async Task<ApiResponse<Photo>> Update(string id, [FromBody] PhotoUpdateDto dto)
+    {
+        var photo = await _photoService.GetById(id);
+        if (photo == null) return ApiResponse.NotFound($"Photo {id} does not exist");
+        dto.Id = id;
+        return new ApiResponse<Photo>(await _photoService.Update(dto))
+            { Message = "Updated photo information successfully." };
     }
 
     [HttpDelete("{id}")]

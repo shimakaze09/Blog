@@ -3,9 +3,9 @@ using FreeSql;
 using Microsoft.AspNetCore.Mvc;
 using Share.Extensions;
 using Web.Contrib.SiteMessage;
+using Web.Extensions;
 using Web.Services;
 using Web.ViewModels;
-using Web.Extensions;
 
 namespace Web.Controllers;
 
@@ -13,10 +13,10 @@ public class HomeController : Controller
 {
     private readonly BlogService _blogService;
     private readonly CategoryService _categoryService;
+    private readonly ConfigService _conf;
     private readonly LinkService _linkService;
     private readonly MessageService _messages;
     private readonly PhotoService _photoService;
-    private readonly ConfigService _conf;
 
     public HomeController(BlogService blogService, PhotoService photoService, CategoryService categoryService,
         LinkService linkService,

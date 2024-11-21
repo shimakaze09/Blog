@@ -3,8 +3,8 @@
 namespace Web.Extensions;
 
 /// <summary>
-/// HttpContext.Request extension method to determine if accessed via mobile device
-/// <para>Reference: https://www.jianshu.com/p/6524efad1496</para>
+///     HttpContext.Request extension method to determine if accessed via mobile device
+///     <para>Reference: https://www.jianshu.com/p/6524efad1496</para>
 /// </summary>
 public static class HttpRequestExt
 {

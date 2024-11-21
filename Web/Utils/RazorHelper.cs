@@ -30,9 +30,7 @@ public static class RazorHelper
     {
         if (GetCurrentControllerName(viewContext) == controllerName
             && GetCurrentActionName(viewContext) == actionName)
-        {
             return className;
-        }
 
         return "";
     }

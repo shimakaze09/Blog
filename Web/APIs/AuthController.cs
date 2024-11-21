@@ -54,7 +54,7 @@ public class AuthController : ControllerBase
     public ApiResponse<User> GetUser()
     {
         var user = _authService.GetUser(User);
-       if (user == null) return ApiResponse.NotFound("User information not found");
+        if (user == null) return ApiResponse.NotFound("User information not found");
         return new ApiResponse<User>(user);
     }
 }
