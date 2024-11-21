@@ -88,6 +88,7 @@ public class HomeController : Controller
         _conf["is_init"] = "true";
 
         // Create user
+        // TODO: Use salted hash password https://www.ais.com/how-to-generate-a-jwt-token-using-net-6/
         userRepo.Insert(new User
         {
             Id = Guid.NewGuid().ToString(),
