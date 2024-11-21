@@ -1,8 +1,6 @@
-﻿using System.Text.Json;
-using CodeLab.Share.Contrib.StopWords;
-using CodeLab.Share.ViewModels.Response;
-using Microsoft.AspNetCore.Mvc;
+﻿using CodeLab.Share.ViewModels.Response;
 using Data.Models;
+using Microsoft.AspNetCore.Mvc;
 using Web.Extensions;
 using Web.Services;
 using Web.ViewModels.Comments;
@@ -24,7 +22,7 @@ public class CommentController : ControllerBase
     }
 
     /// <summary>
-    /// Get paginated comments
+    ///     Get paginated comments
     /// </summary>
     [HttpGet]
     public async Task<ApiResponsePaged<Comment>> GetPagedList([FromQuery] CommentQueryParameters @params)
@@ -34,14 +32,14 @@ public class CommentController : ControllerBase
     }
 
     /// <summary>
-    /// Get anonymous user information based on email and verification code
+    ///     Get anonymous user information based on email and verification code
     /// </summary>
     [HttpGet("[action]")]
     public async Task<ApiResponse> GetAnonymousUser(string email, string otp)
     {
         if (!CommentService.IsValidEmail(email)) return ApiResponse.BadRequest("The provided email address is invalid");
 
-        var verified = _commentService.VerifyOtp(email, otp, clear: false);
+        var verified = _commentService.VerifyOtp(email, otp, false);
         if (!verified) return ApiResponse.BadRequest("The verification code is invalid");
 
         var anonymous = await _commentService.GetAnonymousUser(email);
@@ -55,15 +53,12 @@ public class CommentController : ControllerBase
     }
 
     /// <summary>
-    /// Get email verification code
+    ///     Get email verification code
     /// </summary>
     [HttpGet("[action]")]
     public async Task<ApiResponse> GetEmailOtp(string email)
     {
-        if (!CommentService.IsValidEmail(email))
-        {
-            return ApiResponse.BadRequest("The provided email address is invalid");
-        }
+        if (!CommentService.IsValidEmail(email)) return ApiResponse.BadRequest("The provided email address is invalid");
 
         var (result, _) = await _commentService.GenerateOtp(email);
         return result
@@ -76,9 +71,7 @@ public class CommentController : ControllerBase
     public async Task<ApiResponse<Comment>> Add(CommentCreationDto dto)
     {
         if (!_commentService.VerifyOtp(dto.Email, dto.EmailOtp))
-        {
             return ApiResponse.BadRequest("The verification code is invalid");
-        }
 
         var anonymousUser = await _commentService.GetOrCreateAnonymousUser(
             dto.UserName, dto.Email, dto.Url,

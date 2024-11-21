@@ -57,10 +57,7 @@ public class ResponseWrapperFilter : IActionFilter, IAsyncResultFilter
                 if (objectResult.Value is HttpValidationProblemDetails problemDetails)
                 {
                     var sb = new StringBuilder();
-                    foreach (var (key, value) in problemDetails.Errors)
-                    {
-                        sb.Append($"{key}: {string.Join(',', value)}；");
-                    }
+                    foreach (var (key, value) in problemDetails.Errors) sb.Append($"{key}: {string.Join(',', value)}；");
 
                     wrapperResp.Message = sb.ToString();
                 }

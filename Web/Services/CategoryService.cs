@@ -46,6 +46,7 @@ public class CategoryService
 
         return categories.Select(category => new CategoryNode
         {
+            Id = category.Id,
             text = category.Name,
             href = _generator.GetUriByAction(
                 _accessor.HttpContext!,

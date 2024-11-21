@@ -1,4 +1,3 @@
-using System.Net;
 using Data.Models;
 using FreeSql;
 using Markdig;
@@ -164,17 +163,14 @@ public class PostService
             TocNodes = post.ExtractToc()
         };
 
-        if (post.Slug != null)
+        if (!string.IsNullOrWhiteSpace(post.Slug))
             model.Url = Host + _generator.GetPathByAction(
                 _accessor.HttpContext!,
                 "PostBySlug", "Blog",
                 new { post.Slug }
             );
 
-        if (md2Html)
-        {
-            model.ContentHtml = GetContentHtml(post);
-        }
+        if (md2Html) model.ContentHtml = GetContentHtml(post);
 
         if (post.Categories != null)
             foreach (var itemId in post.Categories.Split(",").Select(int.Parse))

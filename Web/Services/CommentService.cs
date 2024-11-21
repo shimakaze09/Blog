@@ -1,10 +1,8 @@
-﻿using System.Net;
-using System.Text;
-using System.Text.RegularExpressions;
+﻿using System.Text.RegularExpressions;
 using CodeLab.Share.ViewModels;
+using Data.Models;
 using FreeSql;
 using Microsoft.Extensions.Caching.Memory;
-using Data.Models;
 using Share.Utils;
 using Web.ViewModels.QueryFilters;
 
@@ -12,11 +10,11 @@ namespace Web.Services;
 
 public class CommentService
 {
-    private readonly ILogger<CommentService> _logger;
-    private readonly IBaseRepository<Comment> _commentRepo;
     private readonly IBaseRepository<AnonymousUser> _anonymousRepo;
-    private readonly IMemoryCache _memoryCache;
+    private readonly IBaseRepository<Comment> _commentRepo;
     private readonly EmailService _emailService;
+    private readonly ILogger<CommentService> _logger;
+    private readonly IMemoryCache _memoryCache;
 
     public CommentService(ILogger<CommentService> logger, IBaseRepository<Comment> commentRepo,
         IBaseRepository<AnonymousUser> anonymousRepo, IMemoryCache memoryCache, EmailService emailService)
@@ -54,20 +52,11 @@ public class CommentService
     {
         var querySet = _commentRepo.Select;
 
-        if (onlyVisible)
-        {
-            querySet = querySet.Where(a => a.Visible);
-        }
+        if (onlyVisible) querySet = querySet.Where(a => a.Visible);
 
-        if (param.PostId != null)
-        {
-            querySet = querySet.Where(a => a.PostId == param.PostId);
-        }
+        if (param.PostId != null) querySet = querySet.Where(a => a.PostId == param.PostId);
 
-        if (param.Search != null)
-        {
-            querySet = querySet.Where(a => a.Content.Contains(param.Search));
-        }
+        if (param.Search != null) querySet = querySet.Where(a => a.Content.Contains(param.Search));
 
         // Sorting
         if (!string.IsNullOrEmpty(param.SortBy))
@@ -86,7 +75,7 @@ public class CommentService
         {
             PageNumber = param.Page,
             PageSize = param.PageSize,
-            TotalItemCount = await querySet.CountAsync(),
+            TotalItemCount = await querySet.CountAsync()
         };
         return (data, pagination);
     }
@@ -110,14 +99,11 @@ public class CommentService
     }
 
     /// <summary>
-    /// Checks if the email address is valid
+    ///     Checks if the email address is valid
     /// </summary>
     public static bool IsValidEmail(string email)
     {
-        if (string.IsNullOrEmpty(email) || email.Length < 7)
-        {
-            return false;
-        }
+        if (string.IsNullOrEmpty(email) || email.Length < 7) return false;
 
         var match = Regex.Match(email, @"[^@ \t\r\n]+@[^@ \t\r\n]+\.[^@ \t\r\n]+");
         var isMatch = match.Success;
@@ -125,7 +111,7 @@ public class CommentService
     }
 
     /// <summary>
-    /// Generates an email verification code and sends the verification email
+    ///     Generates an email verification code and sends the verification email
     /// </summary>
     public async Task<(bool, string?)> GenerateOtp(string email, bool mock = false)
     {
@@ -143,7 +129,7 @@ public class CommentService
     }
 
     /// <summary>
-    /// Verifies the one-time password
+    ///     Verifies the one-time password
     /// </summary>
     /// <param name="clear">Whether to clear after successful verification</param>
     public bool VerifyOtp(string email, string otp, bool clear = true)

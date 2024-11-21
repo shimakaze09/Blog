@@ -2,12 +2,6 @@ using Data.Extensions;
 using Microsoft.AspNetCore.HttpOverrides;
 using RobotsTxt;
 using SixLabors.ImageSharp.Web.DependencyInjection;
-using Data.Extensions;
-using Web.Contrib.SiteMessage;
-using Web.Extensions;
-using Web.Filters;
-using Web.Middlewares;
-using Web.Services;
 using Web.Contrib.SiteMessage;
 using Web.Extensions;
 using Web.Filters;
@@ -111,7 +105,7 @@ app.UseSession();
 app.UseSwaggerPkg();
 
 app.MapControllerRoute(
-    name: "default",
-    pattern: "{controller=Home}/{action=Index}/{id?}");
+    "default",
+    "{controller=Home}/{action=Index}/{id?}");
 
 app.Run();

@@ -24,9 +24,10 @@
                     break;
             }
         </div>
-        
+
         <div>
-            @if (Model.Title != null) {
+            @if (Model.Title != null)
+            {
                 <h5>@Html.Raw(Model.Title)</h5>
             }
             @Html.Raw(Model.Content)

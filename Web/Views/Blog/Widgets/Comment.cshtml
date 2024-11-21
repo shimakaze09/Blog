@@ -32,7 +32,8 @@
             </div>
             <div class="col-4">
                 <el-form-item prop="url">
-                    <el-input type="text" v-model="form.url" placeholder="Website" :disabled="urlDisabled" v-loading="urlLoading" @@blur="handleUrlBlur">
+                    <el-input type="text" v-model="form.url" placeholder="Website" :disabled="urlDisabled"
+                              v-loading="urlLoading" @@blur="handleUrlBlur">
                         <template slot="prepend">
                             <i class="el-icon-ship"></i>
                         </template>

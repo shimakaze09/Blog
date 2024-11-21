@@ -4,7 +4,6 @@ using System.Xml;
 using Data.Models;
 using FreeSql;
 using Microsoft.AspNetCore.Mvc;
-using Web.Extensions;
 using Web.Services;
 
 namespace Web.Controllers;
@@ -12,8 +11,8 @@ namespace Web.Controllers;
 [ApiExplorerSettings(IgnoreApi = true)]
 public class RssController : Controller
 {
-    private readonly IBaseRepository<Post> _postRepo;
     private readonly ConfigService _conf;
+    private readonly IBaseRepository<Post> _postRepo;
 
     public RssController(IBaseRepository<Post> postRepo, ConfigService conf)
     {

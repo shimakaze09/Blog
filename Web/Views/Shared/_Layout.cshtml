@@ -10,10 +10,12 @@
     <meta name="description" content="MyBlog;">
     <meta name="author" content="DealiAxy">
     <meta name="generator" content="MyBlog">
-    @if (ViewData["Title"] != null) {
+    @if (ViewData["Title"] != null)
+    {
         <title>@ViewData["Title"] - MyBlog</title>
     }
-    else {
+    else
+    {
         <title>MyBlog · John</title>
     }
 
@@ -100,7 +102,8 @@
     </div>
     <div class="px-3 py-2 border-bottom mb-3">
         <div class="container d-flex flex-wrap justify-content-center">
-            <form class="col-12 col-lg-auto mb-2 mb-lg-0 me-lg-auto" asp-controller="Search" asp-action="Blog" method="post">
+            <form class="col-12 col-lg-auto mb-2 mb-lg-0 me-lg-auto" asp-controller="Search" asp-action="Blog"
+                  method="post">
                 <input type="search" class="form-control" placeholder="Search..." aria-label="Search"
                        name="keyword">
             </form>
