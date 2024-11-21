@@ -5,6 +5,7 @@ using Share.Extensions;
 using Web.Contrib.SiteMessage;
 using Web.Services;
 using Web.ViewModels;
+using Web.Extensions;
 
 namespace Web.Controllers;
 
@@ -15,31 +16,43 @@ public class HomeController : Controller
     private readonly LinkService _linkService;
     private readonly MessageService _messages;
     private readonly PhotoService _photoService;
+    private readonly ConfigService _conf;
 
     public HomeController(BlogService blogService, PhotoService photoService, CategoryService categoryService,
         LinkService linkService,
-        MessageService messages)
+        MessageService messages, ConfigService conf)
     {
         _blogService = blogService;
         _photoService = photoService;
         _categoryService = categoryService;
         _linkService = linkService;
         _messages = messages;
+        _conf = conf;
     }
 
     public async Task<IActionResult> Index()
     {
         if (Request.QueryString.HasValue) return BadRequest();
 
-        return View(new HomeViewModel
+        var vm = new HomeViewModel
         {
+            ChartVisible = _conf["home_chart_visible"] == "true",
+            RandomPhotoVisible = _conf["home_random_photo_visible"] == "true",
             RandomPhoto = await _photoService.GetRandomPhoto(),
             TopPost = await _blogService.GetTopOnePost(),
             FeaturedPosts = await _blogService.GetFeaturedPosts(),
             FeaturedPhotos = await _photoService.GetFeaturedPhotos(),
             FeaturedCategories = await _categoryService.GetFeaturedCategories(),
             Links = await _linkService.GetAll()
-        });
+        };
+
+        if (HttpContext.Request.IsMobileBrowser())
+        {
+            vm.ChartVisible = false;
+            vm.RandomPhotoVisible = false;
+        }
+
+        return View(vm);
     }
 
     [HttpGet]
@@ -59,10 +72,9 @@ public class HomeController : Controller
     }
 
     [HttpPost]
-    public IActionResult Init([FromServices] ConfigService conf, [FromServices] IBaseRepository<User> userRepo,
-        InitViewModel vm)
+    public IActionResult Init([FromServices] IBaseRepository<User> userRepo, InitViewModel vm)
     {
-        if (conf["is_init"] == "true")
+        if (_conf["is_init"] == "true")
         {
             _messages.Error("Initialization is complete!");
             return RedirectToAction(nameof(Index));
@@ -71,9 +83,9 @@ public class HomeController : Controller
         if (!ModelState.IsValid) return View();
 
         // Save configuration
-        conf["host"] = vm.Host;
-        conf["default_render"] = vm.DefaultRender;
-        conf["is_init"] = "true";
+        _conf["host"] = vm.Host;
+        _conf["default_render"] = vm.DefaultRender;
+        _conf["is_init"] = "true";
 
         // Create user
         userRepo.Insert(new User

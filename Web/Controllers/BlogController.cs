@@ -32,7 +32,8 @@ public class BlogController : Controller
         _configService = configService;
     }
 
-    public async Task<IActionResult> List(int categoryId = 0, int page = 1, int pageSize = 6)
+    public async Task<IActionResult> List(int categoryId = 0, int page = 1, int pageSize = 6,
+        string sortType = "asc", string sortBy = "-CreationTime")
     {
         var currentCategory = categoryId == 0
             ? new Category { Id = 0, Name = "All" }
@@ -55,12 +56,15 @@ public class BlogController : Controller
             CurrentCategory = currentCategory,
             CurrentCategoryId = categoryId,
             CategoryNodes = await _categoryService.GetNodes(),
+            SortType = sortType,
+            SortBy = sortBy,
             Posts = await _postService.GetPagedList(new PostQueryParameters
             {
                 CategoryId = categoryId,
                 Page = page,
                 PageSize = pageSize,
-                OnlyPublished = true
+                OnlyPublished = true,
+                SortBy = sortType == "desc" ? $"-{sortBy}" : sortBy
             })
         });
     }
