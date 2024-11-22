@@ -28,6 +28,11 @@ public class Comment : ModelBase
     public bool Visible { get; set; }
 
     /// <summary>
+    ///     Whether it requires audit
+    /// </summary>
+    public bool IsNeedAudit { get; set; } = false;
+
+    /// <summary>
     ///     Reason
     ///     <para>If validation fails, a reason may be provided</para>
     /// </summary>

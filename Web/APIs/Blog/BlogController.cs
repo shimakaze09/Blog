@@ -16,8 +16,8 @@ namespace Web.APIs.Blog;
 [ApiExplorerSettings(GroupName = ApiGroups.Blog)]
 public class BlogController : ControllerBase
 {
-    private readonly ILogger<BlogController> _logger;
     private readonly BlogService _blogService;
+    private readonly ILogger<BlogController> _logger;
 
     public BlogController(BlogService blogService, ILogger<BlogController> logger)
     {
