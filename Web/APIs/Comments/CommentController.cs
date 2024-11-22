@@ -111,6 +111,13 @@ public class CommentController : ControllerBase
         };
     }
 
+    [HttpGet("[action]")]
+    public async Task<List<Comment>?> GetAll(string postId)
+    {
+        return await _commentService.GetAll(postId);
+    }
+
+
     /// <summary>
     ///     Get comments that need moderation
     /// </summary>
