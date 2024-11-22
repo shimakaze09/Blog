@@ -2,7 +2,6 @@ using Data.Models;
 using FreeSql;
 using Web.ViewModels.QueryFilters;
 using X.PagedList;
-using X.PagedList.Extensions;
 
 namespace Web.Services;
 
@@ -56,7 +55,12 @@ public class VisitRecordService
             querySet = querySet.OrderByPropertyName(orderByProperty, isAscending);
         }
 
-        return (await querySet.ToListAsync()).ToPagedList(param.Page, param.PageSize);
+        IPagedList<VisitRecord> pagedList = new StaticPagedList<VisitRecord>(
+            await querySet.Page(param.Page, param.PageSize).ToListAsync(),
+            param.Page, param.PageSize,
+            Convert.ToInt32(await _repo.Select.CountAsync())
+        );
+        return pagedList;
     }
 
     /// <summary>

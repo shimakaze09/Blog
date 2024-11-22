@@ -3,7 +3,6 @@ using FreeSql;
 using Web.Controllers;
 using Web.ViewModels.Categories;
 using X.PagedList;
-using X.PagedList.Extensions;
 
 namespace Web.Services;
 
@@ -66,7 +65,10 @@ public class CategoryService
 
     public async Task<IPagedList<Category>> GetPagedList(int page = 1, int pageSize = 10)
     {
-        return (await _cRepo.Select.ToListAsync()).ToPagedList(page, pageSize);
+        IPagedList<Category> pagedList = new StaticPagedList<Category>(
+            await _cRepo.Select.ToListAsync(), page, pageSize, Convert.ToInt32(await _cRepo.Select.CountAsync())
+        );
+        return pagedList;
     }
 
     public async Task<Category?> GetById(int id)
@@ -111,7 +113,8 @@ public class CategoryService
             .Include(a => a.Category).FirstAsync();
     }
 
-    public async Task<FeaturedCategory> AddOrUpdateFeaturedCategory(Category category, FeaturedCategoryCreationDto dto)
+    public async Task<FeaturedCategory>
+        AddOrUpdateFeaturedCategory(Category category, FeaturedCategoryCreationDto dto)
     {
         var item = await _fcRepo.Where(a => a.CategoryId == category.Id).FirstAsync();
         if (item == null)

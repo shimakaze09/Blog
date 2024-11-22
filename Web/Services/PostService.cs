@@ -9,7 +9,6 @@ using Share.Utils;
 using Web.ViewModels;
 using Web.ViewModels.QueryFilters;
 using X.PagedList;
-using X.PagedList.Extensions;
 
 namespace Web.Services;
 
@@ -135,8 +134,11 @@ public class PostService
             querySet = querySet.OrderByPropertyName(orderByProperty, isAscending);
         }
 
-        return (await querySet.Include(a => a.Category).ToListAsync())
-            .ToPagedList(param.Page, param.PageSize);
+        IPagedList<Post> pagedList = new StaticPagedList<Post>(
+            await querySet.Include(a => a.Category).ToListAsync(),
+            param.Page, param.PageSize, Convert.ToInt32(await _postRepo.Select.CountAsync())
+        );
+        return pagedList;
     }
 
     /// <summary>
