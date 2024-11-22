@@ -48,13 +48,15 @@ public class CommentService
     }
 
     public async Task<(List<Comment>, PaginationMetadata)> GetPagedList(CommentQueryParameters param,
-        bool onlyVisible = true, bool? isNeedAudit = null)
+        bool onlyVisible = true, bool? isNeedAudit = null, bool includePost = false)
     {
         var querySet = _commentRepo.Select;
 
         if (onlyVisible) querySet = querySet.Where(a => a.Visible);
 
         if (isNeedAudit != null) querySet = querySet.Where(a => a.IsNeedAudit == isNeedAudit);
+
+        if (includePost) querySet = querySet.Include(a => a.Post);
 
         if (param.PostId != null) querySet = querySet.Where(a => a.PostId == param.PostId);
 
