@@ -1,10 +1,12 @@
 ﻿using System.Text.RegularExpressions;
+using CodeLab.Share.Extensions;
 using CodeLab.Share.ViewModels;
 using Data.Models;
 using FreeSql;
 using Microsoft.Extensions.Caching.Memory;
 using Share.Utils;
 using Web.ViewModels.QueryFilters;
+using X.PagedList;
 
 namespace Web.Services;
 
@@ -48,19 +50,17 @@ public class CommentService
     }
 
     public async Task<(List<Comment>, PaginationMetadata)> GetPagedList(CommentQueryParameters param,
-        bool onlyVisible = true, bool? isNeedAudit = null, bool includePost = false)
+        bool adminMode = false, bool includePost = false)
     {
         var querySet = _commentRepo.Select;
 
-        if (onlyVisible) querySet = querySet.Where(a => a.Visible);
-
-        if (isNeedAudit != null) querySet = querySet.Where(a => a.IsNeedAudit == isNeedAudit);
+        if (!adminMode) querySet = querySet.Where(a => a.Visible);
 
         if (includePost) querySet = querySet.Include(a => a.Post);
 
-        if (param.PostId != null) querySet = querySet.Where(a => a.PostId == param.PostId);
+        if (!string.IsNullOrWhiteSpace(param.PostId)) querySet = querySet.Where(a => a.PostId == param.PostId);
 
-        if (param.Search != null) querySet = querySet.Where(a => a.Content.Contains(param.Search));
+        if (!string.IsNullOrWhiteSpace(param.Search)) querySet = querySet.Where(a => a.Content.Contains(param.Search));
 
         // Sorting
         if (!string.IsNullOrEmpty(param.SortBy))
@@ -75,13 +75,10 @@ public class CommentService
             .Include(a => a.AnonymousUser)
             .Include(a => a.Parent.AnonymousUser)
             .ToListAsync();
-        var pagination = new PaginationMetadata
-        {
-            PageNumber = param.Page,
-            PageSize = param.PageSize,
-            TotalItemCount = await querySet.CountAsync()
-        };
-        return (data, pagination);
+        IPagedList<Comment> pagedList = new StaticPagedList<Comment>(data, param.Page, param.PageSize,
+            Convert.ToInt32(await querySet.CountAsync()));
+
+        return (data, pagedList.ToPaginationMetadata());
     }
 
     public async Task<Comment?> GetById(string id)

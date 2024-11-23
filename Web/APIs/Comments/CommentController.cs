@@ -29,7 +29,8 @@ public class CommentController : ControllerBase
     [HttpGet]
     public async Task<ApiResponsePaged<Comment>> GetPagedList([FromQuery] CommentQueryParameters @params)
     {
-        var (data, meta) = await _commentService.GetPagedList(@params);
+        var adminMode = User.Identity?.IsAuthenticated ?? false;
+        var (data, meta) = await _commentService.GetPagedList(@params, adminMode, adminMode);
         return new ApiResponsePaged<Comment>(data, meta);
     }
 
@@ -115,20 +116,6 @@ public class CommentController : ControllerBase
     public async Task<List<Comment>?> GetAll(string postId)
     {
         return await _commentService.GetAll(postId);
-    }
-
-
-    /// <summary>
-    ///     Get comments that need moderation
-    /// </summary>
-    [Authorize]
-    [HttpGet("[action]")]
-    public async Task<ApiResponsePaged<Comment>> GetNeedAuditList([FromQuery] CommentQueryParameters @params)
-    {
-        var (data, meta) = await _commentService.GetPagedList(
-            @params, false, true
-        );
-        return new ApiResponsePaged<Comment>(data, meta);
     }
 
     /// <summary>
