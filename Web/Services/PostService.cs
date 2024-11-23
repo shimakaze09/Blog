@@ -108,12 +108,17 @@ public class PostService
         return data;
     }
 
-    public async Task<IPagedList<Post>> GetPagedList(PostQueryParameters param)
+    public async Task<IPagedList<Post>> GetPagedList(PostQueryParameters param, bool adminMode = false)
     {
         var querySet = _postRepo.Select;
 
-        // Filter by published status
-        if (param.OnlyPublished) querySet = _postRepo.Select.Where(a => a.IsPublish);
+        // Filter published status
+        // Only admins can filter by published status
+        if (param.IsPublish != null && adminMode)
+            querySet = _postRepo.Select.Where(a => a.IsPublish == param.IsPublish);
+
+        if (!adminMode) querySet = _postRepo.Select.Where(a => a.IsPublish);
+
 
         // Filter by status
         if (!string.IsNullOrWhiteSpace(param.Status)) querySet = querySet.Where(a => a.Status == param.Status);

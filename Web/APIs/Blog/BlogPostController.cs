@@ -36,7 +36,13 @@ public class BlogPostController : ControllerBase
     [HttpGet]
     public async Task<ApiResponsePaged<Post>> GetList([FromQuery] PostQueryParameters param)
     {
-        var pagedList = await _postService.GetPagedList(param);
+        // Set admin mode to true if the user is authenticated
+        // TODO: Replace this with role-based admin determination later
+        var adminMode = User.Identity?.IsAuthenticated ?? false;
+
+        // Fetch paginated list of items
+        var pagedList = await _postService.GetPagedList(param, adminMode);
+
         return new ApiResponsePaged<Post>
         {
             Message = "Get posts list",
