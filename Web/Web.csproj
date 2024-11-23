@@ -42,6 +42,8 @@
         <PackageReference Include="Microsoft.CodeAnalysis.Common" Version="4.11.0"/>
         <PackageReference Include="Microsoft.CodeAnalysis.CSharp" Version="4.11.0"/>
         <PackageReference Include="Microsoft.EntityFrameworkCore.Sqlite" Version="8.0.11"/>
+        <PackageReference Include="Rin" Version="2.6.0"/>
+        <PackageReference Include="Rin.Mvc" Version="2.6.0"/>
         <PackageReference Include="RobotsTxtCore" Version="3.0.0"/>
         <PackageReference Include="SixLabors.ImageSharp" Version="2.1.9"/>
         <PackageReference Include="SixLabors.ImageSharp.Web" Version="2.0.2"/>

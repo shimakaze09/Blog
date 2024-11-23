@@ -1,5 +1,7 @@
+@using Rin.Mvc.View
 @using Web.Contrib.SiteMessage
 @inject MessageService Messages
+@inject RinHelperService RinHelper
 
 <!DOCTYPE html>
 <html lang="en">
@@ -25,6 +27,10 @@
     <link rel="stylesheet" href="~/css/metro.css">
     <link rel="stylesheet" href="~/css/footer.css">
     <script src="~/js/site.preload.js"></script>
+    <environment include="Development">
+        @* Add: Enable In-View Inspector for ASP.NET Core MVC *@
+        @RinHelper.RenderInViewInspector()
+    </environment>
 
     @await RenderSectionAsync("head", false)
 </head>
