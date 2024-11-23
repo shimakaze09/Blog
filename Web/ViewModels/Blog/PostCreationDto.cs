@@ -14,6 +14,11 @@ public class PostCreationDto
     public string? Slug { get; set; }
 
     /// <summary>
+    ///     Article Tag
+    /// </summary>
+    public string? Status { get; set; }
+
+    /// <summary>
     ///     Summary
     /// </summary>
     public string? Summary { get; set; }

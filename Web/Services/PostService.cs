@@ -44,6 +44,14 @@ public class PostService
 
     private string Host => _conf["host"];
 
+    /// <summary>
+    ///     Checks if the given slug is available
+    /// </summary>
+    public async Task<bool> CheckSlugAvailable(string slug)
+    {
+        return !await _postRepo.Select.AnyAsync(a => a.Slug == slug);
+    }
+
     public async Task<Post?> GetById(string id)
     {
         // When retrieving the post, parse the image URLs in the markdown content and add the full URL before returning to the frontend

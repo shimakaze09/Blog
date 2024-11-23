@@ -76,6 +76,9 @@ public class BlogPostController : ControllerBase
         var category = await categoryService.GetById(dto.CategoryId);
         if (category == null) return ApiResponse.BadRequest($"Category {dto.CategoryId} does not exist!");
 
+        if (!string.IsNullOrWhiteSpace(dto.Slug) && !await _postService.CheckSlugAvailable(dto.Slug))
+            return ApiResponse.BadRequest("The specified slug is already in use by another post!");
+
         post.Id = GuidUtils.GuidTo16String();
         post.CreationTime = DateTime.Now;
         post.LastUpdateTime = DateTime.Now;
@@ -92,6 +95,10 @@ public class BlogPostController : ControllerBase
     {
         var post = await _postService.GetById(id);
         if (post == null) return ApiResponse.NotFound($"Blog {id} does not exist");
+
+        if (!string.IsNullOrWhiteSpace(dto.Slug))
+            if (dto.Slug != post.Slug && !await _postService.CheckSlugAvailable(dto.Slug))
+                return ApiResponse.BadRequest("The specified slug is already being used by another post!");
 
         // mapper.Map(source) gets a brand new object
         // mapper.Map(source, dest) modifies the dest object
