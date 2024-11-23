@@ -16,6 +16,16 @@ public class PostUpdateDto
     public string? Slug { get; set; }
 
     /// <summary>
+    ///     Article Tag
+    /// </summary>
+    public string? Status { get; set; }
+
+    /// <summary>
+    ///     Indicates whether the item is published (not published means it's a draft).
+    /// </summary>
+    public bool IsPublished { get; set; }
+
+    /// <summary>
     ///     Summary
     /// </summary>
     public string Summary { get; set; }
