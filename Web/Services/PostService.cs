@@ -61,9 +61,9 @@ public class PostService
         return post;
     }
 
-    public async Task<int> Delete(string id)
+    public Task<int> Delete(string id)
     {
-        return await _postRepo.DeleteAsync(a => a.Id == id);
+        return _postRepo.DeleteAsync(a => a.Id == id);
     }
 
     public async Task<Post> InsertOrUpdateAsync(Post post)

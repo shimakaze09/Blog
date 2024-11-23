@@ -64,7 +64,7 @@ public class BlogPostController : ControllerBase
     {
         var post = await _postService.GetById(id);
         if (post == null) return ApiResponse.NotFound($"Blog {id} does not exist");
-        var rows = _postService.Delete(id);
+        var rows = await _postService.Delete(id);
         return ApiResponse.Ok($"Deleted {rows} blog posts");
     }
 
