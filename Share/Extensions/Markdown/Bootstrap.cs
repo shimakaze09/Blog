@@ -13,7 +13,7 @@ namespace Share.Extensions.Markdown;
 // See the license.txt file in the project root for more information.
 
 /// <summary>
-/// Extension for tagging some HTML elements with bootstrap classes.
+///     Extension for tagging some HTML elements with bootstrap classes.
 /// </summary>
 /// <seealso cref="IMarkdownExtension" />
 public class Bootstrap5Extension : IMarkdownExtension
@@ -32,13 +32,10 @@ public class Bootstrap5Extension : IMarkdownExtension
     private static void PipelineOnDocumentProcessed(MarkdownDocument document)
     {
         foreach (var node in document.Descendants())
-        {
             if (node is Inline)
             {
                 if (node is ContainerInline && node is LinkInline link && link.IsImage)
-                {
                     link.GetAttributes().AddClass("img-fluid");
-                }
             }
             else if (node is ContainerBlock)
             {
@@ -60,12 +57,8 @@ public class Bootstrap5Extension : IMarkdownExtension
             }
             else
             {
-                if (node is FigureCaption)
-                {
-                    node.GetAttributes().AddClass("figure-caption");
-                }
+                if (node is FigureCaption) node.GetAttributes().AddClass("figure-caption");
             }
-        }
     }
 }
 

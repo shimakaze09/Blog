@@ -43,12 +43,14 @@ public class CategoryService
 
         if (categories.Count == 0) return null;
 
+        var httpContext = _accessor.HttpContext;
+        if (httpContext == null) throw new Exception("Cannot retrieve HttpContext from IHttpContextAccessor!");
+
         return categories.Select(category => new CategoryNode
         {
             Id = category.Id,
             text = category.Name,
-            href = _generator.GetUriByAction(
-                _accessor.HttpContext!,
+            href = _generator.GetPathByAction(
                 nameof(BlogController.List),
                 "Blog",
                 new { categoryId = category.Id }

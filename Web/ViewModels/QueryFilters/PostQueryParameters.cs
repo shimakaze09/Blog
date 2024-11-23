@@ -6,7 +6,7 @@
 public class PostQueryParameters : QueryParameters
 {
     /// <summary>
-    /// Is Published (Only administrators can view and manage unpublished articles)
+    ///     Is Published (Only administrators can view and manage unpublished articles)
     /// </summary>
     public bool? IsPublish { get; set; } = null;
 
