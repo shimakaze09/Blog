@@ -20,7 +20,8 @@ public class EmailService
 
     public async Task<MessageSentEventArgs> SendEmailAsync(string subject, string body, string toName, string toAddress)
     {
-        _logger.LogDebug("Sending email, subject: {Subject}, recipient: {ToAddress}", subject, toAddress);
+        var sanitizedToAddress = toAddress.Replace(Environment.NewLine, "").Replace("\n", "").Replace("\r", "");
+        _logger.LogDebug("Sending email, subject: {Subject}, recipient: {ToAddress}", subject, sanitizedToAddress);
         body += $"<br><p>This message was automatically sent by {BlogLink}, no need to reply.</p>";
         return await EmailUtils.SendEmailAsync(_emailAccountConfig, subject, body, toName, toAddress);
     }
