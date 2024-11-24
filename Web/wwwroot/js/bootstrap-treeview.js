@@ -651,29 +651,39 @@
         }
     };
 
+    // Helper function to escape unsafe characters
+    Tree.prototype.escapeHtml = function (unsafe) {
+        return unsafe
+            .replace(/&/g, "&amp;")
+            .replace(/</g, "&lt;")
+            .replace(/>/g, "&gt;")
+            .replace(/"/g, "&quot;")
+            .replace(/'/g, "&#039;");
+    };
+
     // Construct trees style based on user options
     Tree.prototype.buildStyle = function () {
 
         let style = '.node-' + this.elementId + '{';
 
         if (this.options.color) {
-            style += 'color:' + this.options.color + ';';
+            style += 'color:' + this.escapeHtml(this.options.color) + ';';
         }
 
         if (this.options.backColor) {
-            style += 'background-color:' + this.options.backColor + ';';
+            style += 'background-color:' + this.escapeHtml(this.options.backColor) + ';';
         }
 
         if (!this.options.showBorder) {
             style += 'border:none;';
         } else if (this.options.borderColor) {
-            style += 'border:1px solid ' + this.options.borderColor + ';';
+            style += 'border:1px solid ' + this.escapeHtml(this.options.borderColor) + ';';
         }
         style += '}';
 
         if (this.options.onhoverColor) {
             style += '.node-' + this.elementId + ':not(.node-disabled):hover{' +
-                'background-color:' + this.options.onhoverColor + ';' +
+                'background-color:' + this.escapeHtml(this.options.onhoverColor) + ';' +
                 '}';
         }
 
