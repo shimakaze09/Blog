@@ -12,6 +12,7 @@
     </ItemGroup>
 
     <ItemGroup>
+      <PackageReference Include="MimeKit" Version="4.15.1" />
         <ProjectReference Include="..\Contrib\Contrib.csproj"/>
         <ProjectReference Include="..\data\Data.csproj"/>
     </ItemGroup>
