@@ -7,9 +7,9 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Contrib", "Contrib\Contrib.
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Data", "Data\Data.csproj", "{13636058-28E9-4262-B7F9-F4F9CB01430C}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Migrate", "Digrate\Migrate.csproj", "{6557B378-73B9-417A-B632-20A699585970}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Migrate", "Migrate\Migrate.csproj", "{6557B378-73B9-417A-B632-20A699585970}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Web", "Deb\Web.csproj", "{F2597324-070E-4B25-A639-5A545FFAF1E2}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Web", "Web\Web.csproj", "{F2597324-070E-4B25-A639-5A545FFAF1E2}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{0C6241BE-470A-46E4-91AD-5CB3F279E710}"
 	ProjectSection(SolutionItems) = preProject
