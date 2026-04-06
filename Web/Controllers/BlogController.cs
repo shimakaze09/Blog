@@ -1,6 +1,7 @@
 using Data.Models;
 using FreeSql;
 using Microsoft.AspNetCore.Mvc;
+using System.Net;
 using Web.Contrib.SiteMessage;
 using Web.Services;
 using Web.ViewModels.Blog;
@@ -50,6 +51,8 @@ public class BlogController : Controller
             _messages.Warning($"Category {categoryId} not visible!");
             return RedirectToAction(nameof(List));
         }
+
+        sortBy = System.Net.WebUtility.HtmlEncode(sortBy);
 
         return View(new BlogListViewModel
         {
