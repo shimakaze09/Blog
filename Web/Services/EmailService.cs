@@ -11,6 +11,21 @@ public class EmailService
     private readonly EmailAccountConfig _emailAccountConfig;
     private readonly ILogger<EmailService> _logger;
 
+    private static string MaskEmail(string email)
+    {
+        if (string.IsNullOrWhiteSpace(email)) return string.Empty;
+
+        var atIndex = email.IndexOf('@');
+        if (atIndex <= 0 || atIndex == email.Length - 1) return "***";
+
+        var localPart = email.Substring(0, atIndex);
+        var domainPart = email.Substring(atIndex + 1);
+
+        if (localPart.Length <= 1)
+            return "*@" + domainPart;
+
+        return localPart[0] + new string('*', Math.Max(1, localPart.Length - 1)) + "@" + domainPart;
+    }
 
     public EmailService(ILogger<EmailService> logger, IOptions<EmailAccountConfig> options)
     {
@@ -21,7 +36,8 @@ public class EmailService
     public async Task<MessageSentEventArgs> SendEmailAsync(string subject, string body, string toName, string toAddress)
     {
         var sanitizedToAddress = toAddress.Replace(Environment.NewLine, "").Replace("\n", "").Replace("\r", "");
-        _logger.LogDebug("Sending email, subject: {Subject}, recipient: {ToAddress}", subject, sanitizedToAddress);
+        var maskedToAddress = MaskEmail(sanitizedToAddress);
+        _logger.LogDebug("Sending email, subject: {Subject}, recipient: {ToAddress}", subject, maskedToAddress);
         body += $"<br><p>This message was automatically sent by {BlogLink}, no need to reply.</p>";
         return await EmailUtils.SendEmailAsync(_emailAccountConfig, subject, body, toName, toAddress);
     }
