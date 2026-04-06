@@ -52,6 +52,18 @@ public class BlogController : Controller
             return RedirectToAction(nameof(List));
         }
 
+        // Normalize sortType to a safe, known set of values.
+        if (sortType is null ||
+            (!sortType.Equals("asc", StringComparison.OrdinalIgnoreCase) &&
+             !sortType.Equals("desc", StringComparison.OrdinalIgnoreCase)))
+        {
+            sortType = "asc";
+        }
+        else
+        {
+            sortType = sortType.ToLowerInvariant();
+        }
+
         sortBy = System.Net.WebUtility.HtmlEncode(sortBy);
 
         return View(new BlogListViewModel
